@@ -3,12 +3,6 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import supabase from "@/utils/supabaseClient";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(req) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
@@ -18,7 +12,6 @@ export async function POST(req) {
     );
   }
 
-  // Read the body as a stream
   const body = await req.text();
   const payload = JSON.parse(body);
 
@@ -78,7 +71,6 @@ async function saveUserDataToDatabase(user) {
   const id = user.id;
   const email = user.email_addresses[0].email_address;
 
-  // Insert the new user into the 'users' table
   const { data, error } = await supabase
     .from("users")
     .insert([{ clerk_id: id, clerk_email: email }]);
@@ -95,7 +87,6 @@ async function updateUserDataInDatabase(user) {
   const id = user.id;
   const email = user.email_addresses[0].email_address;
 
-  // Update the user's email in the 'users' table
   const { data, error } = await supabase
     .from("users")
     .update({ clerk_email: email })
@@ -112,10 +103,9 @@ async function updateUserDataInDatabase(user) {
 async function deleteUserDataFromDatabase(user) {
   const id = user.id;
 
-  // Set 'is_deleted' to TRUE for the user in the 'users' table
   const { data, error } = await supabase
     .from("users")
-    .update({ is_deleted: true })
+    .delete()
     .eq("clerk_id", id);
 
   if (error) {
