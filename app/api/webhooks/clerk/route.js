@@ -15,10 +15,20 @@ export async function POST(req) {
   const body = await req.text();
   const payload = JSON.parse(body);
 
+  // Log incoming headers and body for debugging
+  console.log("Headers:", req.headers);
+  console.log("Body:", body);
+  console.log("WEBHOOK_SECRET:", WEBHOOK_SECRET);
+
   const headerPayload = headers();
   const svix_id = headerPayload.get("svix-id");
   const svix_timestamp = headerPayload.get("svix-timestamp");
   const svix_signature = headerPayload.get("svix-signature");
+
+  // Log svix headers for debugging
+  console.log("svix-id:", svix_id);
+  console.log("svix-timestamp:", svix_timestamp);
+  console.log("svix-signature:", svix_signature);
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Error occurred -- no svix headers", {
