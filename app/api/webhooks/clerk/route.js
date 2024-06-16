@@ -81,6 +81,9 @@ async function saveUserDataToDatabase(user) {
   const id = user.id;
   const email = user.email_addresses[0].email_address;
 
+  console.log("User ID:", id);
+  console.log("User Email:", email);
+
   const { data, error } = await supabase
     .from("users")
     .insert([{ clerk_id: id, clerk_email: email }]);
