@@ -1,10 +1,5 @@
-import { SignOutButton } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
+import Dashboard from "@/components/Dashboard";
 
 export default async function Home() {
-  const { userID } = await auth();
-
-  console.log("userID:", userID);
-
-  return <SignOutButton/>;
+  return <Dashboard />;
 }
