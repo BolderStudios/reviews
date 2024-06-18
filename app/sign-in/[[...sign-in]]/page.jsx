@@ -1,5 +1,4 @@
-import { SignIn } from "@clerk/nextjs";
-import CustomSignIn from "../../../components/CustomSignIn";
+import CustomSignIn from "@/components/CustomSignIn";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 

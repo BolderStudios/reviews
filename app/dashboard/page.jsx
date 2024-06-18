@@ -6,9 +6,5 @@ export default async function Home() {
 
   console.log("userID:", userID);
 
-  return (
-    <div>
-      <SignOutButton redirectUrl="/sign-in" />
-    </div>
-  );
+  return <SignOutButton redirectUrl="/sign-in" />;
 }
