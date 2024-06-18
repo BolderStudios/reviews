@@ -1,22 +1,17 @@
 "use client";
 
 import React from "react";
-import Sidebar from "./ui/Sidebar";
-import { UserButton } from "@clerk/nextjs";
 
 export default function Dashboard() {
   return (
     <>
-      <Sidebar />
-
-      <div className="sm:ml-64 px-4">
-        <div className="py-4 flex items-center justify-between">
-          <p>Dashboard</p>
-          <UserButton />
+      <div>
+        <div className="flex items-center justify-between">
+          <p className="font-bold text-2xl mb-4">Dashboard</p>
         </div>
 
         {/* Main content */}
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
+        <div className="border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
               <p className="text-2xl text-gray-400 dark:text-gray-500">

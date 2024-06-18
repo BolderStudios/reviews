@@ -1,10 +1,30 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import { DashboardIcon } from "@radix-ui/react-icons";
+import { DashboardIcon, GearIcon } from "@radix-ui/react-icons";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
+  const pathname = usePathname();
+  const currentPathname = pathname.split("/")[1];
+
+  const linkClasses = (href) =>
+    `flex items-center p-2 text-gray-900 rounded-lg dark:text-white ${
+      currentPathname === href.split("/")[1]
+        ? "bg-gray-100 dark:bg-gray-700"
+        : "hover:bg-gray-100 dark:hover:bg-gray-700"
+    } group`;
+
+  const iconClasses = (href) =>
+    `flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 ${
+      currentPathname === href.split("/")[1]
+        ? "text-gray-900 dark:text-white"
+        : "group-hover:text-gray-900 dark:group-hover:text-white"
+    }`;
+
   return (
-    <>
+    <div className="h-screen overflow-hidden w-64">
       {/* Button for small screens */}
       <button
         data-drawer-target="logo-sidebar"
@@ -29,10 +49,10 @@ export default function Sidebar() {
         </svg>
       </button>
 
-      {/* Siebar */}
+      {/* Sidebar */}
       <aside
         id="logo-sidebar"
-        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="h-screen transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
@@ -47,19 +67,22 @@ export default function Sidebar() {
             </span>
           </a>
 
-          <ul className="space-y-2 font-medium">
+          <ul className="font-medium mt-7 flex flex-col gap-2">
             <li>
-              <Link
-                href="/dashboard"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <DashboardIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+              <Link href="/dashboard" className={linkClasses("/dashboard")}>
+                <DashboardIcon className={iconClasses("/dashboard")} />
                 <span className="ms-3">Dashboard</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/settings" className={linkClasses("/settings")}>
+                <GearIcon className={iconClasses("/settings")} />
+                <span className="ms-3">Settings</span>
               </Link>
             </li>
           </ul>
         </div>
       </aside>
-    </>
+    </div>
   );
 }

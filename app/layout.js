@@ -1,8 +1,15 @@
-import "./styles/globals.css"
-import { ClerkProvider } from "@clerk/nextjs";
+import "./styles/globals.css";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
-
 import { cn } from "../lib/utils";
+import Sidebar from "@/components/ui/Sidebar";
+import Navbar from "@/components/ui/Navbar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -24,7 +31,24 @@ export default function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <main>{children}</main>
+          <main className="h-screen flex flex-col">
+            <SignedIn>
+              {/* Content for signed-in users */}
+              <div className="flex flex-1">
+                <Sidebar />
+
+                <div className="flex flex-col w-full overflow-y-auto h-screen">
+                  <Navbar />
+                  <div className="flex-grow px-8 py-4">{children}</div>
+                </div>
+              </div>
+            </SignedIn>
+
+            <SignedOut>
+              {/* Content for signed-out users */}
+              <div className="flex-grow p-4">{children}</div>
+            </SignedOut>
+          </main>
         </body>
       </html>
     </ClerkProvider>
