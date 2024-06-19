@@ -57,11 +57,11 @@ export async function POST(req) {
 
         if (customer.email) {
           // Find user by email in supabase in users table
-          // Update is_active to true
+          // Update hasAccess to true
           const { data: selectedUser, error: userSelectError } = await supabase
             .from("users")
             .update({
-              is_active: true,
+              hasAccess: true,
               customer_id: customerId,
               price_id: priceId,
             })
@@ -98,7 +98,7 @@ export async function POST(req) {
         const { data: user, error: userError } = await supabase
           .from("users")
           .update({
-            is_active: false,
+            hasAccess: false,
           })
           .eq("customer_id", subscription.customer);
 
@@ -124,7 +124,7 @@ export async function POST(req) {
         const { data: user, error: userError } = await supabase
           .from("users")
           .update({
-            is_active: false,
+            hasAccess: false,
           })
           .eq("customer_id", subscription.customer);
 
