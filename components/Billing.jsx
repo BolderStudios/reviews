@@ -10,9 +10,11 @@ export const plans = [
     link:
       process.env.NODE_ENV === "development"
         ? "https://buy.stripe.com/test_9AQg075bO9oB6hWcMU"
-        : "",
+        : "https://buy.stripe.com/test_9AQg075bO9oB6hWcMU", // replace with a live link
     priceId:
-      process.env.NODE_ENV === "development" ? "prod_QJqox2zsKiFE0h" : "",
+      process.env.NODE_ENV === "development"
+        ? "prod_QJqox2zsKiFE0h"
+        : "prod_QJqox2zsKiFE0h", // replace with a live link
     price: 35,
     duration: "/month",
   },
@@ -20,9 +22,11 @@ export const plans = [
     link:
       process.env.NODE_ENV === "development"
         ? "https://buy.stripe.com/test_14kdRZdIk30d5dS9AH"
-        : "",
+        : "https://buy.stripe.com/test_9AQg075bO9oB6hWcMU", // replace with a live link
     priceId:
-      process.env.NODE_ENV === "development" ? "prod_QJqpqmw7LKs0xp" : "",
+      process.env.NODE_ENV === "development"
+        ? "prod_QJqpqmw7LKs0xp"
+        : "prod_QJqpqmw7LKs0xp", // replace with a live link
 
     price: 350,
     duration: "/year",
