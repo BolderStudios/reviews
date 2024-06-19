@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { DashboardIcon, GearIcon } from "@radix-ui/react-icons";
+import { DashboardIcon, GearIcon, IdCardIcon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
 
 export default function Sidebar() {
@@ -78,6 +78,12 @@ export default function Sidebar() {
               <Link href="/settings" className={linkClasses("/settings")}>
                 <GearIcon className={iconClasses("/settings")} />
                 <span className="ms-3">Settings</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/billing" className={linkClasses("/billing")}>
+                <IdCardIcon className={iconClasses("/billing")} />
+                <span className="ms-3">Billing</span>
               </Link>
             </li>
           </ul>

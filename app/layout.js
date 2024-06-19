@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
 
                 <div className="flex flex-col w-full overflow-y-auto h-screen">
                   <Navbar />
-                  <div className="flex-grow px-8 py-4">{children}</div>
+                  <div className="flex-grow">{children}</div>
                 </div>
               </div>
             </SignedIn>
