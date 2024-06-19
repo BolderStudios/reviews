@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import ButtonCustomerPortal from "./ui/ButtonCustomerPortal";
+import { loadStripe } from "@stripe/stripe-js";
 
 // Stripe Plans >> fill in your own priceId & link
 export const plans = [
@@ -14,8 +14,8 @@ export const plans = [
         : "https://buy.stripe.com/test_9AQg075bO9oB6hWcMU", // replace with a live link
     priceId:
       process.env.NODE_ENV === "development"
-        ? "prod_QJqox2zsKiFE0h"
-        : "prod_QJqox2zsKiFE0h", // replace with a live link
+        ? "price_1PTD7FCUoNGpO7cRyEtsocHP"
+        : "price_1PTD7FCUoNGpO7cRyEtsocHP", // replace with a live link
     price: 35,
     duration: "/month",
   },
@@ -26,18 +26,52 @@ export const plans = [
         : "https://buy.stripe.com/test_9AQg075bO9oB6hWcMU", // replace with a live link
     priceId:
       process.env.NODE_ENV === "development"
-        ? "prod_QJqpqmw7LKs0xp"
-        : "prod_QJqpqmw7LKs0xp", // replace with a live link
+        ? "price_1PTFNGCUoNGpO7cR6VahvsYH"
+        : "price_1PTFNGCUoNGpO7cR6VahvsYHP", // replace with a live link
 
     price: 350,
     duration: "/year",
   },
 ];
 
+// Load your Stripe publishable key
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+);
+
 const Billing = ({ emailAddress }) => {
   const [plan, setPlan] = useState(plans[0]);
 
-  console.log("Email address in Billing Client Component:", emailAddress);
+  const handleSubscribe = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/create-checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            priceId: plan.priceId,
+            email: emailAddress,
+          }),
+        }
+      );
+
+      const { sessionId } = await response.json();
+      const stripe = await stripePromise;
+
+      const { error } = await stripe.redirectToCheckout({
+        sessionId,
+      });
+
+      if (error) {
+        console.error("Stripe checkout error:", error);
+      }
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+    }
+  };
 
   return (
     <section id="pricing">
@@ -56,6 +90,7 @@ const Billing = ({ emailAddress }) => {
                   />
                   <span>Pay monthly</span>
                 </div>
+
                 <div className="flex items-center gap-2">
                   <input
                     type="radio"
@@ -111,11 +146,7 @@ const Billing = ({ emailAddress }) => {
                 </ul>
 
                 <div className="space-y-2">
-                  <Button asChild>
-                    <Link href={plan.link + "?prefilled_email=" + emailAddress}>
-                      Subscribe
-                    </Link>
-                  </Button>
+                  <Button onClick={handleSubscribe}>Subscribe</Button>
                 </div>
               </div>
             </div>

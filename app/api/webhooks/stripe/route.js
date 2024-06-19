@@ -48,10 +48,12 @@ export async function POST(req) {
         const customerId = session?.customer;
         const customer = await stripe.customers.retrieve(customerId);
         const priceId = session?.line_items?.data[0]?.price.id;
+        const clerkUserId = session?.metadata?.clerkUserId;
 
-        console.log("Customer ID:", customerId);
-        console.log("Customer details:", customer);
-        console.log("Price ID:", priceId);
+        console.log("Customer ID: ", customerId);
+        console.log("Customer details: ", customer);
+        console.log("Price ID: ", priceId);
+        console.log("Clerk User ID: ", clerkUserId);
 
         if (customer.email) {
           // Find user by email in supabase in users table

@@ -7,8 +7,8 @@ export default async function Page() {
 
   const emailAddress = user?.emailAddresses[0].emailAddress;
 
-  console.log("User in Billing Server Component:", user);
-  console.log("Email address in Billing Server Component:", emailAddress);
+  // console.log("User in Billing Server Component:", user);
+  // console.log("Email address in Billing Server Component:", emailAddress);
 
   return (
     <div>
