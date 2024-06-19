@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import ButtonCustomerPortal from "./ui/ButtonCustomerPortal";
 
 // Stripe Plans >> fill in your own priceId & link
 export const plans = [
@@ -121,6 +122,10 @@ const Billing = ({ emailAddress }) => {
           </div>
         </div>
       </div>
+
+      <header className="p-4 flex justify-end max-w-7xl mx-auto">
+        <ButtonCustomerPortal emailAddress={emailAddress} />
+      </header>
     </section>
   );
 };

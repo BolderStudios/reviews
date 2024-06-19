@@ -17,7 +17,6 @@ export async function POST(req) {
   let eventType;
   let event;
 
-  // Verify Stripe event is legit
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     console.log("Stripe event verified:", event);
@@ -108,6 +107,30 @@ export async function POST(req) {
         }
 
         break;
+      }
+
+      case "customer.subscription.updated": {
+        // ❌ Revoke access to the product
+        // Sent when a customer’s subscription ends.
+        console.log("Handling customer.subscription.updated event");
+
+        const subscription = await stripe.subscriptions.retrieve(
+          data.object.id
+        );
+        console.log("Retrieved Stripe subscription:", subscription);
+
+        const { data: user, error: userError } = await supabase
+          .from("users")
+          .update({
+            is_active: false,
+          })
+          .eq("customer_id", subscription.customer);
+
+        if (userError) {
+          console.error("Error updating user in Supabase:", userError.message);
+        } else {
+          console.log("Updated user in Supabase:", user);
+        }
       }
 
       default:

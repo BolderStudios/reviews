@@ -5,7 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 export default async function Page() {
   const user = await currentUser();
 
-  const emailAddress = user.emailAddresses[0].emailAddress;
+  const emailAddress = user?.emailAddresses[0].emailAddress;
 
   console.log("User in Billing Server Component:", user);
   console.log("Email address in Billing Server Component:", emailAddress);
