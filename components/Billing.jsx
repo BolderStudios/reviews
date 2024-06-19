@@ -35,7 +35,8 @@ export const plans = [
 
 const Billing = ({ emailAddress }) => {
   const [plan, setPlan] = useState(plans[0]);
-  // console.log(emailAddress);
+
+  console.log("Email address in Billing Client Component:", emailAddress);
 
   return (
     <section id="pricing">
