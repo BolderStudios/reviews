@@ -98,7 +98,10 @@ const Billing = ({ emailAddress, currentPriceId }) => {
       </div>
 
       <div className="grid grid-cols-3 py-4 gap-8">
-        {currentPriceId === "null" || currentPriceId === ""
+        {currentPriceId === null ||
+        currentPriceId === "" ||
+        currentPriceId === undefined ||
+        currentPriceId === "null"
           ? monthlyPlans.map((plan, index) => (
               <div
                 key={index}

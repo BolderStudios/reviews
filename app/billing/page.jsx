@@ -4,12 +4,20 @@ import supabase from "@/utils/supabaseClient";
 
 export default async function Page() {
   const user = await currentUser();
-  const { data: userData, error } = await supabase
+  const { data: userData, error: userDataError } = await supabase
     .from("users")
-    .select()
+    .select("*")
     .eq("clerk_id", user.id);
 
-  const currentPriceId = userData[0].price_id;
+  const supabase_user_id = userData[0].id;
+
+  const { data: subscriptionData, error: subscriptionDataError } =
+    await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", supabase_user_id);
+
+  const currentPriceId = subscriptionData[0]?.stripe_price_id;
   const emailAddress = user?.emailAddresses[0].emailAddress;
 
   console.log("Current Price Id:", currentPriceId);

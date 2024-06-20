@@ -47,6 +47,7 @@ export async function POST(req) {
 
         const customerId = session?.customer;
         const customer = await stripe.customers.retrieve(customerId);
+        const customerEmail = customer.email;
         const priceId = session?.line_items?.data[0]?.price.id;
         const clerkUserId = session?.metadata?.clerkUserId;
 
@@ -56,24 +57,35 @@ export async function POST(req) {
         console.log("Clerk User ID: ", clerkUserId);
 
         if (customer.email) {
-          // Find user by email in supabase in users table
-          // Update hasAccess to true
-          const { data: selectedUser, error: userSelectError } = await supabase
+          // Find a single user by email
+          const { data, error } = await supabase
             .from("users")
-            .update({
-              hasAccess: true,
-              customer_id: customerId,
-              price_id: priceId,
-            })
+            .select()
             .eq("clerk_email", customer.email);
 
-          if (userSelectError) {
+          const userData = data[0];
+
+          console.log("User data:", userData);
+
+          //   Create a new entry in subscription table
+          const { data: subscription, error: subscriptionError } =
+            await supabase.from("subscriptions").insert([
+              {
+                user_id: userData.id,
+                stripe_customer_id: customerId,
+                stripe_price_id: priceId,
+                clerk_user_id: clerkUserId,
+                subscription_status: "active",
+              },
+            ]);
+
+          if (subscriptionError) {
             console.error(
-              "Error updating user in Supabase:",
-              userSelectError.message
+              "Error add a new subscription in Supabase:",
+              subscriptionError.message
             );
           } else {
-            console.log("Updated user in Supabase:", selectedUser);
+            console.log("Added a new subscription:", subscription);
           }
         } else {
           console.error("No user found with customer email");
