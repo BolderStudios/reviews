@@ -20,6 +20,14 @@ export async function POST(req) {
           quantity: 1,
         },
       ],
+      subscription_data: {
+        trial_settings: {
+          end_behavior: {
+            missing_payment_method: "cancel",
+          },
+        },
+        trial_period_days: 14,
+      },
       mode: "subscription",
       success_url: `${siteUrl + process.env.SUCCESS_URL}`,
       cancel_url: `${siteUrl + process.env.CANCEL_URL}`,

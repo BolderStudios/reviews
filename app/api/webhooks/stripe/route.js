@@ -1,4 +1,4 @@
-// /api/webhooks/stripe/route.js
+// api/webhooks/stripe/route.js
 
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
@@ -61,6 +61,9 @@ export async function POST(req) {
         const startDate = subscription?.start_date;
         const currentPeriodStart = subscription?.current_period_start;
         const currentPeriodEnd = subscription?.current_period_end;
+        const status = subscription?.status;
+        const trial_start = subscription?.trial_start;
+        const trial_end = subscription?.trial_end;
 
         console.log("Checkout session: ", session);
         console.log("Customer ID: ", customerId);
@@ -86,12 +89,13 @@ export async function POST(req) {
                 stripe_price_id: priceId,
                 stripe_subscription_id: subscriptionId,
                 clerk_user_id: clerkUserId,
-                subscription_status: "active",
+                subscription_status: status,
                 start_date: startDate,
                 current_period_start: currentPeriodStart,
                 current_period_end: currentPeriodEnd,
                 plan_amount: planAmount,
-                updated_at: new Date().toISOString(),
+                trial_start: trial_start,
+                trial_end: trial_end,
               },
             ]);
 
