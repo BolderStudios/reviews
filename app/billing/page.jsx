@@ -16,7 +16,7 @@ export default async function Page() {
       .from("subscriptions")
       .select("*")
       .eq("user_id", supabase_user_id)
-      .eq("subscription_status", "active");
+      .neq("subscription_status", "deleted");
 
   const currentPriceId = subscriptionData[0]?.stripe_price_id;
   const emailAddress = user?.emailAddresses[0].emailAddress;

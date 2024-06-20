@@ -33,8 +33,6 @@ export async function POST(req) {
   try {
     switch (eventType) {
       case "checkout.session.completed": {
-        // First payment is successful and a subscription is created (if mode was set to "subscription" in ButtonCheckout)
-        // ✅ Grant access to the product
         console.log("Handling checkout.session.completed event");
 
         const session = await stripe.checkout.sessions.retrieve(
@@ -51,27 +49,32 @@ export async function POST(req) {
         const priceId = session?.line_items?.data[0]?.price.id;
         const clerkUserId = session?.metadata?.clerkUserId;
         const subscriptionId = session?.subscription;
+        
+        // Retrieve the subscription to get the start_date and other details
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+        const planAmount = subscription?.plan?.amount;
+        const startDate = subscription?.start_date;
+        const currentPeriodStart = subscription?.current_period_start;
+        const currentPeriodEnd = subscription?.current_period_end;
 
         console.log("Checkout session: ", session);
-
         console.log("Customer ID: ", customerId);
         console.log("Customer details: ", customer);
         console.log("Price ID: ", priceId);
         console.log("Clerk User ID: ", clerkUserId);
+        console.log("Subscription details: ", subscription);
 
         if (customerEmail) {
-          // Find a single user by email
           const { data, error } = await supabase
             .from("users")
             .select()
             .eq("clerk_email", customerEmail);
 
           const userData = data[0];
-
           console.log("User data:", userData);
 
-          //   Create a new entry in subscription table
-          const { data: subscription, error: subscriptionError } =
+          const { data: subscriptionData, error: subscriptionError } =
             await supabase.from("subscriptions").insert([
               {
                 user_id: userData.id,
@@ -80,30 +83,31 @@ export async function POST(req) {
                 stripe_subscription_id: subscriptionId,
                 clerk_user_id: clerkUserId,
                 subscription_status: "active",
+                start_date: startDate,
+                current_period_start: currentPeriodStart,
+                current_period_end: currentPeriodEnd,
+                plan_amount: planAmount,
+                updated_at: new Date().toISOString(),
               },
             ]);
 
           if (subscriptionError) {
             console.error(
-              "Error add a new subscription in Supabase:",
+              "Error adding a new subscription in Supabase:",
               subscriptionError.message
             );
           } else {
-            console.log("Added a new subscription:", subscription);
+            console.log("Added a new subscription:", subscriptionData);
           }
         } else {
           console.error("No user found with customer email");
           throw new Error("No user found");
         }
 
-        // Extra: >>>>> send email, redirect to dashboard <<<<
-
         break;
       }
 
       case "customer.subscription.deleted": {
-        // ❌ Revoke access to the product
-        // Sent when a customer’s subscription ends.
         console.log("Handling customer.subscription.deleted event");
 
         const subscription = await stripe.subscriptions.retrieve(
@@ -118,6 +122,7 @@ export async function POST(req) {
           .from("subscriptions")
           .update({
             subscription_status: "deleted",
+            updated_at: new Date().toISOString(),
           })
           .eq("stripe_subscription_id", subscription.id);
 
@@ -137,27 +142,50 @@ export async function POST(req) {
       }
 
       case "customer.subscription.updated": {
-        // ❌ Revoke access to the product
-        // Sent when a customer’s subscription ends.
         console.log("Handling customer.subscription.updated event");
 
         const subscription = await stripe.subscriptions.retrieve(
-          data.object.id
+          data.object.id,
+          { expand: ["plan.product"] }
         );
         console.log("Retrieved Stripe subscription:", subscription);
 
-        const { data: user, error: userError } = await supabase
-          .from("users")
-          .update({
-            hasAccess: false,
-          })
-          .eq("customer_id", subscription.customer);
+        const planAmount = subscription.plan.amount;
 
-        if (userError) {
-          console.error("Error updating user in Supabase:", userError.message);
+        const {
+          data: updatedSubscriptionData,
+          error: updatedSubscriptionError,
+        } = await supabase
+          .from("subscriptions")
+          .update({
+            stripe_price_id: subscription.plan.id,
+            subscription_status: subscription.cancel_at_period_end
+              ? "cancelled"
+              : subscription.status,
+            current_period_start: subscription.current_period_start,
+            current_period_end: subscription.current_period_end,
+            cancel_at_period_end: subscription.cancel_at_period_end,
+            canceled_at: subscription.canceled_at,
+            cancel_at: subscription.cancel_at,
+            start_date: subscription.start_date,
+            plan_amount: planAmount,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("stripe_subscription_id", subscription.id);
+
+        if (updatedSubscriptionError) {
+          console.error(
+            "Error updating subscription in Supabase:",
+            updatedSubscriptionError.message
+          );
         } else {
-          console.log("Updated user in Supabase:", user);
+          console.log(
+            "Updated subscription in Supabase:",
+            updatedSubscriptionData
+          );
         }
+
+        break;
       }
 
       default:
