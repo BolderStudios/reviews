@@ -9,9 +9,6 @@ export async function POST(req) {
     const { priceId, email } = await req.json();
     const { userId } = getAuth(req);
 
-    console.log("User ID:", userId);
-    console.log("Price ID:", priceId);
-
     const session = await stripe.checkout.sessions.create({
       customer_email: email,
       line_items: [
@@ -23,12 +20,10 @@ export async function POST(req) {
       mode: "subscription",
       success_url: `${process.env.SUCCESS_URL}`,
       metadata: {
-        // Clerk user ID is stored in the metadata
+        // Clerk user ID is stored in a metadata object
         clerkUserId: userId,
       },
     });
-
-    // console.log("Checkout session created:", session.id);
 
     return NextResponse.json({ sessionId: session.id }, { status: 200 });
   } catch (error) {

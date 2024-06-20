@@ -1,16 +1,19 @@
 "use client";
 
-const customerPortalLink =
-  "https://billing.stripe.com/p/login/test_eVabMgg37dRm7Ty288";
+import { Button } from "./button";
+import Link from "next/link";
+
+const customerPortalLink = `${process.env.NEXT_PUBLIC_CUSTOMER_PORTAL_LINK}`;
+
+console.log("customerPortalLink", customerPortalLink);
 
 const ButtonCustomerPortal = ({ emailAddress }) => {
   return (
-    <a
-      href={customerPortalLink + "?prefilled_email=" + emailAddress}
-      className="btn"
-    >
-      Go to Customer Portal
-    </a>
+    <Button asChild className="w-full">
+      <Link href={customerPortalLink + "?prefilled_email=" + emailAddress}>
+        Manage Subscriptions
+      </Link>
+    </Button>
   );
 };
 
