@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { getAuth } from "@clerk/nextjs/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export async function POST(req) {
   try {
@@ -20,8 +21,8 @@ export async function POST(req) {
         },
       ],
       mode: "subscription",
-      success_url: `${process.env.SUCCESS_URL}`,
-      cancel_url: `${process.env.CANCEL_URL}`,
+      success_url: `${siteUrl + process.env.SUCCESS_URL}`,
+      cancel_url: `${siteUrl + process.env.CANCEL_URL}`,
       metadata: {
         clerkUserId: userId,
       },

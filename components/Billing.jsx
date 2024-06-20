@@ -55,7 +55,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
 
-const sessionSource = process.env.NEXT_PUBLIC_SESSION_SOURCE;
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const Billing = ({ emailAddress, currentPriceId }) => {
   console.log("currentPriceId", currentPriceId);
@@ -66,7 +66,7 @@ const Billing = ({ emailAddress, currentPriceId }) => {
 
     try {
       const response = await fetch(
-        `${sessionSource}api/create-checkout-session`,
+        `${siteUrl}/api/create-checkout-session`,
         {
           method: "POST",
           headers: {
