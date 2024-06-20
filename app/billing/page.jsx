@@ -15,7 +15,8 @@ export default async function Page() {
     await supabase
       .from("subscriptions")
       .select("*")
-      .eq("user_id", supabase_user_id);
+      .eq("user_id", supabase_user_id)
+      .eq("subscription_status", "active");
 
   const currentPriceId = subscriptionData[0]?.stripe_price_id;
   const emailAddress = user?.emailAddresses[0].emailAddress;

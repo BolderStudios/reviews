@@ -50,18 +50,21 @@ export async function POST(req) {
         const customerEmail = customer.email;
         const priceId = session?.line_items?.data[0]?.price.id;
         const clerkUserId = session?.metadata?.clerkUserId;
+        const subscriptionId = session?.subscription;
+
+        console.log("Checkout session: ", session);
 
         console.log("Customer ID: ", customerId);
         console.log("Customer details: ", customer);
         console.log("Price ID: ", priceId);
         console.log("Clerk User ID: ", clerkUserId);
 
-        if (customer.email) {
+        if (customerEmail) {
           // Find a single user by email
           const { data, error } = await supabase
             .from("users")
             .select()
-            .eq("clerk_email", customer.email);
+            .eq("clerk_email", customerEmail);
 
           const userData = data[0];
 
@@ -74,6 +77,7 @@ export async function POST(req) {
                 user_id: userData.id,
                 stripe_customer_id: customerId,
                 stripe_price_id: priceId,
+                stripe_subscription_id: subscriptionId,
                 clerk_user_id: clerkUserId,
                 subscription_status: "active",
               },
@@ -107,17 +111,26 @@ export async function POST(req) {
         );
         console.log("Retrieved Stripe subscription:", subscription);
 
-        const { data: user, error: userError } = await supabase
-          .from("users")
+        const {
+          data: updatedSubscriptionData,
+          error: updatedSubscriptionError,
+        } = await supabase
+          .from("subscriptions")
           .update({
-            hasAccess: false,
+            subscription_status: "deleted",
           })
-          .eq("customer_id", subscription.customer);
+          .eq("stripe_subscription_id", subscription.id);
 
-        if (userError) {
-          console.error("Error updating user in Supabase:", userError.message);
+        if (updatedSubscriptionError) {
+          console.error(
+            "Error updating subscription in Supabase:",
+            updatedSubscriptionError.message
+          );
         } else {
-          console.log("Updated user in Supabase:", user);
+          console.log(
+            "Updated subscription in Supabase:",
+            updatedSubscriptionData
+          );
         }
 
         break;
