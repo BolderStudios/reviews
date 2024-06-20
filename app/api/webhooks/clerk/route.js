@@ -1,4 +1,5 @@
-// src/app/api/clerk-webhook/route.js
+// /api/webhooks/clerk/route.js
+
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import supabase from "@/utils/supabaseClient";

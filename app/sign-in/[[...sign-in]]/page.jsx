@@ -1,3 +1,5 @@
+// /sign-in/[[...sign-in]]/page.jsx
+
 import CustomSignIn from "@/components/CustomSignIn";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";

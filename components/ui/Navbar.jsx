@@ -1,3 +1,5 @@
+// components/ui/Navbar.jsx
+
 import React from "react";
 import { UserButton } from "@clerk/nextjs";
 

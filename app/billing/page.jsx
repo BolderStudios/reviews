@@ -1,3 +1,5 @@
+// /billing/page.jsx
+
 import Billing from "@/components/Billing";
 import { currentUser } from "@clerk/nextjs/server";
 import supabase from "@/utils/supabaseClient";

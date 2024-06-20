@@ -1,3 +1,6 @@
+
+// components/CustomSignUp.jsx
+
 "use client";
 
 import * as Clerk from "@clerk/elements/common";

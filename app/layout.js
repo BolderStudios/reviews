@@ -1,3 +1,5 @@
+// layout.js
+
 import "./styles/globals.css";
 import {
   ClerkProvider,

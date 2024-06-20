@@ -1,3 +1,5 @@
+// components/ui/Sidebar.jsx
+
 "use client";
 
 import React from "react";

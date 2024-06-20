@@ -1,3 +1,5 @@
+// /api/webhooks/stripe/route.js
+
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import supabase from "@/utils/supabaseClient";
@@ -49,9 +51,11 @@ export async function POST(req) {
         const priceId = session?.line_items?.data[0]?.price.id;
         const clerkUserId = session?.metadata?.clerkUserId;
         const subscriptionId = session?.subscription;
-        
+
         // Retrieve the subscription to get the start_date and other details
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const subscription = await stripe.subscriptions.retrieve(
+          subscriptionId
+        );
 
         const planAmount = subscription?.plan?.amount;
         const startDate = subscription?.start_date;
