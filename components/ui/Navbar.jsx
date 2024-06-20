@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <div className="px-8 py-4 flex items-center justify-between border-b">
       &nbsp;
-      <UserButton afterSignOutUrl="/" />
+      <UserButton afterSignOutUrl="/sign-in" />
     </div>
   );
 }
