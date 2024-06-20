@@ -58,6 +58,7 @@ const Billing = ({ emailAddress, currentPriceId }) => {
 
   const handleSubscribe = async (priceID) => {
     console.log("priceId inside handleSubscribe", priceID);
+    console.log("emailAddress inside handleSubscribe", emailAddress);
 
     try {
       const response = await fetch(

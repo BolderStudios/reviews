@@ -19,8 +19,8 @@ export async function POST(req) {
       ],
       mode: "subscription",
       success_url: `${process.env.SUCCESS_URL}`,
+      cancel_url: `${process.env.CANCEL_URL}`,
       metadata: {
-        // Clerk user ID is stored in a metadata object
         clerkUserId: userId,
       },
     });
