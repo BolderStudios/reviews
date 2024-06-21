@@ -19,9 +19,6 @@ export default clerkMiddleware((auth, req) => {
     // Check if onboarding is complete
     const onboardingComplete = sessionClaims?.metadata?.onboardingComplete;
 
-    console.log("Coming from middleware.js");
-    console.log(onboardingComplete);
-
     if (!onboardingComplete && req.nextUrl.pathname !== "/onboarding") {
       const onboardingUrl = new URL("/onboarding", req.url);
       return NextResponse.redirect(onboardingUrl);

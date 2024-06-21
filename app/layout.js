@@ -1,6 +1,7 @@
-// layout.js
+// app/layout.js
 
 import "./styles/globals.css";
+import utilStyles from "./styles/utils.module.css";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";

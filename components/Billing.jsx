@@ -59,6 +59,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const Billing = ({ emailAddress, currentPriceId }) => {
   console.log("currentPriceId", currentPriceId);
+  console.log("emailAddress", emailAddress);
 
   const handleSubscribe = async (priceID) => {
     console.log("priceId inside handleSubscribe", priceID);

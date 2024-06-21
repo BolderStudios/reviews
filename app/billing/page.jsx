@@ -11,6 +11,7 @@ export default async function Page() {
     .select("*")
     .eq("clerk_id", user.id);
 
+  console.log("user: ", user);
   console.log("userData: ", userData);
 
   let currentPriceId = "";
