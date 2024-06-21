@@ -1,4 +1,4 @@
-// /dashboard/page.jsx
+// app/dashboard/page.jsx
 
 import Dashboard from "@/components/Dashboard";
 

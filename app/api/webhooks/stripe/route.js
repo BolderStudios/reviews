@@ -1,4 +1,4 @@
-// api/webhooks/stripe/route.js
+// app/api/webhooks/stripe/route.js
 
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";

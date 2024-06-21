@@ -1,8 +1,9 @@
-// /api/webhooks/clerk/route.js
+// app/api/webhooks/clerk/route.js
 
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import supabase from "@/utils/supabaseClient";
+import { redirect } from "next/dist/server/api-utils";
 
 export async function POST(req) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;

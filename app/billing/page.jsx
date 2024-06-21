@@ -1,4 +1,4 @@
-// /billing/page.jsx
+// app/billing/page.jsx
 
 import Billing from "@/components/Billing";
 import { currentUser } from "@clerk/nextjs/server";

@@ -1,13 +1,7 @@
 // layout.js
 
 import "./styles/globals.css";
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
 import Sidebar from "@/components/ui/Sidebar";
@@ -33,9 +27,8 @@ export default function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <main className="h-screen flex flex-col">
+          <main className="h-screen flex flex-col relative">
             <SignedIn>
-              {/* Content for signed-in users */}
               <div className="flex flex-1">
                 <Sidebar />
 
