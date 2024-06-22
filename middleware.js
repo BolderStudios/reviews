@@ -5,6 +5,7 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard",
   "/billing",
   "/onboarding",
+  "/file-upload",
 ]);
 
 export default clerkMiddleware((auth, req) => {
