@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidebar } from "@/components/ui/sidebar";
+import { Sidebar } from "./ui/sidebar";
 import { MobileNav } from "@/components/ui/mobile-nav";
 
 export default function SidebarNavigation() {
