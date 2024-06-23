@@ -2,12 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "./ButtonLoading";
+import { FileCard } from "./fileCard";
 import {
   Form,
   FormControl,
@@ -20,12 +21,7 @@ import {
 import { uploadFile } from "@/app/actions";
 
 import styles from "./border.module.css";
-import {
-  CloudArrowUp,
-  HandGrabbing,
-  MicrosoftExcelLogo,
-  X,
-} from "@phosphor-icons/react";
+import { CloudArrowUp, HandGrabbing } from "@phosphor-icons/react";
 
 const formSchema = z.object({
   files: z.array(
@@ -56,7 +52,6 @@ export function MultipleFileUploader() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const [isLoading, setIsLoading] = useState(false);
-  const ref = useRef(null);
   const [defaultValues, setDefaultValues] = useState({ files: [] });
 
   const form = useForm({
@@ -69,6 +64,11 @@ export function MultipleFileUploader() {
   async function onSubmit() {
     if (files.length === 0) {
       toast.error("Please upload at least one file");
+      return;
+    }
+
+    if (files.length > 5) {
+      toast.error("You can only upload up to 5 files at a time");
       return;
     }
 
@@ -107,55 +107,14 @@ export function MultipleFileUploader() {
   }
 
   const filesMapped = files.map((file, index) => (
-    <div
-      key={index}
-      ref={ref}
-      className={`border border-stone-200 flex justify-between px-3 py-3 rounded-lg w-[400px] animate-file-add-up`}
-    >
-      <div className="flex gap-2">
-        {/* File icon */}
-        <div className="flex items-center justify-center">
-          <MicrosoftExcelLogo
-            color="green"
-            weight="duotone"
-            className="w-9 h-9"
-          />
-        </div>
-
-        {/* File info */}
-        <div className="flex flex-col">
-          <p className="font-regular text-sm">{file.name}</p>
-          <p className="text-stone-500 text-xs">
-            {Math.round(file.size / 1024)} KB
-          </p>
-        </div>
-      </div>
-
-      {/* Remove button */}
-      <div
-        onClick={() => {
-          toast.message("File removed from the list");
-          // Add animation classes separately
-          ref.current.classList.add("-translate-y-1");
-          ref.current.classList.add("opacity-0");
-          ref.current.classList.add("ease-out");
-          ref.current.classList.add("duration-300");
-          setTimeout(() => {
-            setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-          }, 300);
-          console.log("Ref element: ", ref.current);
-        }}
-        variant="ghost"
-        className={`h-fit rounded-md p-[1px] hover:bg-stone-100 transition-all  ${
-          isLoading ? "cursor-not-allowed" : "cursor-pointer"
-        }`}
-      >
-        <X className="w-4 h-4 text-stone-500" />
-      </div>
-    </div>
+    <FileCard
+      key={file.lastModified}
+      file={file}
+      index={index}
+      setFiles={setFiles}
+      isLoading={isLoading}
+    />
   ));
-
-  console.log("files: ", files);
 
   return (
     <Form {...form}>
@@ -176,7 +135,7 @@ export function MultipleFileUploader() {
                     {...getInputProps()}
                     id="excel-file"
                     type="file"
-                    accept=".xls, .xlsx"
+                    // accept=".xls, .xlsx"
                     multiple
                     onChange={(e) => {
                       const files = Array.from(e.target.files);
