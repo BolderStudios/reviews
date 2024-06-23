@@ -75,11 +75,21 @@ module.exports = {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" },
         },
+        "file-add-up": {
+          from: { transform: "translateY(8px)", opacity: "0" },
+          to: { transform: "translateY(0px)", opacity: "1" },
+        },
+        "file-remove-down": {
+          from: { transform: "translateY(0px)", opacity: "1" },
+          to: { transform: "translateY(8px)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
+        "file-add-up": "file-add-up 0.3s ease-out",
+        "file-remove-down": "file-remove-down 0.3s ease-out",
       },
     },
   },

@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
                   <Navbar />
                   <div className="flex-grow">
                     {children}
-                    <Toaster />
+                    <Toaster richColors />
                   </div>
                 </div>
               </div>

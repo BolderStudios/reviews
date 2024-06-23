@@ -2,9 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { z } from "zod";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "./ButtonLoading";
 import {
@@ -54,8 +55,8 @@ export function MultipleFileUploader() {
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   const [isLoading, setIsLoading] = useState(false);
+  const ref = useRef(null);
   const [defaultValues, setDefaultValues] = useState({ files: [] });
 
   const form = useForm({
@@ -66,6 +67,11 @@ export function MultipleFileUploader() {
   });
 
   async function onSubmit() {
+    if (files.length === 0) {
+      toast.error("Please upload at least one file");
+      return;
+    }
+
     setIsLoading(true);
 
     const uploadPromises = files.map((file, index) => {
@@ -85,8 +91,10 @@ export function MultipleFileUploader() {
       const results = await Promise.all(uploadPromises);
       results.forEach((result) => {
         if (result.success) {
+          toast.success(`${result.file_name} uploaded successfully`);
           console.log("File uploaded successfully");
         } else {
+          toast.error(result.message);
           console.error(result.message);
         }
       });
@@ -101,7 +109,8 @@ export function MultipleFileUploader() {
   const filesMapped = files.map((file, index) => (
     <div
       key={index}
-      className="border border-stone-200 flex justify-between px-3 py-3 rounded-lg w-[400px]"
+      ref={ref}
+      className={`border border-stone-200 flex justify-between px-3 py-3 rounded-lg w-[400px] animate-file-add-up`}
     >
       <div className="flex gap-2">
         {/* File icon */}
@@ -123,27 +132,39 @@ export function MultipleFileUploader() {
       </div>
 
       {/* Remove button */}
-      <Button
+      <div
         onClick={() => {
-          setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+          toast.message("File removed from the list");
+          // Add animation classes separately
+          ref.current.classList.add("-translate-y-1");
+          ref.current.classList.add("opacity-0");
+          ref.current.classList.add("ease-out");
+          ref.current.classList.add("duration-300");
+          setTimeout(() => {
+            setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+          }, 300);
+          console.log("Ref element: ", ref.current);
         }}
         variant="ghost"
-        className="h-fit rounded-md p-[1px] hover:bg-stone-100 transition-all cursor-pointer"
+        className={`h-fit rounded-md p-[1px] hover:bg-stone-100 transition-all  ${
+          isLoading ? "cursor-not-allowed" : "cursor-pointer"
+        }`}
       >
         <X className="w-4 h-4 text-stone-500" />
-      </Button>
+      </div>
     </div>
   ));
 
+  console.log("files: ", files);
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="files"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Multiple File Uploader</FormLabel>
               <FormControl>
                 <div
                   {...getRootProps()}
@@ -192,11 +213,16 @@ export function MultipleFileUploader() {
                           JPEG, PNG, PDF, and MP4 formats, up to 5 MB.
                         </p>
                       </div>
+
+                      {/* Fake upload button */}
+                      <div className="mt-2 text-sm font-medium text-stone-600 rounded-md border border-stone-200 px-3 py-1 hover:bg-stone-50 hover:text-stone-700 transition-all">
+                        Browse Files
+                      </div>
                     </div>
                   )}
                 </div>
               </FormControl>
-              <FormDescription>
+              <FormDescription className="w-[400px]">
                 This field will be validated and the files will be uploaded to
                 Supabase Storage bucket.
               </FormDescription>
@@ -209,7 +235,13 @@ export function MultipleFileUploader() {
           <div className="flex flex-col gap-2">{filesMapped}</div>
         ) : null}
 
-        {isLoading ? <ButtonLoading /> : <Button type="submit">Upload</Button>}
+        {isLoading ? (
+          <ButtonLoading />
+        ) : (
+          <Button className="w-[400px]" type="submit">
+            Upload Files
+          </Button>
+        )}
       </form>
     </Form>
   );

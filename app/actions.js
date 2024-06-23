@@ -97,7 +97,7 @@ export async function uploadFile(
       }
 
       console.log("File uploaded successfully");
-      return { message: "Uploaded file successfully", success: true };
+      return { message: "Uploaded file successfully", success: true, file_name: file.name };
     } else {
       // For single file uploads
       const { data: existingFiles, error: listError } = await supabase.storage
