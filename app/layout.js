@@ -7,6 +7,7 @@ import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
 import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
+import { Toaster } from "sonner";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -35,7 +36,10 @@ export default function RootLayout({ children }) {
 
                 <div className="flex flex-col w-full overflow-y-auto h-screen">
                   <Navbar />
-                  <div className="flex-grow">{children}</div>
+                  <div className="flex-grow">
+                    {children}
+                    <Toaster />
+                  </div>
                 </div>
               </div>
             </SignedIn>
