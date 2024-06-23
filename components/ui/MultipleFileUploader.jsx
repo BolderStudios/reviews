@@ -47,10 +47,39 @@ export function MultipleFileUploader() {
   const [files, setFiles] = useState([]);
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the files
-    setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+    console.log("Files dropped: ", acceptedFiles);
+    // setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({
+    onDrop,
+    accept: {
+      "application/vnd.ms-excel": [".xls"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".xlsx",
+      ],
+    },
+    onDropRejected: (rejectedFiles) => {
+      toast.error("Only .XLS and .XLSX files are allowed");
+    },
+    onDropAccepted: (acceptedFiles) => {
+      console.log("Each accepted file:");
+      acceptedFiles.forEach((file) => {
+        if (file.size > 5242880) {
+          toast.error("File size should not exceed 5MB");
+        } else {
+          setFiles((prevFiles) => [...prevFiles, file]);
+        }
+      });
+    },
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [defaultValues, setDefaultValues] = useState({ files: [] });
 
@@ -139,7 +168,15 @@ export function MultipleFileUploader() {
                     multiple
                     onChange={(e) => {
                       const files = Array.from(e.target.files);
-                      setFiles((prevFiles) => [...prevFiles, ...files]);
+
+                      files.forEach((file) => {
+                        if (file.size > 5242880) {
+                          toast.error("File size should not exceed 5MB");
+                        } else {
+                          toast.message(`${file.name} added to the list`);
+                          setFiles((prevFiles) => [...prevFiles, file]);
+                        }
+                      });
                     }}
                   />
 
