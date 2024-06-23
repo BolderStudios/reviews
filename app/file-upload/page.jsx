@@ -1,8 +1,8 @@
 // app/file-upload/page.jsx
 
 import React from "react";
-import { FileUploadExample } from "@/components/ui/FileUploadExample";
+import { SingleFileUploader } from "@/components/ui/SingleFileUploader";
 
 export default function Page() {
-  return <FileUploadExample />;
+  return <SingleFileUploader />;
 }

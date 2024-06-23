@@ -1,5 +1,5 @@
 // components/ui/FileUploadExample.jsx
-// This is a reusable multi-file upload component
+// This file-uploader has a UI only for a single file uploads, so keep it that way.
 
 "use client";
 
@@ -41,7 +41,7 @@ const formSchema = z.object({
   ),
 });
 
-export function FileUploadExample() {
+export function SingleFileUploader() {
   const [isLoading, setIsLoading] = useState(false);
   const [defaultValues, setDefaultValues] = useState({ files: [] });
 
@@ -95,7 +95,7 @@ export function FileUploadExample() {
             name="files"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Upload Expenses Sheet</FormLabel>
+                <FormLabel>Expense Sheet File</FormLabel>
                 <FormControl>
                   <Input
                     id="excel-file"
