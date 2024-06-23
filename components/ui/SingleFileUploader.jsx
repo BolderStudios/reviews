@@ -95,7 +95,7 @@ export function SingleFileUploader() {
             name="files"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Expense Sheet File</FormLabel>
+                <FormLabel>Single File Uploader</FormLabel>
                 <FormControl>
                   <Input
                     id="excel-file"
