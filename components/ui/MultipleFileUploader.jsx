@@ -66,8 +66,6 @@ export function MultipleFileUploader() {
   });
 
   async function onSubmit() {
-    console.log("Submitting form");
-    console.log(files);
     setIsLoading(true);
 
     const uploadPromises = files.map((file, index) => {
@@ -103,7 +101,7 @@ export function MultipleFileUploader() {
   const filesMapped = files.map((file, index) => (
     <div
       key={index}
-      className="border border-stone-200 flex justify-between gap-2 px-3 py-3 rounded-lg w-[400px]"
+      className="border border-stone-200 flex justify-between px-3 py-3 rounded-lg w-[400px]"
     >
       <div className="flex gap-2">
         {/* File icon */}
@@ -136,8 +134,6 @@ export function MultipleFileUploader() {
       </Button>
     </div>
   ));
-
-  console.log("files", files);
 
   return (
     <Form {...form}>

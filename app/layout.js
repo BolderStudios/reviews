@@ -5,7 +5,7 @@ import utilStyles from "./styles/utils.module.css";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
-import Sidebar from "@/components/ui/Sidebar";
+import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
 
 const fontSans = FontSans({
@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
           <main className="h-screen flex flex-col relative">
             <SignedIn>
               <div className="flex flex-1">
-                <Sidebar />
+                <SidebarNavigation />
 
                 <div className="flex flex-col w-full overflow-y-auto h-screen">
                   <Navbar />
