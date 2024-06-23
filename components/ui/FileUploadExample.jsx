@@ -60,7 +60,13 @@ export function FileUploadExample() {
       const formData = new FormData();
       formData.append("file", file);
 
-      return uploadFile(formData, "expensesSheets", index);
+      return uploadFile(
+        formData,
+        "expense_sheets",
+        index,
+        "single",
+        "expense_sheets"
+      );
     });
 
     try {
@@ -95,7 +101,7 @@ export function FileUploadExample() {
                     id="excel-file"
                     type="file"
                     accept=".xls, .xlsx"
-                    multiple
+                    // multiple
                     className="cursor-pointer"
                     onChange={(e) => {
                       const files = Array.from(e.target.files);
