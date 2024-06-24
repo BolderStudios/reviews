@@ -178,48 +178,46 @@ export function MultipleFileUploader() {
                   } flex items-center justify-center cursor-pointer h-56 w-full`}
                 >
                   <input
-                    {...getInputProps()}
+                    {...getInputProps()} // Ensure this spread includes other necessary props
                     id="excel-file"
                     type="file"
-                    // accept=".xls, .xlsx"
                     multiple
                     onChange={(e) => {
                       const inputFiles = Array.from(e.target.files);
 
-                      if (inputFiles.length > 3 || files.length >= 3) {
+                      // Check total files already added and new files selected
+                      if (inputFiles.length + files.length > 3) {
                         toast.error(
                           "You can only upload up to 3 files at a time"
                         );
                         return;
                       }
 
+                      const newFiles = [];
+
                       inputFiles.forEach((file) => {
                         if (file.size > 5242880) {
                           toast.error(`${file.name} exceeds the 5MB limit`);
                         } else {
-                          let doesExist = false;
-
-                          files.forEach((existingFile) => {
-                            if (
+                          const doesExist = files.some(
+                            (existingFile) =>
+                              existingFile.name === file.name &&
                               existingFile.lastModified === file.lastModified
-                            ) {
-                              toast.error(
-                                `${file.name} is already in the list`
-                              );
-
-                              doesExist = true;
-                              return;
-                            }
-                          });
+                          );
 
                           if (doesExist) {
-                            return;
+                            toast.error(`${file.name} is already in the list`);
+                          } else {
+                            newFiles.push(file);
+                            toast.message(`${file.name} is added to the list`);
                           }
-
-                          toast.message(`${file.name} is added to the list`);
-                          setFiles((prevFiles) => [...prevFiles, file]);
                         }
                       });
+
+                      // Set the files if new valid files were added
+                      if (newFiles.length > 0) {
+                        setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+                      }
                     }}
                   />
 
