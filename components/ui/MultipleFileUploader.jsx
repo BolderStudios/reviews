@@ -118,20 +118,32 @@ export function MultipleFileUploader() {
 
     try {
       const results = await Promise.all(uploadPromises);
-      results.forEach((result) => {
-        if (result.success) {
-          toast.success(`${result.file_name} uploaded successfully`);
-          console.log("File uploaded successfully");
-        } else {
-          toast.error(result.message);
-          console.error(result.message);
-        }
+
+      // Create a promise for each toast to resolve after the timeout
+      const toastPromises = results.map((result, index) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            if (result.success) {
+              toast.success(`${result.file_name} uploaded successfully`);
+              console.log("File uploaded successfully");
+            } else {
+              toast.error(result.message);
+              console.error(result.message);
+            }
+            resolve();
+          }, 1000 * (index + 1));
+        });
       });
+
+      await Promise.all(toastPromises);
     } catch (error) {
       console.error("Error uploading files: ", error);
     } finally {
       form.reset(defaultValues);
-      setIsLoading(false);
+      setFiles([]);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     }
   }
 
