@@ -1,3 +1,5 @@
+// components/ui/MultipleFileUploader.jsx
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -130,6 +132,7 @@ export function MultipleFileUploader() {
               toast.error(result.message);
               console.error(result.message);
             }
+            
             resolve();
           }, 1000 * (index + 1));
         });

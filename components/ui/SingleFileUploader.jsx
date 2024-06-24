@@ -1,12 +1,12 @@
 // components/ui/FileUploadExample.jsx
-// This file-uploader has a UI only for a single file uploads, so keep it that way.
 
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "./ButtonLoading";
 import {
@@ -43,18 +43,23 @@ const formSchema = z.object({
 
 export function SingleFileUploader() {
   const [isLoading, setIsLoading] = useState(false);
-  const [defaultValues, setDefaultValues] = useState({ files: [] });
+  const [files, setFiles] = useState([]);
+  const fileInputRef = useRef();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      files: defaultValues.files,
+      files: files,
     },
   });
 
   async function onSubmit(values) {
+    if (files.length === 0) {
+      toast.error("Please upload at least one file");
+      return;
+    }
+
     setIsLoading(true);
-    const { files } = values;
 
     const uploadPromises = files.map((file, index) => {
       const formData = new FormData();
@@ -71,18 +76,35 @@ export function SingleFileUploader() {
 
     try {
       const results = await Promise.all(uploadPromises);
-      results.forEach((result) => {
-        if (result.success) {
-          console.log("File uploaded successfully");
-        } else {
-          console.error(result.message);
-        }
+
+      const toastPromises = results.map((result, index) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            if (result.success) {
+              toast.success(`${result.file_name} uploaded successfully`);
+              console.log("File uploaded successfully");
+            } else {
+              toast.error(result.message);
+              console.error(result.message);
+            }
+
+            resolve();
+          });
+        }, 1000 * (index + 1));
       });
+
+      await Promise.all(toastPromises);
     } catch (error) {
       console.error("Error uploading files: ", error);
     } finally {
-      form.reset(defaultValues);
-      setIsLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
+
+      setFiles([]);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     }
   }
 
@@ -98,14 +120,33 @@ export function SingleFileUploader() {
                 <FormLabel>Single File Uploader</FormLabel>
                 <FormControl>
                   <Input
+                    ref={fileInputRef}
                     id="excel-file"
                     type="file"
-                    accept=".xls, .xlsx"
-                    // multiple
+                    accept=".xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    multiple={false}
                     className="cursor-pointer"
                     onChange={(e) => {
                       const files = Array.from(e.target.files);
-                      field.onChange(files);
+
+                      files.forEach((file) => {
+                        if (
+                          file.type !== "application/vnd.ms-excel" &&
+                          file.type !==
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        ) {
+                          e.target.value = null;
+                          setFiles([]);
+                          toast.error(`Only .XLS and .XLSX files are allowed`);
+                        } else if (file.size > 5242880) {
+                          e.target.value = null;
+                          setFiles([]);
+                          toast.error(`${file.name} exceeds the 5MB limit`);
+                        } else {
+                          toast.message(`${file.name} is added to the list`);
+                          setFiles((prevFiles) => [...prevFiles, file]);
+                        }
+                      });
                     }}
                   />
                 </FormControl>
@@ -120,7 +161,9 @@ export function SingleFileUploader() {
           {isLoading ? (
             <ButtonLoading />
           ) : (
-            <Button type="submit">Upload</Button>
+            <Button className="w-full" type="submit">
+              Upload
+            </Button>
           )}
         </form>
       </Form>

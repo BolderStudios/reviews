@@ -8,13 +8,13 @@ import { DialogUploader } from "@/components/ui/DialogUploader";
 export default function Page() {
   return (
     <div className="px-8 py-4">
-      {/* <SingleFileUploader /> */}
+      <SingleFileUploader />
 
-      {/* <div className="w-[400px]">
+      {/* <div className="max-w-[400px]">
         <MultipleFileUploader />
-      </div> */}
+      </div>
 
-      <DialogUploader />
+      <DialogUploader /> */}
     </div>
   );
 }

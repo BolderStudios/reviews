@@ -97,7 +97,11 @@ export async function uploadFile(
       }
 
       console.log("File uploaded successfully");
-      return { message: "Uploaded file successfully", success: true, file_name: file.name };
+      return {
+        message: "Uploaded file successfully",
+        success: true,
+        file_name: file.name,
+      };
     } else {
       // For single file uploads
       const { data: existingFiles, error: listError } = await supabase.storage
@@ -130,7 +134,11 @@ export async function uploadFile(
         }
 
         console.log("File updated successfully");
-        return { message: "File updated successfully", success: true };
+        return {
+          message: "File updated successfully",
+          success: true,
+          file_name: file.name,
+        };
       } else {
         // Upload the new file
         const { data, error } = await supabase.storage
@@ -143,7 +151,11 @@ export async function uploadFile(
         }
 
         console.log("File uploaded successfully");
-        return { message: "Uploaded file successfully", success: true };
+        return {
+          message: "Uploaded file successfully",
+          success: true,
+          file_name: file.name,
+        };
       }
     }
   } catch (e) {
