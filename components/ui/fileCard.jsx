@@ -8,7 +8,7 @@ export function FileCard({ file, setFiles, isLoading }) {
   return (
     <div
       ref={ref}
-      className="border border-stone-200 flex justify-between px-3 py-3 rounded-lg w-[400px] animate-file-add-up"
+      className="border border-stone-200 flex justify-between px-3 py-3 rounded-lg w-full animate-file-add-up"
     >
       <div className="flex gap-2">
         <div className="flex items-center justify-center">
@@ -25,6 +25,7 @@ export function FileCard({ file, setFiles, isLoading }) {
           </p>
         </div>
       </div>
+
       <div
         onClick={() => {
           toast.message("File is removed from the list");
@@ -38,11 +39,11 @@ export function FileCard({ file, setFiles, isLoading }) {
             setFiles((prevFiles) => prevFiles.filter((f) => f !== file)); // Change here to compare objects or IDs
           }, 300);
         }}
-        className={`h-fit rounded-md p-[1px] hover:bg-stone-100 transition-all ${
+        className={`h-fit rounded-md p-[1px] hover:bg-stone-50 transition-all border-2 border-transparent active:border-stone-900  ${
           isLoading ? "cursor-not-allowed" : "cursor-pointer"
         }`}
       >
-        <X className="w-4 h-4 text-stone-500" />
+        <X className="w-4 h-4 text-stone-900" />
       </div>
     </div>
   );

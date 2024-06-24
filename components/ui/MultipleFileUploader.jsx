@@ -169,8 +169,8 @@ export function MultipleFileUploader() {
                 <div
                   {...getRootProps()}
                   className={`${styles.borderSVG} ${
-                    isDragActive ? "bg-stone-50" : ""
-                  } flex items-center justify-center cursor-pointer h-56 w-[400px]`}
+                    isDragActive ? "bg-stone-100" : ""
+                  } flex items-center justify-center cursor-pointer h-56 w-full`}
                 >
                   <input
                     {...getInputProps()}
@@ -230,9 +230,9 @@ export function MultipleFileUploader() {
                   )}
                 </div>
               </FormControl>
-              <FormDescription className="w-[400px]">
-                This field will be validated and the files will be uploaded to
-                Supabase Storage bucket.
+              <FormDescription className="w-full">
+                This field will be validated and uploaded to Supabase Storage
+                bucket.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -246,7 +246,7 @@ export function MultipleFileUploader() {
         {isLoading ? (
           <ButtonLoading />
         ) : (
-          <Button className="w-[400px]" type="submit">
+          <Button className="w-full" type="submit">
             Upload Files
           </Button>
         )}
