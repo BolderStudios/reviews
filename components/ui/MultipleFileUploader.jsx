@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { uploadFile } from "@/app/actions";
+import { v4 as uuidv4 } from "uuid";
 
 import styles from "./border.module.css";
 import { CloudArrowUp, HandGrabbing } from "@phosphor-icons/react";
@@ -98,8 +99,8 @@ export function MultipleFileUploader() {
       return;
     }
 
-    if (files.length > 5) {
-      toast.error("You can only upload up to 5 files at a time");
+    if (files.length > 3) {
+      toast.error("You can only upload up to 3 files at a time");
       return;
     }
 
@@ -132,7 +133,7 @@ export function MultipleFileUploader() {
               toast.error(result.message);
               console.error(result.message);
             }
-            
+
             resolve();
           }, 1000 * (index + 1));
         });
@@ -152,6 +153,7 @@ export function MultipleFileUploader() {
 
   const filesMapped = files.map((file, index) => (
     <FileCard
+      // Important to keep unique key for each file
       key={file.lastModified}
       file={file}
       index={index}
@@ -182,12 +184,38 @@ export function MultipleFileUploader() {
                     // accept=".xls, .xlsx"
                     multiple
                     onChange={(e) => {
-                      const files = Array.from(e.target.files);
+                      const inputFiles = Array.from(e.target.files);
 
-                      files.forEach((file) => {
+                      if (inputFiles.length > 3 || files.length >= 3) {
+                        toast.error(
+                          "You can only upload up to 3 files at a time"
+                        );
+                        return;
+                      }
+
+                      inputFiles.forEach((file) => {
                         if (file.size > 5242880) {
                           toast.error(`${file.name} exceeds the 5MB limit`);
                         } else {
+                          let doesExist = false;
+
+                          files.forEach((existingFile) => {
+                            if (
+                              existingFile.lastModified === file.lastModified
+                            ) {
+                              toast.error(
+                                `${file.name} is already in the list`
+                              );
+
+                              doesExist = true;
+                              return;
+                            }
+                          });
+
+                          if (doesExist) {
+                            return;
+                          }
+
                           toast.message(`${file.name} is added to the list`);
                           setFiles((prevFiles) => [...prevFiles, file]);
                         }

@@ -7,14 +7,18 @@ import { DialogUploader } from "@/components/ui/DialogUploader";
 
 export default function Page() {
   return (
-    <div className="px-8 py-4">
+    <div className="px-8 py-4 flex flex-col ">
       <SingleFileUploader />
 
-      {/* <div className="max-w-[400px]">
-        <MultipleFileUploader />
-      </div>
+      <div className="grid grid-cols-2 mt-12">
+        <div className="">
+          <MultipleFileUploader />
+        </div>
 
-      <DialogUploader /> */}
+        <div className="flex items-center justify-center">
+          <DialogUploader />
+        </div>
+      </div>
     </div>
   );
 }

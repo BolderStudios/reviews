@@ -109,64 +109,62 @@ export function SingleFileUploader() {
   }
 
   return (
-    <div className="px-8 py-4">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="files"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Single File Uploader</FormLabel>
-                <FormControl>
-                  <Input
-                    ref={fileInputRef}
-                    id="excel-file"
-                    type="file"
-                    accept=".xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    multiple={false}
-                    className="cursor-pointer"
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files);
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="files"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Single File Uploader</FormLabel>
+              <FormControl>
+                <Input
+                  ref={fileInputRef}
+                  id="excel-file"
+                  type="file"
+                  accept=".xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  multiple={false}
+                  className="cursor-pointer"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files);
 
-                      files.forEach((file) => {
-                        if (
-                          file.type !== "application/vnd.ms-excel" &&
-                          file.type !==
-                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        ) {
-                          e.target.value = null;
-                          setFiles([]);
-                          toast.error(`Only .XLS and .XLSX files are allowed`);
-                        } else if (file.size > 5242880) {
-                          e.target.value = null;
-                          setFiles([]);
-                          toast.error(`${file.name} exceeds the 5MB limit`);
-                        } else {
-                          toast.message(`${file.name} is added to the list`);
-                          setFiles((prevFiles) => [...prevFiles, file]);
-                        }
-                      });
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>
-                  This field will be validated and the files will be uploaded to
-                  Supabase Storage bucket.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {isLoading ? (
-            <ButtonLoading />
-          ) : (
-            <Button className="w-full" type="submit">
-              Upload
-            </Button>
+                    files.forEach((file) => {
+                      if (
+                        file.type !== "application/vnd.ms-excel" &&
+                        file.type !==
+                          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      ) {
+                        e.target.value = null;
+                        setFiles([]);
+                        toast.error(`Only .XLS and .XLSX files are allowed`);
+                      } else if (file.size > 5242880) {
+                        e.target.value = null;
+                        setFiles([]);
+                        toast.error(`${file.name} exceeds the 5MB limit`);
+                      } else {
+                        toast.message(`${file.name} is added to the list`);
+                        setFiles((prevFiles) => [...prevFiles, file]);
+                      }
+                    });
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                This field will be validated and the files will be uploaded to
+                Supabase Storage bucket.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
           )}
-        </form>
-      </Form>
-    </div>
+        />
+        {isLoading ? (
+          <ButtonLoading />
+        ) : (
+          <Button className="w-full" type="submit">
+            Upload
+          </Button>
+        )}
+      </form>
+    </Form>
   );
 }
