@@ -72,7 +72,7 @@ export function MultipleFileUploader() {
       console.log("Each accepted file:");
       acceptedFiles.forEach((file) => {
         if (file.size > 5242880) {
-          toast.error("File size should not exceed 5MB");
+          toast.error(`${file.name} exceeds the 5MB limit`);
         } else {
           setFiles((prevFiles) => [...prevFiles, file]);
         }
@@ -183,7 +183,7 @@ export function MultipleFileUploader() {
 
                       files.forEach((file) => {
                         if (file.size > 5242880) {
-                          toast.error("File size should not exceed 5MB");
+                          toast.error(`${file.name} exceeds the 5MB limit`);
                         } else {
                           toast.message(`${file.name} is added to the list`);
                           setFiles((prevFiles) => [...prevFiles, file]);
