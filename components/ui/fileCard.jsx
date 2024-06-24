@@ -27,7 +27,7 @@ export function FileCard({ file, setFiles, isLoading }) {
       </div>
       <div
         onClick={() => {
-          toast.message("File removed from the list");
+          toast.message("File is removed from the list");
           ref.current.classList.add(
             "-translate-y-1",
             "opacity-0",

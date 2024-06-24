@@ -173,7 +173,7 @@ export function MultipleFileUploader() {
                         if (file.size > 5242880) {
                           toast.error("File size should not exceed 5MB");
                         } else {
-                          toast.message(`${file.name} added to the list`);
+                          toast.message(`${file.name} is added to the list`);
                           setFiles((prevFiles) => [...prevFiles, file]);
                         }
                       });
