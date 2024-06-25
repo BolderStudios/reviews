@@ -26,14 +26,19 @@ export default clerkMiddleware((auth, req) => {
   }
 
   const url = req.nextUrl;
-  const hostname = req.headers.get("host");
+  console.log("req.nextUrl: ", req.nextUrl);
+  console.log("req.headers.get('host'): ", req.headers.get("host"));
 
-  console.log("Hostname:", hostname);
+  const hostname = req.headers.get("host");
+  console.log("hostname:", hostname);
 
   const subdomains = ["admin"];
   const subdomain = hostname.split(".")[0];
+  console.log("subdomain:", subdomain);
 
   if (subdomains.includes(subdomain)) {
+    console.log("Rewriting URL");
+    
     return NextResponse.rewrite(
       new URL(`/${subdomain}${url.pathname}`, req.url)
     );
