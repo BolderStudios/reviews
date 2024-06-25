@@ -8,17 +8,16 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'admin.yourdomain.com' }],
-        destination: '/admin/:path*',
+        source: "/:path*",
+        has: [{ type: "host", value: "admin.stashideas.com" }],
+        destination: "/admin/:path*",
       },
-      
+      // Add localhost entry for development
       {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'admin.localhost' }],
-        destination: '/admin/:path*',
+        source: "/:path*",
+        has: [{ type: "host", value: "admin.localhost" }],
+        destination: "/admin/:path*",
       },
-      
     ];
   },
 };

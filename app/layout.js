@@ -20,6 +20,8 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+  const isAdminSubdomain = typeof window !== 'undefined' && window.location.hostname.startsWith('admin.');
+
   return (
     <ClerkProvider>
       <html lang="en">
@@ -29,7 +31,10 @@ export default async function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <main className="h-screen flex flex-col relative">
+          {isAdminSubdomain ? (
+            children
+          ) : (
+            <main className="h-screen flex flex-col relative">
             <SignedIn>
               <div className="flex flex-1">
                 <SidebarNavigation />
@@ -49,6 +54,7 @@ export default async function RootLayout({ children }) {
               <div className="flex-grow p-4">{children}</div>
             </SignedOut>
           </main>
+          )}
         </body>
       </html>
     </ClerkProvider>

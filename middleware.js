@@ -14,15 +14,9 @@ export default clerkMiddleware((auth, req) => {
   console.log("hostname:", hostname);
 
   // Check for subdomains
-  const subdomains = ["admin", "student", "teacher"]; // Add all your subdomains here
-  const subdomain = hostname.split(".")[0];
-  console.log("subdomain:", subdomain);
-
-  if (subdomains.includes(subdomain)) {
-    // Rewrite for subdomain routes
-    console.log("Rewriting URL for subdomain");
-    const newUrl = new URL(`/${subdomain}${url.pathname}`, req.url);
-    return NextResponse.rewrite(newUrl);
+  if (hostname.startsWith('admin.')) {
+    // Rewrite for admin subdomain
+    return NextResponse.rewrite(new URL(`/admin${url.pathname}`, req.url));
   }
 
   // Handle protected routes
