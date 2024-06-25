@@ -9,6 +9,7 @@ const isProtectedRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware((auth, req) => {
+  const { userId, sessionClaims } = auth;
   const url = req.nextUrl;
   const hostname = req.headers.get("host");
 
