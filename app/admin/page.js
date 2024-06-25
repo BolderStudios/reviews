@@ -1,7 +1,3 @@
-function Page() {
-  return (
-    <div>Admin Page</div>
-  )
+export default function Home() {
+  return <div>Admin Home Page</div>;
 }
-
-export default Page
