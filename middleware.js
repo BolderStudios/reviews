@@ -13,8 +13,6 @@ export default clerkMiddleware((auth, req) => {
   const hostname = req.headers.get("host") || `${process.env.HOST_NAME}`;
   const { userId, sessionClaims } = auth();
 
-  console.log("FROM MIDDLEWARE USER ID: ", userId);
-
   if (userId) {
     // Set a cookie with user-relevant data
     const res = NextResponse.next();
@@ -26,6 +24,8 @@ export default clerkMiddleware((auth, req) => {
   const isAdminSubdomain =
     hostname.startsWith("admin.") ||
     hostname === `admin.${process.env.HOST_NAME}`;
+
+  console.log("isAdminSubdomain: ", isAdminSubdomain);
 
   if (isAdminSubdomain) {
     // Construct the new URL for the admin section
