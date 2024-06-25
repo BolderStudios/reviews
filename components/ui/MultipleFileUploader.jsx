@@ -178,7 +178,7 @@ export function MultipleFileUploader() {
                   } flex items-center justify-center cursor-pointer h-56 w-full`}
                 >
                   <input
-                    {...getInputProps()} // Ensure this spread includes other necessary props
+                    {...getInputProps()}
                     id="excel-file"
                     type="file"
                     multiple

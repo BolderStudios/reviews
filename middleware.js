@@ -1,5 +1,9 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
+import supabase from "@/utils/supabaseClient";
+import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard",
@@ -9,9 +13,35 @@ const isProtectedRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware((auth, req) => {
-  if (isProtectedRoute(req)) {
-    const { userId, sessionClaims } = auth();
+  const url = req.nextUrl;
+  const hostname = req.headers.get("host") || `${process.env.HOST_NAME}`;
+  const { userId, sessionClaims } = auth();
 
+  console.log("FROM MIDDLEWARE USER ID: ", userId);
+  
+  if (userId) {
+    // Set a cookie with user-relevant data
+    const res = NextResponse.next();
+    res.cookies.set("user-id", userId, { httpOnly: true, sameSite: "lax" });
+    return res;
+  }
+
+  // Check if it's an admin subdomain
+  const isAdminSubdomain =
+    hostname.startsWith("admin.") ||
+    hostname === `admin.${process.env.HOST_NAME}`;
+
+    console.log("Hostname:", hostname);
+console.log("Is Admin Subdomain:", isAdminSubdomain);
+
+
+  if (isAdminSubdomain) {
+    // Construct the new URL for the admin section
+    const newUrl = new URL(`/admin${url.pathname}`, url);
+    return NextResponse.rewrite(newUrl);
+  }
+
+  if (isProtectedRoute(req)) {
     if (!userId) {
       const signInUrl = new URL("/sign-in", req.url);
       return NextResponse.redirect(signInUrl);
@@ -19,16 +49,23 @@ export default clerkMiddleware((auth, req) => {
 
     // Check if onboarding is complete
     const onboardingComplete = sessionClaims?.metadata?.onboardingComplete;
-
     if (!onboardingComplete && req.nextUrl.pathname !== "/onboarding") {
       const onboardingUrl = new URL("/onboarding", req.url);
       return NextResponse.redirect(onboardingUrl);
     }
   }
-
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
 };
