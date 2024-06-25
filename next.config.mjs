@@ -5,6 +5,20 @@ const nextConfig = {
       bodySizeLimit: "5mb",
     },
   },
+  async rewrites() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "admin.localhost",
+          },
+        ],
+        destination: "/admin/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

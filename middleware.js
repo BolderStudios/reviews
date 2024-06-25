@@ -24,6 +24,21 @@ export default clerkMiddleware((auth, req) => {
       return NextResponse.redirect(onboardingUrl);
     }
   }
+
+  const url = req.nextUrl;
+  const hostname = req.headers.get("host");
+
+  console.log("Hostname:", hostname);
+
+  const subdomains = ["admin"];
+  const subdomain = hostname.split(".")[0];
+
+  if (subdomains.includes(subdomain)) {
+    return NextResponse.rewrite(
+      new URL(`/${subdomain}${url.pathname}`, req.url)
+    );
+  }
+
   return NextResponse.next();
 });
 
