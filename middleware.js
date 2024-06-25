@@ -25,6 +25,11 @@ export default clerkMiddleware((auth, req) => {
     hostname.startsWith("admin.") ||
     hostname === `admin.${process.env.HOST_NAME}`;
 
+  console.log(
+    "Does host name start with admin: ",
+    hostname.startsWith("admin.")
+  );
+  console.log("Host name: ", hostname);
   console.log("isAdminSubdomain: ", isAdminSubdomain);
 
   if (isAdminSubdomain) {
