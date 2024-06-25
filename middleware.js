@@ -11,16 +11,16 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware((auth, req) => {
   const { userId, sessionClaims } = auth;
   const url = req.nextUrl;
-  const hostname = req.headers.get("host");
+  const hostname = req.headers.get("host") || `${process.env.HOST_NAME}`;
 
-  console.log("Requested host name: ", req.headers.get("host"));
+  console.log("REQ: ", req.headers.get("host"));
 
   // Check if it's an admin subdomain
-  // const isAdminSubdomain =
-  //   hostname.startsWith("admin.") ||
-  //   hostname === `admin.${process.env.HOST_NAME}`;
+  const isAdminSubdomain =
+    hostname.startsWith("admin.") ||
+    hostname === `admin.${process.env.HOST_NAME}`;
 
-  if (hostname.includes("admin")) {
+  if (isAdminSubdomain) {
     // Construct the new URL for the admin section
     const newUrl = new URL(`/admin${url.pathname}`, url);
     return NextResponse.rewrite(newUrl);
