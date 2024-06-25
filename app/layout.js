@@ -8,8 +8,6 @@ import { cn } from "../lib/utils";
 import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
 import { Toaster } from "sonner";
-import supabase from "@/utils/supabaseClient";
-import { currentUser } from "@clerk/nextjs/server";
 
 const fontSans = FontSans({
   subsets: ["latin"],
