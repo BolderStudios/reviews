@@ -14,13 +14,14 @@ export default clerkMiddleware((auth, req) => {
   console.log("hostname:", hostname);
 
   // Check for subdomains
-  if (hostname.startsWith('admin.')) {
+  if (hostname.startsWith("admin.")) {
     // Rewrite for admin subdomain
     return NextResponse.rewrite(new URL(`/admin${url.pathname}`, req.url));
   }
 
   // Handle protected routes
   const { userId, sessionClaims } = auth();
+  console.log("userId:", userId);
   if (isProtectedRoute(req)) {
     if (!userId) {
       const signInUrl = new URL("/sign-in", req.url);
@@ -38,7 +39,5 @@ export default clerkMiddleware((auth, req) => {
 });
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

@@ -8,6 +8,7 @@ import { cn } from "../lib/utils";
 import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
 import { Toaster } from "sonner";
+import { headers } from "next/headers";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -20,8 +21,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const isAdminSubdomain = typeof window !== 'undefined' && window.location.hostname.startsWith('admin.');
-
   return (
     <ClerkProvider>
       <html lang="en">
@@ -31,10 +30,7 @@ export default async function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          {isAdminSubdomain ? (
-            children
-          ) : (
-            <main className="h-screen flex flex-col relative">
+          <main className="h-screen flex flex-col relative">
             <SignedIn>
               <div className="flex flex-1">
                 <SidebarNavigation />
@@ -54,7 +50,6 @@ export default async function RootLayout({ children }) {
               <div className="flex-grow p-4">{children}</div>
             </SignedOut>
           </main>
-          )}
         </body>
       </html>
     </ClerkProvider>
