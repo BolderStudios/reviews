@@ -3,7 +3,6 @@
 import Billing from "@/components/Billing";
 import { currentUser } from "@clerk/nextjs/server";
 import supabase from "@/utils/supabaseClient";
-import { currentUser } from "@clerk/nextjs/server";
 
 export default async function Page() {
   const user = await currentUser();

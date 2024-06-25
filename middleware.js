@@ -1,9 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { redirect } from "next/navigation";
-import supabase from "@/utils/supabaseClient";
-import { auth } from "@clerk/nextjs/server";
-import { currentUser } from "@clerk/nextjs/server";
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard",
@@ -18,7 +14,7 @@ export default clerkMiddleware((auth, req) => {
   const { userId, sessionClaims } = auth();
 
   console.log("FROM MIDDLEWARE USER ID: ", userId);
-  
+
   if (userId) {
     // Set a cookie with user-relevant data
     const res = NextResponse.next();
@@ -30,10 +26,6 @@ export default clerkMiddleware((auth, req) => {
   const isAdminSubdomain =
     hostname.startsWith("admin.") ||
     hostname === `admin.${process.env.HOST_NAME}`;
-
-    console.log("Hostname:", hostname);
-console.log("Is Admin Subdomain:", isAdminSubdomain);
-
 
   if (isAdminSubdomain) {
     // Construct the new URL for the admin section
