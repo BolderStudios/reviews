@@ -6,6 +6,7 @@ const isProtectedRoute = createRouteMatcher([
   "/billing",
   "/onboarding",
   "/file-uploader",
+  "/api/create-checkout-session",
 ]);
 
 export default clerkMiddleware((auth, req) => {
@@ -39,5 +40,5 @@ export default clerkMiddleware((auth, req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)", "/api/(.*)"],
 };
