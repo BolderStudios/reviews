@@ -11,14 +11,6 @@ const isProtectedRoute = createRouteMatcher([
 
 export default clerkMiddleware((auth, req) => {
   const url = req.nextUrl;
-  const hostname = req.headers.get("host") || "";
-  console.log("hostname:", hostname);
-
-  // Check for subdomains
-  if (hostname.startsWith("admin.")) {
-    // Rewrite for admin subdomain
-    return NextResponse.rewrite(new URL(`/admin${url.pathname}`, req.url));
-  }
 
   // Handle protected routes
   const { userId, sessionClaims } = auth();
