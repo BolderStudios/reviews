@@ -5,6 +5,8 @@
 import * as Clerk from "@clerk/elements/common";
 import * as SignIn from "@clerk/elements/sign-in";
 import Link from "next/link";
+import { NavigationButton } from "@/components/ui/NavigationButton";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icons } from "@/components/ui/icons";
+
 import { cn } from "@/lib/utils";
 
 export default function SignInPage() {
@@ -28,8 +31,8 @@ export default function SignInPage() {
             <>
               <SignIn.Step name="start">
                 <Card className="w-full sm:w-96">
-                  <CardHeader>
-                    <CardTitle>Sign in to Acme Co</CardTitle>
+                  <CardHeader className="text-center flex flex-col gap-1">
+                    <CardTitle>Sign in to Brand Armor</CardTitle>
                     <CardDescription>
                       Welcome back! Please sign in to continue
                     </CardDescription>
@@ -52,13 +55,13 @@ export default function SignInPage() {
                       <SignIn.Action submit asChild>
                         <Button disabled={isGlobalLoading}>
                           <Clerk.Loading>
-                            {(isLoading) => {
-                              return isLoading ? (
+                            {(isLoading) =>
+                              isLoading ? (
                                 <Icons.spinner className="size-4 animate-spin" />
                               ) : (
                                 "Continue"
-                              );
-                            }}
+                              )
+                            }
                           </Clerk.Loading>
                         </Button>
                       </SignIn.Action>
@@ -76,96 +79,96 @@ export default function SignInPage() {
               <SignIn.Step name="verifications">
                 <SignIn.Strategy name="email_code">
                   <Card className="w-full sm:w-96">
-                    <CardHeader>
+                    <CardHeader className="text-center flex flex-col gap-1">
                       <CardTitle>Check your email</CardTitle>
                       <CardDescription>
-                        Enter the verification code sent to your email
+                        Before continuing, could you verify your email address
+                        by clicking on the link we just emailed to you? If you
+                        didn't receive the email, we will gladly send you
+                        another.
                       </CardDescription>
-                      <p className="text-sm text-muted-foreground">
-                        Welcome back <SignIn.SafeIdentifier />
-                      </p>
                     </CardHeader>
 
-                    <Clerk.Field name="code">
-                      <Clerk.Label className="sr-only">
-                        Email verification code
-                      </Clerk.Label>
-                      <div className="grid gap-y-2 items-center justify-center">
+                    <CardContent className="grid gap-y-4 mt-2">
+                      <Clerk.Field name="code">
+                        <Clerk.Label className="sr-only">
+                          Email verification code
+                        </Clerk.Label>
                         <Clerk.Input
                           type="otp"
                           className="flex justify-center has-[:disabled]:opacity-50"
                           autoSubmit
-                          render={({ value, status }) => {
-                            return (
-                              <div
-                                data-status={status}
-                                className={cn(
-                                  "relative flex size-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
-                                  {
-                                    "z-10 ring-2 ring-ring ring-offset-background":
-                                      status === "cursor" ||
-                                      status === "selected",
-                                  }
-                                )}
-                              >
-                                {value}
-                                {status === "cursor" && (
-                                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                                    <div className="animate-caret-blink h-4 w-px bg-foreground duration-1000" />
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          }}
-                        />
-
-                        <Clerk.FieldError className="block text-sm text-destructive text-center" />
-
-                        <SignIn.Action
-                          asChild
-                          resend
-                          className="text-muted-foreground"
-                          fallback={({ resendableAfter }) => (
-                            <Button variant="link" size="sm" disabled>
-                              Didn&apos;t recieve a code? Resend (
-                              <span className="tabular-nums">
-                                {resendableAfter}
-                              </span>
-                              )
-                            </Button>
+                          render={({ value, status }) => (
+                            <div
+                              data-status={status}
+                              className={cn(
+                                "relative flex size-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
+                                {
+                                  "z-10 ring-2 ring-ring ring-offset-background":
+                                    status === "cursor" ||
+                                    status === "selected",
+                                }
+                              )}
+                            >
+                              {value}
+                              {status === "cursor" && (
+                                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                  <div className="animate-caret-blink h-4 w-px bg-foreground duration-1000" />
+                                </div>
+                              )}
+                            </div>
                           )}
-                        >
-                          <Button variant="link" size="sm">
-                            Didn&apos;t recieve a code? Resend
+                        />
+                        <Clerk.FieldError className="block text-sm text-destructive text-center" />
+                      </Clerk.Field>
+
+                      <SignIn.Action
+                        asChild
+                        resend
+                        fallback={({ resendableAfter }) => (
+                          <Button
+                            variant="link"
+                            size="sm"
+                            disabled={resendableAfter !== 0}
+                            className={cn("cursor-pointer text-stone-900", {
+                              "cursor-not-allowed text-muted-foreground":
+                                resendableAfter !== 0,
+                            })}
+                          >
+                            Didn&apos;t receive a code? Resend (
+                            <span className="tabular-nums">
+                              {resendableAfter}
+                            </span>
+                            )
                           </Button>
-                        </SignIn.Action>
-                      </div>
-                    </Clerk.Field>
+                        )}
+                      >
+                        <Button variant="link" size="sm">
+                          Didn&apos;t receive a code? Resend
+                        </Button>
+                      </SignIn.Action>
+                    </CardContent>
 
                     <CardFooter>
                       <div className="grid w-full gap-y-4">
                         <SignIn.Action submit asChild>
-                          <Button
-                            disabled={isGlobalLoading}
-                            className="mt-6"
-                            onClick={() =>
-                              console.log("OTP Continue Button clicked")
-                            }
-                          >
+                          <Button disabled={isGlobalLoading}>
                             <Clerk.Loading>
-                              {(isLoading) => {
-                                return isLoading ? (
+                              {(isLoading) =>
+                                isLoading ? (
                                   <Icons.spinner className="size-4 animate-spin" />
                                 ) : (
                                   "Continue"
-                                );
-                              }}
+                                )
+                              }
                             </Clerk.Loading>
                           </Button>
                         </SignIn.Action>
 
-                        <Button variant="link" size="sm">
-                          <a href="/sign-up">Don't have an account? Sign up</a>
+                        <Button variant="link" size="sm" asChild>
+                          <Link href="/sign-up">
+                            Don't have an account? Sign up
+                          </Link>
                         </Button>
                       </div>
                     </CardFooter>
