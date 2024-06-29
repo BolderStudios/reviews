@@ -18,6 +18,11 @@ export default function OnboardingComponent() {
 
     if (res?.message) {
       await user?.reload();
+
+      // This is a workaround to reload the page
+      window.location.reload();
+
+      // This push is not working for some reason
       router.push("/");
     }
 
