@@ -1,14 +1,12 @@
 // app/layout.js
 
 import "./styles/globals.css";
-import utilStyles from "./styles/utils.module.css";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
 import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
 import { Toaster } from "sonner";
-import { headers } from "next/headers";
 
 const fontSans = FontSans({
   subsets: ["latin"],

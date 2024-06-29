@@ -1,199 +1,123 @@
-// components/CustomSignUp.jsx
-
 "use client";
 
-import * as Clerk from "@clerk/elements/common";
-import * as SignUp from "@clerk/elements/sign-up";
-import Link from "next/link";
+import { useState } from "react";
+import { useSignUp } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Icons } from "@/components/ui/icons";
+export default function Page() {
+  const { isLoaded, signUp, setActive } = useSignUp();
+  const [verifying, setVerifying] = useState(false);
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [code, setCode] = useState("");
+  const router = useRouter();
 
-import { cn } from "@/lib/utils";
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-export default function SignUpPage() {
+    if (!isLoaded && !signUp) return null;
+
+    try {
+      // Start the sign-up process using the email address method
+      await signUp.create({
+        emailAddress: email,
+        firstName,
+        lastName,
+      });
+
+      // Start the verification - an email message will be sent to the
+      // email address with a one-time code
+      await signUp.prepareEmailAddressVerification();
+
+      // Set verifying to true to display second form and capture the OTP code
+      setVerifying(true);
+    } catch (err) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error("Error:", JSON.stringify(err, null, 2));
+    }
+  }
+
+  async function handleVerification(e) {
+    e.preventDefault();
+
+    if (!isLoaded && !signUp) return null;
+
+    try {
+      // Use the code provided by the user and attempt verification
+      const signInAttempt = await signUp.attemptEmailAddressVerification({
+        code,
+      });
+
+      // If verification was completed, set the session to active
+      // and redirect the user
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+
+        router.push("/");
+      } else {
+        // If the status is not complete, check why. User may need to
+        // complete further steps.
+        console.error(signInAttempt);
+      }
+    } catch (err) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error("Error:", JSON.stringify(err, null, 2));
+    }
+  }
+
+  if (verifying) {
+    return (
+      <>
+        <h1>Verify your email number</h1>
+        <form onSubmit={handleVerification}>
+          <label htmlFor="code">Enter your verification code</label>
+          <input
+            value={code}
+            id="code"
+            name="code"
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <button type="submit">Verify</button>
+        </form>
+      </>
+    );
+  }
+
   return (
-    <div className="grid w-full grow items-center px-4 sm:justify-center">
-      <SignUp.Root>
-        <Clerk.Loading>
-          {(isGlobalLoading) => (
-            <>
-              <SignUp.Step name="start">
-                <Card className="w-full sm:w-96">
-                  <CardHeader className="text-center flex flex-col gap-1">
-                    <CardTitle>Create your account</CardTitle>
-                    <CardDescription>
-                      Welcome! Please fill in the details to get started.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="grid gap-y-4">
-                    <Clerk.Field name="firstName" className="space-y-2">
-                      <Clerk.Label asChild>
-                        <Label>First Name</Label>
-                      </Clerk.Label>
-                      <Clerk.Input type="text" required asChild>
-                        <Input />
-                      </Clerk.Input>
-                      <Clerk.FieldError className="block text-sm text-destructive" />
-                    </Clerk.Field>
+    <>
+      <h1>Sign up</h1>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="firstName">Enter first name</label>
+        <input
+          value={firstName}
+          id="firstName"
+          name="firstName"
+          onChange={(e) => setFirstName(e.target.value)}
+        />
 
-                    <Clerk.Field name="lastName" className="space-y-2">
-                      <Clerk.Label asChild>
-                        <Label>Last Name</Label>
-                      </Clerk.Label>
-                      <Clerk.Input type="text" required asChild>
-                        <Input />
-                      </Clerk.Input>
-                      <Clerk.FieldError className="block text-sm text-destructive" />
-                    </Clerk.Field>
+        <label htmlFor="lastName">Enter last name</label>
+        <input
+          value={lastName}
+          id="lastName"
+          name="lastName"
+          onChange={(e) => setLastName(e.target.value)}
+        />
 
-                    <Clerk.Field name="emailAddress" className="space-y-2">
-                      <Clerk.Label asChild>
-                        <Label>Email Address</Label>
-                      </Clerk.Label>
-                      <Clerk.Input type="email" required asChild>
-                        <Input />
-                      </Clerk.Input>
-                      <Clerk.FieldError className="block text-sm text-destructive" />
-                    </Clerk.Field>
-                  </CardContent>
-                  <CardFooter>
-                    <div className="grid w-full gap-y-4">
-                      <SignUp.Action submit asChild>
-                        <Button disabled={isGlobalLoading}>
-                          <Clerk.Loading>
-                            {(isLoading) =>
-                              isLoading ? (
-                                <Icons.spinner className="size-4 animate-spin" />
-                              ) : (
-                                "Continue"
-                              )
-                            }
-                          </Clerk.Loading>
-                        </Button>
-                      </SignUp.Action>
-                      <Button variant="link" size="sm" asChild>
-                        <Link href="/sign-in">
-                          Already have an account? Sign in
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardFooter>
-                </Card>
-              </SignUp.Step>
+        <label htmlFor="email">Enter email address</label>
+        <input
+          value={email}
+          id="email"
+          name="email"
+          type="email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-              <SignUp.Step name="verifications">
-                <SignUp.Strategy name="email_code">
-                  <Card className="w-full sm:w-96">
-                    <CardHeader className="text-center flex flex-col gap-1">
-                      <CardTitle>Verify your email</CardTitle>
-                      <CardDescription>
-                        Before continuing, could you verify your email address
-                        by clicking on the link we just emailed to you? If you
-                        didn't receive the email, we will gladly send you
-                        another.
-                      </CardDescription>
-                    </CardHeader>
-
-                    <CardContent className="grid gap-y-4">
-                      <Clerk.Field name="code" className="space-y-2">
-                        <Clerk.Input
-                          type="otp"
-                          className="flex justify-center has-[:disabled]:opacity-50"
-                          autoSubmit
-                          render={({ value, status }) => (
-                            <div
-                              data-status={status}
-                              className={cn(
-                                "relative flex size-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
-                                {
-                                  "z-10 ring-2 ring-ring ring-offset-background":
-                                    status === "cursor" ||
-                                    status === "selected",
-                                }
-                              )}
-                            >
-                              {value}
-                              {status === "cursor" && (
-                                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                                  <div className="animate-caret-blink h-4 w-px bg-foreground duration-1000" />
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        />
-                        <Clerk.FieldError className="block text-sm text-destructive text-center" />
-                      </Clerk.Field>
-
-                      <SignUp.Action
-                        asChild
-                        resend
-                        fallback={({ resendableAfter }) => (
-                          <Button
-                            variant="link"
-                            size="sm"
-                            disabled={resendableAfter !== 0}
-                            className={cn("cursor-pointer text-stone-900", {
-                              "cursor-not-allowed text-muted-foreground":
-                                resendableAfter !== 0,
-                            })}
-                          >
-                            Didn&apos;t receive a code? Resend (
-                            <span className="tabular-nums">
-                              {resendableAfter}
-                            </span>
-                            )
-                          </Button>
-                        )}
-                      >
-                        <Button variant="link" size="sm">
-                          Didn&apos;t receive a code? Resend
-                        </Button>
-                      </SignUp.Action>
-                    </CardContent>
-
-                    <CardFooter>
-                      <div className="grid w-full gap-y-4">
-                        <SignUp.Action submit asChild>
-                          <Button disabled={isGlobalLoading}>
-                            <Clerk.Loading>
-                              {(isLoading) =>
-                                isLoading ? (
-                                  <Icons.spinner className="size-4 animate-spin" />
-                                ) : (
-                                  "Verify"
-                                )
-                              }
-                            </Clerk.Loading>
-                          </Button>
-                        </SignUp.Action>
-                      </div>
-                    </CardFooter>
-
-                    <div className="flex items-center justify-center pb-4">
-                      <Button variant="link" size="sm" asChild>
-                        <Link href="/sign-in">
-                          Already have an account? Sign in
-                        </Link>
-                      </Button>
-                    </div>
-                  </Card>
-                </SignUp.Strategy>
-              </SignUp.Step>
-            </>
-          )}
-        </Clerk.Loading>
-      </SignUp.Root>
-    </div>
+        <button type="submit">Continue</button>
+      </form>
+    </>
   );
 }

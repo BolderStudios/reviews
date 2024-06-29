@@ -13,17 +13,20 @@ export default function OnboardingComponent() {
   const router = useRouter();
 
   const handleSubmit = async (formData) => {
+    console.log("formData", formData);
     const res = await completeOnboarding(formData);
+
     if (res?.message) {
       await user?.reload();
       router.push("/");
     }
+
     if (res?.error) {
       setError(res?.error);
     }
   };
   return (
-    <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40">
+    <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40 flex items-center justify-center">
       <h1>Welcome</h1>
       <form action={handleSubmit}>
         <div>
