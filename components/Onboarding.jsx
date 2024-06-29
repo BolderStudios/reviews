@@ -19,18 +19,20 @@ export default function OnboardingComponent() {
     if (res?.message) {
       await user?.reload();
 
-      // This is a workaround to reload the page
-      window.location.reload();
-
+      // This is a workaround to reload the page unless the router.refresh works
+      // window.location.reload();
+      
       // This push is not working for some reason
       router.push("/");
+      router.refresh();
+
     }
 
     if (res?.error) {
       setError(res?.error);
     }
   };
-  
+
   return (
     <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40 flex items-center justify-center">
       <h1>Welcome</h1>
