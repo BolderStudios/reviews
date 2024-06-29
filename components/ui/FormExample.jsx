@@ -1,9 +1,7 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "./ButtonLoading"; // Import the ButtonLoading component
 import {
@@ -18,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { createUsername } from "@/app/actions";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 // Define the schema for the form using Zod
 const formSchema = z.object({

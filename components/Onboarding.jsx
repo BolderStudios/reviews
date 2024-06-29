@@ -30,6 +30,7 @@ export default function OnboardingComponent() {
       setError(res?.error);
     }
   };
+  
   return (
     <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40 flex items-center justify-center">
       <h1>Welcome</h1>
