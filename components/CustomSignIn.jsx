@@ -69,12 +69,13 @@ export default function Page() {
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
 
-        // window.location.href = "/";
         router.push("/");
+        router.refresh();
 
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
+        // This is a workaround to refresh the page after sign-in
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 100);
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
