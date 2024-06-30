@@ -3,15 +3,39 @@
 import { useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ButtonLoading } from "@/components/ui/ButtonLoading";
+import { set, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import Link from "next/link";
+
+const formSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
 
 export default function Page() {
   const { isLoaded, signIn, setActive } = useSignIn();
+  const [isLoading, setIsLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -19,44 +43,59 @@ export default function Page() {
   const [emailId, setEmailId] = useState("");
   const router = useRouter();
 
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: email,
+    },
+  });
+
   async function handleSubmit(e) {
     e.preventDefault();
 
     if (!isLoaded || !signIn) return;
-
+    setIsLoading(true);
     setError("");
 
     try {
-      // Start the sign-in process using the email address method
       const { supportedFirstFactors } = await signIn.create({
         identifier: email,
       });
 
-      // Filter the returned array to find the 'email_code' entry
       const emailCodeFactor = supportedFirstFactors?.find(
         (factor) => factor.strategy === "email_code"
       );
 
       if (emailCodeFactor) {
-        // Grab the emailAddressId
         const { emailAddressId } = emailCodeFactor;
         setEmailId(emailAddressId);
 
-        // Send the OTP code to the user
         await signIn.prepareFirstFactor({
           strategy: "email_code",
           emailAddressId,
         });
 
-        // Set verifying to true to display second form
-        // and capture the OTP code
         setVerifying(true);
+        toast.success("Verification code sent to your email.");
       } else {
+        toast.error("Email code strategy is not supported.");
         setError("Email code strategy is not supported.");
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
+      if (err.errors && err.errors[0].code === "form_identifier_not_found") {
+        toast.error("Account not found. Please try again.");
+      } else if (
+        err.errors &&
+        err.errors[0].code === "form_password_incorrect"
+      ) {
+        toast.error("Incorrect password. Please try again.");
+      } else {
+        toast.error("Enter a valid email address.");
+      }
       setError("Failed to start the sign-in process. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -64,34 +103,35 @@ export default function Page() {
     e.preventDefault();
 
     if (!isLoaded || !signIn) return;
+    setIsLoading(true);
 
     try {
-      // Use the code provided by the user and attempt verification
       const signInAttempt = await signIn.attemptFirstFactor({
         strategy: "email_code",
         code,
       });
 
-      // If verification was completed, set the session to active
-      // and redirect the user
       if (signInAttempt.status === "complete") {
+        toast.success("Successfully signed in!");
         await setActive({ session: signInAttempt.createdSessionId });
 
         router.push("/");
         router.refresh();
-
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 100);
       } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
         console.error(signInAttempt);
+        toast.error("Verification failed. Please try again.");
         setError("Verification failed. Please try again.");
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
+      if (err.errors && err.errors[0].code === "form_code_incorrect") {
+        toast.error("Incorrect verification code. Please try again.");
+      } else {
+        toast.error("Verification failed. Please try again.");
+      }
       setError("Verification failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -103,9 +143,10 @@ export default function Page() {
         strategy: "email_code",
         emailAddressId: emailId,
       });
-      console.log("A new verification code has been sent to your email.");
+      toast.success("A new verification code has been sent to your email.");
     } catch (err) {
       console.error("Error resending OTP:", JSON.stringify(err, null, 2));
+      toast.error("Failed to resend verification code. Please try again.");
       setError("Failed to resend verification code. Please try again.");
     }
   }
@@ -148,21 +189,76 @@ export default function Page() {
         </>
       ) : (
         <>
-          <h1>Sign in</h1>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="email">Enter email address</label>
-            <input
-              value={email}
-              id="email"
-              name="email"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <button type="submit">Continue</button>
-          </form>
+          <div className="w-screen h-screen relative flex items-center justify-center">
+            {/* Go Back button */}
+            <div className="absolute top-4 left-4">
+              <Button asChild variant="outline">
+                <Link
+                  href="/"
+                  className="flex items-center justify-center gap-[6px]"
+                >
+                  <ArrowLeft size={14} className="mt-[1px]" />
+                  <p className="leading-7">Back to Homepage</p>
+                </Link>
+              </Button>
+            </div>
+
+            {/* Main sign in component */}
+            <div className="w-[400px] py-6 px-8">
+              <div className="flex flex-col text-center gap-2">
+                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-stone-900">
+                  Login
+                </h4>
+                <p className="leading-5 text-stone-700">
+                  Welcome back! Please use your email address to sign in.
+                </p>
+              </div>
+
+              <div className="mt-6">
+                <Form {...form}>
+                  <form onSubmit={handleSubmit}>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel htmlFor="email">Email address</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="email"
+                              name="email"
+                              type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              placeholder="Enter email address"
+                              // required
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="mt-6">
+                      {isLoading ? (
+                        <ButtonLoading
+                          size="lg"
+                          width="w-full"
+                          content="Sending code ..."
+                        />
+                      ) : (
+                        <Button type="submit" size="lg" className="w-full">
+                          Continue
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                </Form>
+              </div>
+            </div>
+          </div>
         </>
       )}
-      {error && <p>{error}</p>}
     </>
   );
 }

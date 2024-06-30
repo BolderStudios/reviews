@@ -4,11 +4,15 @@ import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export function ButtonLoading() {
+export function ButtonLoading({
+  width = "",
+  size = "default",
+  content = "Please wait",
+}) {
   return (
-    <Button disabled className="w-full">
+    <Button disabled size={size} className={`${width}`}>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-      Please wait
+      {content}
     </Button>
   );
 }

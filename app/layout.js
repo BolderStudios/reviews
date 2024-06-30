@@ -44,6 +44,8 @@ export default function RootLayout({ children }) {
 
             <SignedOut>
               <div className="flex-grow">{children}</div>
+
+              <Toaster richColors />
             </SignedOut>
           </main>
         </body>
