@@ -54,6 +54,12 @@ export default function Page() {
     e.preventDefault();
 
     if (!isLoaded || !signIn) return;
+
+    if (email === "") {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -103,6 +109,12 @@ export default function Page() {
     e.preventDefault();
 
     if (!isLoaded || !signIn) return;
+
+    if (code === "") {
+      toast.error("Please enter the verification code.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -281,7 +293,6 @@ export default function Page() {
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder="Enter email address"
-                              // required
                             />
                           </FormControl>
                           <FormMessage />
