@@ -154,7 +154,7 @@ export default function Header() {
         </Button>
 
         <Button asChild size="header">
-          <Link href="/pricing">Signup</Link>
+          <Link href="/sign-up">Signup</Link>
         </Button>
       </div>
     </div>

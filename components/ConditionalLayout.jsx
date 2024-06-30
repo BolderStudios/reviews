@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
 
-const fullScreenPaths = ['/onboarding'];
+const fullScreenPaths = ["/onboarding"];
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
 
-  if (fullScreenPaths.includes(pathname) || pathname === '/not-found') {
+  if (fullScreenPaths.includes(pathname) || pathname === "/not-found") {
     return <main className="h-screen flex flex-col">{children}</main>;
   }
 
