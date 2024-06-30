@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
             </SignedIn>
 
             <SignedOut>
-              <div className="flex-grow p-4">{children}</div>
+              <div className="flex-grow">{children}</div>
             </SignedOut>
           </main>
         </body>

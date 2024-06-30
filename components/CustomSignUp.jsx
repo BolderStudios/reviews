@@ -44,7 +44,7 @@ export default function Page() {
 
     try {
       await signUp.prepareEmailAddressVerification();
-      setError("A new verification code has been sent to your email.");
+      console.log("A new verification code has been sent to your email.");
     } catch (err) {
       console.error("Error resending OTP:", JSON.stringify(err, null, 2));
       setError("Failed to resend verification code. Please try again.");

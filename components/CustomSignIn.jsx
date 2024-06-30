@@ -4,6 +4,12 @@ import { useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
 export default function Page() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [verifying, setVerifying] = useState(false);
@@ -111,12 +117,29 @@ export default function Page() {
           <h1>Verify your email address</h1>
           <form onSubmit={handleVerification}>
             <label htmlFor="code">Enter your verification code</label>
-            <input
-              value={code}
-              id="code"
-              name="code"
-              onChange={(e) => setCode(e.target.value)}
-            />
+            <div className="space-y-2">
+              <InputOTP
+                maxLength={6}
+                value={code}
+                onChange={(value) => setCode(value)}
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+              <div className="text-center text-sm">
+                {code === "" ? (
+                  <>Enter your one-time password.</>
+                ) : (
+                  <>You entered: {code}</>
+                )}
+              </div>
+            </div>
             <button type="submit">Verify</button>
             <button type="button" onClick={handleResendOTP}>
               Resend OTP code
