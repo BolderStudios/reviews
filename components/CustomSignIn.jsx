@@ -155,37 +155,87 @@ export default function Page() {
     <>
       {verifying ? (
         <>
-          <h1>Verify your email address</h1>
-          <form onSubmit={handleVerification}>
-            <label htmlFor="code">Enter your verification code</label>
-            <div className="space-y-2">
-              <InputOTP
-                maxLength={6}
-                value={code}
-                onChange={(value) => setCode(value)}
-              >
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                  <InputOTPSlot index={3} />
-                  <InputOTPSlot index={4} />
-                  <InputOTPSlot index={5} />
-                </InputOTPGroup>
-              </InputOTP>
-              <div className="text-center text-sm">
-                {code === "" ? (
-                  <>Enter your one-time password.</>
-                ) : (
-                  <>You entered: {code}</>
-                )}
+          <div className="w-screen h-screen relative flex items-center justify-center">
+            {/* Go Back button */}
+            <div className="absolute top-4 left-4">
+              <Button asChild variant="outline">
+                <Link
+                  href="/"
+                  className="flex items-center justify-center gap-[6px]"
+                >
+                  <ArrowLeft size={14} className="mt-[1px]" />
+                  <p className="leading-7">Back to Homepage</p>
+                </Link>
+              </Button>
+            </div>
+
+            {/* Main sign in component */}
+            <div className="w-[400px] py-6 px-8">
+              <div className="flex flex-col text-center gap-2">
+                <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-stone-900">
+                  Verification Required
+                </h4>
+                <p className="leading-5 text-stone-700">
+                  We have sent a verification code to your email address. Please
+                  enter the code to verify your email address.
+                </p>
+              </div>
+
+              <div className="mt-6 text-center">
+                <Form {...form}>
+                  <form onSubmit={handleVerification}>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center justify-center">
+                          <FormControl>
+                            <InputOTP
+                              maxLength={6}
+                              value={code}
+                              onChange={(value) => setCode(value)}
+                            >
+                              <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                              </InputOTPGroup>
+                            </InputOTP>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="mt-6">
+                      {isLoading ? (
+                        <ButtonLoading
+                          size="lg"
+                          width="w-full"
+                          content="Verifying code ..."
+                        />
+                      ) : (
+                        <Button type="submit" size="lg" className="w-full">
+                          Verify
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                </Form>
+
+                <Button
+                  variant="link"
+                  className="text-sm mt-4"
+                  onClick={handleResendOTP}
+                >
+                  Resend OTP code
+                </Button>
               </div>
             </div>
-            <button type="submit">Verify</button>
-            <button type="button" onClick={handleResendOTP}>
-              Resend OTP code
-            </button>
-          </form>
+          </div>
         </>
       ) : (
         <>
