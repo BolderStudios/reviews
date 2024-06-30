@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "@/public/logoBlack.png";
 
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/ui/icons";
@@ -56,11 +58,21 @@ const components = [
 
 export default function Header() {
   return (
-    <div className="flex justify-between items-center border-b border-stone-200 py-3 px-6">
+    <div className="flex justify-between items-center border-b border-stone-200 px-6">
       {/* Logo */}
       <div>
-        <Link href="/" className="text-orange-600 font-semibold">
-          &lt;Brand Armor /&gt;
+        <Link
+          href="/"
+          className="flex items-center justify-center"
+          aria-label="Logo"
+        >
+          <Image
+            src={Logo}
+            alt="Brand Armor Logo"
+            width={99}
+            height={10}
+            priority
+          />
         </Link>
       </div>
 

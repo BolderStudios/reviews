@@ -13,5 +13,4 @@ export default async function Page() {
   }
 
   return <CustomSignUp />;
-  // return <SignUp />;
 }
