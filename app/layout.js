@@ -25,9 +25,7 @@ export default function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <ConditionalLayout>
-            {children}
-          </ConditionalLayout>
+          <ConditionalLayout>{children}</ConditionalLayout>
           <Toaster richColors />
         </body>
       </html>

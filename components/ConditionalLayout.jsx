@@ -5,7 +5,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
 
-const fullScreenPaths = ["/onboarding"];
+const fullScreenPaths = ["/onboarding", "/sign-in", "/sign-up"];
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSignUp } from "@clerk/nextjs";
+import { useSignUp, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ const formSchema = z.object({
 
 export default function Page() {
   const { isLoaded, signUp, setActive } = useSignUp();
+  const { isSignedIn, setIsSignedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [email, setEmail] = useState("");
@@ -93,20 +94,22 @@ export default function Page() {
 
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
-
         toast.success("Account created successfully!");
-        router.push("/");
-        router.refresh();
+
+        // Manually set the user as signed in after navigation
+        router.replace("/onboarding").then(() => {
+          setIsSignedIn(true);
+        });
       } else {
-        console.error(signUpAttempt);
-        toast.error("Verification failed. Please try again.");
+        // console.error(signUpAttempt);
+        // toast.error("Verification failed. Please try again.");
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
       if (err.errors && err.errors[0].code === "form_code_incorrect") {
         toast.error("Incorrect verification code. Please try again.");
       } else {
-        toast.error("Verification failed. Please try again.");
+        // toast.error("Verification failed. Please try again.");
       }
     } finally {
       setIsLoading(false);
