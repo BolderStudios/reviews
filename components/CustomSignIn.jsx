@@ -315,6 +315,12 @@ export default function Page() {
                     </div>
                   </form>
                 </Form>
+
+                <div className="text-center">
+                  <Button variant="link" className="text-sm mt-4">
+                    <Link href="/sign-up">Don't have an account? Sign up.</Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
