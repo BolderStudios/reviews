@@ -132,7 +132,12 @@ export default function Header() {
 
       {/* Buttons */}
       <div className="flex items-center gap-3">
-        <Button asChild variant="ghost" size="header" className="font-normal">
+        <Button
+          asChild
+          variant="ghost"
+          size="header"
+          className="font-normal text-stone-700"
+        >
           <Link href="/sign-in">Login</Link>
         </Button>
 
