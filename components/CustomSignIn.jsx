@@ -10,6 +10,7 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [emailId, setEmailId] = useState("");
   const router = useRouter();
 
   async function handleSubmit(e) {
@@ -33,6 +34,7 @@ export default function Page() {
       if (emailCodeFactor) {
         // Grab the emailAddressId
         const { emailAddressId } = emailCodeFactor;
+        setEmailId(emailAddressId);
 
         // Send the OTP code to the user
         await signIn.prepareFirstFactor({
@@ -72,7 +74,6 @@ export default function Page() {
         router.push("/");
         router.refresh();
 
-        // This is a workaround to refresh the page after sign-in
         // setTimeout(() => {
         //   window.location.reload();
         // }, 100);
@@ -85,6 +86,21 @@ export default function Page() {
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
       setError("Verification failed. Please try again.");
+    }
+  }
+
+  async function handleResendOTP() {
+    if (!isLoaded || !signIn) return;
+
+    try {
+      await signIn.prepareFirstFactor({
+        strategy: "email_code",
+        emailAddressId: emailId,
+      });
+      console.log("A new verification code has been sent to your email.");
+    } catch (err) {
+      console.error("Error resending OTP:", JSON.stringify(err, null, 2));
+      setError("Failed to resend verification code. Please try again.");
     }
   }
 
@@ -102,6 +118,9 @@ export default function Page() {
               onChange={(e) => setCode(e.target.value)}
             />
             <button type="submit">Verify</button>
+            <button type="button" onClick={handleResendOTP}>
+              Resend OTP code
+            </button>
           </form>
         </>
       ) : (
