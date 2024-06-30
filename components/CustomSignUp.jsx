@@ -93,8 +93,10 @@ export default function Page() {
 
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
+
         toast.success("Account created successfully!");
-        router.push("/onboarding");
+        router.push("/");
+        router.refresh();
       } else {
         console.error(signUpAttempt);
         toast.error("Verification failed. Please try again.");
