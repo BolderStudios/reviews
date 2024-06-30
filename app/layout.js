@@ -1,12 +1,9 @@
-// app/layout.js
-
 import "./styles/globals.css";
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
-import SidebarNavigation from "@/components/SidebarNavigation";
-import Navbar from "@/components/ui/Navbar";
 import { Toaster } from "sonner";
+import ConditionalLayout from "@/components/ConditionalLayout";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -28,26 +25,10 @@ export default function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <main className="h-screen flex flex-col relative">
-            <SignedIn>
-              <div className="flex flex-1">
-                <SidebarNavigation />
-                <div className="flex flex-col w-full overflow-y-auto h-screen">
-                  <Navbar />
-                  <div className="flex-grow">
-                    {children}
-                    <Toaster richColors />
-                  </div>
-                </div>
-              </div>
-            </SignedIn>
-
-            <SignedOut>
-              <div className="flex-grow">{children}</div>
-
-              <Toaster richColors />
-            </SignedOut>
-          </main>
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
+          <Toaster richColors />
         </body>
       </html>
     </ClerkProvider>

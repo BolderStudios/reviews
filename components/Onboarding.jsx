@@ -33,7 +33,8 @@ export default function OnboardingComponent() {
   };
 
   return (
-    <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40 flex items-center justify-center">
+    <div className="flex items-center justify-center h-full bg-green-50">
+    {/* <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40 flex items-center justify-center"> */}
       <h1>Welcome</h1>
       <form action={handleSubmit}>
         <div>
