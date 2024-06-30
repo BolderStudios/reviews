@@ -6,6 +6,7 @@ import * as React from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { completeOnboarding } from "@/app/onboarding/_actions";
+import { SignOutButton } from "./SignOutButton";
 
 export default function OnboardingComponent() {
   const [error, setError] = React.useState("");
@@ -50,6 +51,8 @@ export default function OnboardingComponent() {
         {error && <p className="text-red-600">Error: {error}</p>}
         <button type="submit">Submit</button>
       </form>
+
+      <SignOutButton />
     </div>
   );
 }
