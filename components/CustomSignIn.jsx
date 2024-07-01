@@ -131,7 +131,7 @@ export default function Page() {
       } else {
         console.error(signInAttempt);
         toast.error("Verification failed. Please try again.");
-        setError("Verification failed. Please try again.");
+        setError("Verification failed. Please try again.");``
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));

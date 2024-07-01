@@ -96,12 +96,11 @@ export default function Page() {
         await setActive({ session: signUpAttempt.createdSessionId });
         toast.success("Account created successfully!");
 
-        // Manually set the user as signed in after navigation
-        router.replace("/onboarding").then(() => {
-          setIsSignedIn(true);
-          router.reload();
-          router.refresh();
-        });
+        // // Manually set the user as signed in after navigation
+        // router.replace("/onboarding").then(() => {
+        //   setIsSignedIn(true);
+        // });
+        router.push("/onboarding");
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
