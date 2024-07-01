@@ -7,9 +7,9 @@ import CustomSignIn from "@/components/CustomSignIn";
 export default async function Page() {
   const { userId } = await auth();
 
-  // if (userId) {
-  //   redirect("/");
-  // }
+  if (userId) {
+    redirect("/");
+  }
 
   return <CustomSignIn />;
 }
