@@ -126,7 +126,7 @@ export default function Page() {
         toast.success("Successfully signed in!");
         await setActive({ session: signInAttempt.createdSessionId });
 
-        router.push("/");
+        router.push("/onboarding");
         router.refresh();
       } else {
         console.error(signInAttempt);
