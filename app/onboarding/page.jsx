@@ -7,7 +7,7 @@ export default async function Page() {
   const { sessionClaims } = await auth();
 
   if (sessionClaims?.metadata.onboardingComplete === true) {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   return <Onboarding />;

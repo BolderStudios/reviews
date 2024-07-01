@@ -127,7 +127,7 @@ export default function Page() {
         await setActive({ session: signInAttempt.createdSessionId });
 
         router.push("/");
-        window.location.reload();
+        router.refresh();
       } else {
         console.error(signInAttempt);
         toast.error("Verification failed. Please try again.");
