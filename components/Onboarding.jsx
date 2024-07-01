@@ -6,7 +6,6 @@ import * as React from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { completeOnboarding } from "@/app/onboarding/_actions";
-// import { CustomSignOutButton } from "./CustomSignOutButton";
 import { SignOutButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 

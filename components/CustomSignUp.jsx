@@ -75,35 +75,42 @@ export default function Page() {
 
   async function handleVerification(e) {
     e.preventDefault();
-
+  
     if (!isLoaded || !signUp) return;
-
+  
     if (code === "") {
       toast.error("Please enter the verification code.");
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     try {
       const signUpAttempt = await signUp.attemptEmailAddressVerification({
         code,
       });
-
+  
       if (signUpAttempt.status === "complete") {
         toast.success("Account created successfully!");
-        await setActive({ session: signUpAttempt.createdSessionId });
         
-        router.push("/onboarding");
-        router.refresh();
-        router.reset()
+        // Set the active session
+        await setActive({ session: signUpAttempt.createdSessionId });
+  
+        // Use the redirectUrl option to handle the redirect
+        router.push("/onboarding", {
+          redirectUrl: "/onboarding",
+        });
+      } else {
+        // If the status is not complete, check why. User may need to
+        // complete further steps.
+        console.error(signUpAttempt);
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
       if (err.errors && err.errors[0].code === "form_code_incorrect") {
         toast.error("Incorrect verification code. Please try again.");
       } else {
-        // toast.error("Verification failed. Please try again.");
+        toast.error("Verification failed. Please try again.");
       }
     } finally {
       setIsLoading(false);
