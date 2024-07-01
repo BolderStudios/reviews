@@ -91,15 +91,17 @@ export default function Page() {
       });
 
       if (signUpAttempt.status === "complete") {
-        await setActive({ session: signUpAttempt.createdSessionId });
         toast.success("Account created successfully!");
+        await setActive({ session: signUpAttempt.createdSessionId });
+        // window.location.href = "/onboarding";
 
         // Manually set the user as signed in after navigation
-        router.replace("/onboarding").then(() => {
+        router.replace("/onboarding").then(async () => {
           setIsSignedIn(true);
         });
         // router.push("/onboarding");
-        // router.refresh();
+        router.refresh();
+        router.reset()
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
