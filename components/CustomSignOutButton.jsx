@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { ButtonLoading } from "./ui/ButtonLoading";
 
-export const SignOutButton = () => {
+export const CustomSignOutButton = () => {
   const { signOut } = useClerk();
   const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -21,7 +21,7 @@ export const SignOutButton = () => {
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      router.push("/sign-in");
+      router.push("/");
     } catch (error) {
       console.error("Error signing out:", error);
       setIsSigningOut(false); // Reset state if there's an error

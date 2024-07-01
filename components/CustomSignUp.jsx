@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSignUp, useAuth } from "@clerk/nextjs";
+import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,6 @@ const formSchema = z.object({
 
 export default function Page() {
   const { isLoaded, signUp, setActive } = useSignUp();
-  const { isSignedIn, setIsSignedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [email, setEmail] = useState("");
@@ -94,13 +93,8 @@ export default function Page() {
       if (signUpAttempt.status === "complete") {
         toast.success("Account created successfully!");
         await setActive({ session: signUpAttempt.createdSessionId });
-        // window.location.href = "/onboarding";
-
-        // Manually set the user as signed in after navigation
-        router.replace("/onboarding").then(async () => {
-          setIsSignedIn(true);
-        });
-        // router.push("/onboarding");
+        
+        router.push("/onboarding");
         router.refresh();
         router.reset()
       }
