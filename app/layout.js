@@ -11,7 +11,6 @@ import SignedInPage from "@/components/SignedInPage";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-  fontDisplay: 'swap'
 });
 
 export const metadata = {

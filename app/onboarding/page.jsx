@@ -6,9 +6,12 @@ import { redirect } from "next/navigation";
 export default async function Page() {
   const { sessionClaims } = await auth();
 
-  if (sessionClaims?.metadata.onboardingComplete === true) {
-    redirect("/");
-  }
+  console.log("Onboarding page. sessionClaims:", sessionClaims);
+  console.log("Onboarding page. sessionClaims.metadata.onboardingComplete:", sessionClaims?.metadata.onboardingComplete)
+
+  // if (sessionClaims?.metadata.onboardingComplete === true) {
+  //   redirect("/");
+  // }
 
   return <Onboarding />;
 }
