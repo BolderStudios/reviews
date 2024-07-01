@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSignUp } from "@clerk/nextjs";
+import { useSignUp, useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ const formSchema = z.object({
 
 export default function Page() {
   const { isLoaded, signUp, setActive } = useSignUp();
+  const { isSignedIn, setIsSignedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [email, setEmail] = useState("");
