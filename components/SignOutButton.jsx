@@ -15,7 +15,7 @@ export const SignOutButton = () => {
     setIsSigningOut(true);
     try {
       // Simulate a longer sign-out process
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 second delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Sign out
       await signOut();

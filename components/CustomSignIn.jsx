@@ -127,6 +127,7 @@ export default function Page() {
         await setActive({ session: signInAttempt.createdSessionId });
 
         router.push("/");
+        router.reload();
         router.refresh();
       } else {
         console.error(signInAttempt);
