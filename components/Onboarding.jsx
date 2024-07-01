@@ -23,7 +23,6 @@ export default function OnboardingComponent() {
       // This is a workaround to reload the page unless the router.refresh works
       // window.location.reload();
 
-      // This push is not working for some reason
       router.push("/");
       router.refresh();
     }
