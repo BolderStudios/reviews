@@ -69,7 +69,7 @@ export default function Page() {
       toast.success("Verification code sent to your email.");
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
-      toast.error("Failed to create account. Please try again.");
+      toast.error("User already exists. Please sign in.");
     } finally {
       setIsLoading(false);
     }
@@ -100,9 +100,6 @@ export default function Page() {
         router.replace("/onboarding").then(() => {
           setIsSignedIn(true);
         });
-      } else {
-        // console.error(signUpAttempt);
-        // toast.error("Verification failed. Please try again.");
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
