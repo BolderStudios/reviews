@@ -9,9 +9,9 @@ export default async function Page() {
   console.log("Onboarding page. sessionClaims:", sessionClaims);
   console.log("Onboarding page. sessionClaims.metadata.onboardingComplete:", sessionClaims?.metadata.onboardingComplete)
 
-  // if (sessionClaims?.metadata.onboardingComplete === true) {
-  //   redirect("/");
-  // }
+  if (sessionClaims?.metadata.onboardingComplete === true) {
+    redirect("/");
+  }
 
   return <Onboarding />;
 }
