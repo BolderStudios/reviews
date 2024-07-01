@@ -12,6 +12,6 @@ export default async function Page() {
     redirect("/");
   }
 
-  return <SignUp />;
-  // return <CustomSignUp />;
+  // return <SignUp />;
+  return <CustomSignUp />;
 }

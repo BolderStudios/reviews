@@ -12,6 +12,6 @@ export default async function Page() {
     redirect("/");
   }
 
-  return <SignIn />;
-  // return <CustomSignIn />;
+  // return <SignIn />;
+  return <CustomSignIn />;
 }

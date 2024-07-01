@@ -10,7 +10,7 @@ export default async function Page() {
   console.log("Onboarding page. sessionClaims.metadata.onboardingComplete:", sessionClaims?.metadata.onboardingComplete)
 
   if (sessionClaims?.metadata.onboardingComplete === true) {
-    redirect("/");
+    redirect("/dashboard");
   }
 
   return <Onboarding />;
