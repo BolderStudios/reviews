@@ -1,46 +1,41 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import SidebarNavigation from "@/components/SidebarNavigation";
 import Navbar from "@/components/ui/Navbar";
-import { ErrorBoundary } from "react-error-boundary";
 
 const fullScreenPaths = ["/onboarding", "/sign-in", "/sign-up"];
 
-function ErrorFallback({ error }) {
-  return (
-    <div role="alert">
-      <p>Something went wrong:</p>
-      <pre style={{ color: "red" }}>{error.message}</pre>
-    </div>
-  );
-}
-
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
+  const { isLoaded, userId } = useAuth();
 
-  const content =
-    fullScreenPaths.includes(pathname) || pathname === "/not-found" ? (
-      <main className="h-screen flex flex-col">{children}</main>
-    ) : (
+  if (!isLoaded) {
+    return <div>Loading...</div>; // Or any loading indicator
+  }
+
+  if (fullScreenPaths.includes(pathname) || pathname === "/not-found") {
+    return <main className="h-screen flex flex-col">{children}</main>;
+  }
+
+  if (userId) {
+    return (
       <main className="h-screen flex flex-col">
-        <SignedIn>
-          <div className="flex flex-1">
-            <SidebarNavigation />
-            <div className="flex flex-col w-full overflow-y-auto h-screen">
-              <Navbar />
-              <div className="flex-grow">{children}</div>
-            </div>
+        <div className="flex flex-1">
+          <SidebarNavigation />
+          <div className="flex flex-col w-full overflow-y-auto h-screen">
+            <Navbar />
+            <div className="flex-grow">{children}</div>
           </div>
-        </SignedIn>
-        <SignedOut>
-          <div className="flex-grow">{children}</div>
-        </SignedOut>
+        </div>
       </main>
     );
-
-  return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>{content}</ErrorBoundary>
-  );
+  } else {
+    return (
+      <main className="h-screen flex flex-col">
+        <div className="flex-grow">{children}</div>
+      </main>
+    );
+  }
 }
