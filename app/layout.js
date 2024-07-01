@@ -20,7 +20,11 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      afterSignUpUrl="/onboarding"
+      afterSignInUrl="/dashboard"
+      afterSignOutUrl="/sign-in"
+    >
       <html lang="en">
         <body
           className={cn(
@@ -35,9 +39,7 @@ export default async function RootLayout({ children }) {
 
                 <div className="flex flex-col w-full overflow-y-auto h-screen">
                   <Navbar />
-                  <div className="flex-grow">
-                    {children}
-                  </div>
+                  <div className="flex-grow">{children}</div>
                 </div>
               </div>
             </SignedIn>
