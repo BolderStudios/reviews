@@ -24,11 +24,8 @@ export default function OnboardingComponent() {
       // This is a workaround to reload the page unless the router.refresh works
       // window.location.reload();
 
-      setTimeout(() => {
-        console.log("Redirecting to dashboard")
-        router.push("/dashboard");
-        router.refresh();
-      }, 1500);
+      router.push("/dashboard");
+      router.refresh();
     }
 
     if (res?.error) {
