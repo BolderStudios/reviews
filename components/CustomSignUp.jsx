@@ -75,31 +75,29 @@ export default function Page() {
 
   async function handleVerification(e) {
     e.preventDefault();
-  
+
     if (!isLoaded || !signUp) return;
-  
+
     if (code === "") {
       toast.error("Please enter the verification code.");
       return;
     }
-  
+
     setIsLoading(true);
-  
+
     try {
       const signUpAttempt = await signUp.attemptEmailAddressVerification({
         code,
       });
-  
+
       if (signUpAttempt.status === "complete") {
         toast.success("Account created successfully!");
-        
+
         // Set the active session
         await setActive({ session: signUpAttempt.createdSessionId });
-  
-        // Use the redirectUrl option to handle the redirect
-        router.push("/onboarding", {
-          redirectUrl: "/onboarding",
-        });
+
+        router.push("/onboarding");
+        window.location.reload();
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.

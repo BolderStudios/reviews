@@ -20,11 +20,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }) {
   return (
-    <ClerkProvider
-      afterSignUpUrl="/onboarding"
-      afterSignInUrl="/dashboard"
-      afterSignOutUrl="/sign-in"
-    >
+    <ClerkProvider>
       <html lang="en">
         <body
           className={cn(
