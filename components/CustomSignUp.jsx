@@ -99,6 +99,8 @@ export default function Page() {
         // Manually set the user as signed in after navigation
         router.replace("/onboarding").then(() => {
           setIsSignedIn(true);
+          router.reload();
+          router.refresh();
         });
       }
     } catch (err) {
