@@ -128,7 +128,7 @@ export default function Page() {
 
         router.push("/");
         router.refresh();
-        window.location.reload();
+        // window.location.reload();
       } else {
         console.error(signInAttempt);
         toast.error("Verification failed. Please try again.");
