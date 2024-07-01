@@ -6,34 +6,39 @@ const isProtectedRoute = createRouteMatcher([
   "/billing",
   "/onboarding",
   "/file-uploader",
+  "/form"
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
   try {
     const url = req.nextUrl;
+    console.log("Middleware processing:", url.pathname);
 
     // Handle protected routes
     if (isProtectedRoute(req)) {
       const { userId, sessionClaims } = await auth();
-      console.log("userId:", userId);
+      console.log("Protected route. userId:", userId);
 
       if (!userId) {
+        console.log("No user ID, redirecting to sign-in");
         const signInUrl = new URL("/sign-in", req.url);
         return NextResponse.redirect(signInUrl);
       }
 
-      // Check if onboarding is complete —> only works for protected pages
+      // Check if onboarding is complete
       const onboardingComplete = sessionClaims?.metadata?.onboardingComplete;
       console.log("onboardingComplete:", onboardingComplete);
-      console.log("url.pathname:", url.pathname);
 
       if (onboardingComplete !== true && url.pathname !== "/onboarding") {
-        console.log("Redirecting to onboarding");
+        console.log("Onboarding not complete, redirecting to onboarding");
         const onboardingUrl = new URL("/onboarding", req.url);
         return NextResponse.redirect(onboardingUrl);
       }
+    } else {
+      console.log("Non-protected route");
     }
 
+    console.log("Proceeding to next middleware/route handler");
     return NextResponse.next();
   } catch (error) {
     console.error("Middleware error:", error);
@@ -42,6 +47,5 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  // matcher: ["/((?!_next/static|_next/image|favicon.ico).*)", "/api/(.*)"],
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
