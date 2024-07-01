@@ -1,11 +1,12 @@
 // app/layout.js
+
 import "./styles/globals.css";
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
 import { Toaster } from "sonner";
 import SignedInPage from "@/components/SignedInPage";
-import ClientLoadingWrapper from "@/components/ClientLoadingWrapper";
+
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -27,17 +28,17 @@ export default async function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <ClientLoadingWrapper>
-            <main className="h-screen flex flex-col relative">
-              <SignedIn>
-                <SignedInPage>{children}</SignedInPage>
-              </SignedIn>
-              <SignedOut>
-                <div className="flex-grow relative">{children}</div>
-              </SignedOut>
-              <Toaster richColors />
-            </main>
-          </ClientLoadingWrapper>
+          <main className="h-screen flex flex-col relative">
+            <SignedIn>
+              <SignedInPage>{children}</SignedInPage>
+            </SignedIn>
+
+            <SignedOut>
+              <div className="flex-grow relative">{children}</div>
+            </SignedOut>
+
+            <Toaster richColors />
+          </main>
         </body>
       </html>
     </ClerkProvider>
