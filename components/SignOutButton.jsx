@@ -24,7 +24,7 @@ export const SignOutButton = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Then redirect
-      router.push("/");
+      router.push("/sign-in");
     } catch (error) {
       console.error("Error signing out:", error);
       setIsSigningOut(false); // Reset state if there's an error
