@@ -1,7 +1,7 @@
 // app/layout.js
 
 import "./styles/globals.css";
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
+import { ClerkProvider, SignedIn, SignedOut, ClerkLoaded } from "@clerk/nextjs";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
 import SidebarNavigation from "@/components/SidebarNavigation";
@@ -21,33 +21,35 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          <main className="h-screen flex flex-col relative">
-            <SignedIn>
-              <div className="flex flex-1">
-                <SidebarNavigation />
+      <ClerkLoaded>
+        <html lang="en">
+          <body
+            className={cn(
+              "min-h-screen bg-background font-sans antialiased",
+              fontSans.variable
+            )}
+          >
+            <main className="h-screen flex flex-col relative">
+              <SignedIn>
+                <div className="flex flex-1">
+                  <SidebarNavigation />
 
-                <div className="flex flex-col w-full overflow-y-auto h-screen">
-                  <Navbar />
-                  <div className="flex-grow">{children}</div>
+                  <div className="flex flex-col w-full overflow-y-auto h-screen">
+                    <Navbar />
+                    <div className="flex-grow">{children}</div>
+                  </div>
                 </div>
-              </div>
-            </SignedIn>
+              </SignedIn>
 
-            <SignedOut>
-              <div className="flex-grow relative">{children}</div>
-            </SignedOut>
+              <SignedOut>
+                <div className="flex-grow relative">{children}</div>
+              </SignedOut>
 
-            <Toaster richColors />
-          </main>
-        </body>
-      </html>
+              <Toaster richColors />
+            </main>
+          </body>
+        </html>
+      </ClerkLoaded>
     </ClerkProvider>
   );
 }
