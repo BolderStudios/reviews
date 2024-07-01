@@ -17,19 +17,15 @@ export const SignOutButton = () => {
       // Simulate a longer sign-out process
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Sign out
       await signOut();
 
-      // Short delay to ensure sign-out is processed
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Then redirect
       router.push("/sign-in");
     } catch (error) {
       console.error("Error signing out:", error);
       setIsSigningOut(false); // Reset state if there's an error
     }
-    // Note: We're not resetting isSigningOut to false here to keep the loading state during navigation
   };
 
   return (

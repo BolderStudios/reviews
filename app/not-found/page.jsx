@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Page() {
   return (
-    <div className="flex items-center justify-center flex-col h-full">
+    <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40">
       <h1>404 - Page Not Found — /not-found route</h1>
 
       <Button variant="link" asChild>

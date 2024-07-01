@@ -5,7 +5,6 @@ const nextConfig = {
       bodySizeLimit: "5mb",
     },
   },
-  productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;

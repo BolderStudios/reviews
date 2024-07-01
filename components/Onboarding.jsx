@@ -23,7 +23,7 @@ export default function OnboardingComponent() {
       // This is a workaround to reload the page unless the router.refresh works
       // window.location.reload();
 
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
     }
 
@@ -33,7 +33,7 @@ export default function OnboardingComponent() {
   };
 
   return (
-    <div className="flex items-center justify-center h-full bg-green-50">
+    <div className="w-screen h-screen absolute top-0 left-0 bg-red-50 z-40">
       <h1>Welcome</h1>
       <form action={handleSubmit}>
         <div>

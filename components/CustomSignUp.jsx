@@ -99,7 +99,7 @@ export default function Page() {
         //   setIsSignedIn(true);
         // });
         router.push("/onboarding");
-        // window.location.reload();
+        router.refresh();
       }
     } catch (err) {
       console.error("Error:", JSON.stringify(err, null, 2));
