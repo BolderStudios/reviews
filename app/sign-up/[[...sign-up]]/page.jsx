@@ -1,8 +1,9 @@
-// app/sign-in/[[...sign-in]]/page.jsx
+// app/sign-up/[[...sign-up]]/page.jsx
 
+import CustomSignUp from "@/components/CustomSignUp";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import CustomSignIn from "@/components/CustomSignIn";
+import { SignUp } from "@clerk/nextjs";
 
 export default async function Page() {
   const { userId } = await auth();
@@ -11,5 +12,6 @@ export default async function Page() {
     redirect("/");
   }
 
-  return <CustomSignIn />;
+  return <SignUp />;
+  // return <CustomSignUp />;
 }
