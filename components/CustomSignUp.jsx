@@ -96,9 +96,8 @@ export default function Page() {
         // Set the active session
         await setActive({ session: signUpAttempt.createdSessionId });
 
-        router.push("/");
+        router.push("/onboarding");
         router.refresh();
-        // router.push("/onboarding");
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
