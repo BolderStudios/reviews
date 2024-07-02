@@ -27,17 +27,17 @@ export default async function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <main className="h-screen flex flex-col relative">
-            <SignedIn>
-              <SignedInPage>{children}</SignedInPage>
-            </SignedIn>
+            <main className="h-screen flex flex-col relative">
+              <SignedIn>
+                <SignedInPage>{children}</SignedInPage>
+              </SignedIn>
 
-            <SignedOut>
-              <div className="flex-grow relative">{children}</div>
-            </SignedOut>
+              <SignedOut>
+                <div className="flex-grow relative">{children}</div>
+              </SignedOut>
 
-            <Toaster richColors />
-          </main>
+              <Toaster richColors />
+            </main>
         </body>
       </html>
     </ClerkProvider>

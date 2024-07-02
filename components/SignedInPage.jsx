@@ -7,7 +7,6 @@ import Onboarding from "@/components/Onboarding";
 
 async function SignedInPage({ children }) {
   const { userId } = await auth();
-  // Need to get user data whether they finished onboarding or not
   const { data, error } = await supabase
     .from("users")
     .select()
@@ -19,9 +18,7 @@ async function SignedInPage({ children }) {
   console.log("Dashboard page. onboardingComplete:", onboardingComplete);
 
   if (onboardingComplete !== true) {
-    return <div>
-      <Onboarding />
-    </div>
+    return <div>{children}</div>;
   }
 
   return (
