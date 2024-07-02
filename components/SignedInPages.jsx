@@ -36,4 +36,4 @@ async function SignedInPages({ children }) {
   );
 }
 
-export default SignedInPage;
+export default SignedInPages;
