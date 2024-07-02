@@ -28,20 +28,20 @@ export default clerkMiddleware(async (auth, req) => {
 
       console.log("User ID from middleware:", userId);
 
-      const { data, error } = await supabase
-        .from("users")
-        .select()
-        .eq("clerk_id", userId)
-        .single();
+      // const { data, error } = await supabase
+      //   .from("users")
+      //   .select()
+      //   .eq("clerk_id", userId)
+      //   .single();
 
-      const onboardingComplete = data?.is_onboarding_complete;
-      console.log("onboardingComplete:", onboardingComplete);
+      // const onboardingComplete = data?.is_onboarding_complete;
+      // console.log("onboardingComplete:", onboardingComplete);
 
-      if (onboardingComplete !== true && url.pathname !== "/onboarding") {
-        console.log("Onboarding not complete, redirecting to onboarding");
-        const onboardingUrl = new URL("/onboarding", req.url);
-        return NextResponse.redirect(onboardingUrl);
-      }
+      // if (onboardingComplete !== true && url.pathname !== "/onboarding") {
+      //   console.log("Onboarding not complete, redirecting to onboarding");
+      //   const onboardingUrl = new URL("/onboarding", req.url);
+      //   return NextResponse.redirect(onboardingUrl);
+      // }
 
       // Check if onboarding is complete
       // const onboardingComplete = sessionClaims?.metadata?.onboardingComplete;
