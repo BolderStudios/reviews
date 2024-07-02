@@ -1,12 +1,13 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import supabase from "@/utils/supabaseClient";
 
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/billing",
   "/onboarding",
   "/file-uploader",
-  "/form"
+  "/form",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -25,15 +26,31 @@ export default clerkMiddleware(async (auth, req) => {
         return NextResponse.redirect(signInUrl);
       }
 
-      // Check if onboarding is complete
-      const onboardingComplete = sessionClaims?.metadata?.onboardingComplete;
-      console.log("onboardingComplete:", onboardingComplete);
+      console.log("User ID from middleware:", userId);
+
+      const { data, error } = await supabase
+        .from("users")
+        .select()
+        .eq("clerk_id", userId)
+        .single();
+
+      const onboardingComplete = data?.is_onboarding_complete;
 
       if (onboardingComplete !== true && url.pathname !== "/onboarding") {
         console.log("Onboarding not complete, redirecting to onboarding");
         const onboardingUrl = new URL("/onboarding", req.url);
         return NextResponse.redirect(onboardingUrl);
       }
+
+      // Check if onboarding is complete
+      // const onboardingComplete = sessionClaims?.metadata?.onboardingComplete;
+      // console.log("onboardingComplete:", onboardingComplete);
+
+      // if (onboardingComplete !== true && url.pathname !== "/onboarding") {
+      //   console.log("Onboarding not complete, redirecting to onboarding");
+      //   const onboardingUrl = new URL("/onboarding", req.url);
+      //   return NextResponse.redirect(onboardingUrl);
+      // }
     } else {
       console.log("Non-protected route");
     }

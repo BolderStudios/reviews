@@ -7,7 +7,6 @@ import { cn } from "../lib/utils";
 import { Toaster } from "sonner";
 import SignedInPage from "@/components/SignedInPage";
 
-
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
