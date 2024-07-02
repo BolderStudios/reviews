@@ -16,7 +16,6 @@ export default clerkMiddleware(async (auth, req) => {
     const url = req.nextUrl;
     console.log("Middleware processing:", url.pathname);
 
-    // Handle protected routes
     if (isProtectedRoute(req)) {
       const { userId, sessionClaims } = await auth();
       console.log("Protected route. userId:", userId);
@@ -45,22 +44,6 @@ export default clerkMiddleware(async (auth, req) => {
       if (onboardingComplete && req.nextUrl.pathname === '/onboarding') {
         return NextResponse.redirect(new URL('/dashboard', req.url));
       }
-
-      // if (onboardingComplete !== true && url.pathname !== "/onboarding") {
-      //   console.log("Onboarding not complete, redirecting to onboarding");
-      //   const onboardingUrl = new URL("/onboarding", req.url);
-      //   return NextResponse.redirect(onboardingUrl);
-      // }
-
-      // Check if onboarding is complete
-      // const onboardingComplete = sessionClaims?.metadata?.onboardingComplete;
-      // console.log("onboardingComplete:", onboardingComplete);
-
-      // if (onboardingComplete !== true && url.pathname !== "/onboarding") {
-      //   console.log("Onboarding not complete, redirecting to onboarding");
-      //   const onboardingUrl = new URL("/onboarding", req.url);
-      //   return NextResponse.redirect(onboardingUrl);
-      // }
     } else {
       console.log("Non-protected route");
     }

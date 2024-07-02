@@ -1,4 +1,4 @@
-// app/sign-up/[[...sign-up]]/page.jsx
+// app/sign-up/page.jsx
 
 import CustomSignUp from "@/components/CustomSignUp";
 import { auth } from "@clerk/nextjs/server";

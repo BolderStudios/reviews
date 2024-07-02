@@ -4,9 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import supabase from "@/utils/supabaseClient";
 import Onboarding from "@/components/Onboarding";
-import FullPageLoader from "@/components/FullPageLoader";
 
-async function SignedInPage({ children }) {
+async function SignedInPages({ children }) {
   const { userId } = await auth();
   const { data, error } = await supabase
     .from("users")
@@ -16,10 +15,6 @@ async function SignedInPage({ children }) {
 
   const onboardingComplete = data?.is_onboarding_complete;
   console.log("Dashboard page. onboardingComplete:", onboardingComplete);
-
-  // if (onboardingComplete === undefined) {
-  //   return <FullPageLoader />;
-  // }
 
   if (onboardingComplete !== true) {
     return (

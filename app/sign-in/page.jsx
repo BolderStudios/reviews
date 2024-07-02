@@ -1,4 +1,4 @@
-// app/sign-in/[[...sign-in]]/page.jsx
+// app/sign-in/page.jsx
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
