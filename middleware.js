@@ -35,6 +35,7 @@ export default clerkMiddleware(async (auth, req) => {
         .single();
 
       const onboardingComplete = data?.is_onboarding_complete;
+      console.log("onboardingComplete:", onboardingComplete);
 
       if (onboardingComplete !== true && url.pathname !== "/onboarding") {
         console.log("Onboarding not complete, redirecting to onboarding");
