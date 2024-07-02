@@ -17,9 +17,9 @@ async function SignedInPage({ children }) {
   const onboardingComplete = data?.is_onboarding_complete;
   console.log("Dashboard page. onboardingComplete:", onboardingComplete);
 
-  if (onboardingComplete === undefined) {
-    return <FullPageLoader />;
-  }
+  // if (onboardingComplete === undefined) {
+  //   return <FullPageLoader />;
+  // }
 
   if (onboardingComplete !== true) {
     return (
