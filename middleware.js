@@ -8,6 +8,7 @@ const isProtectedRoute = createRouteMatcher([
   "/onboarding",
   "/file-uploader",
   "/form",
+  "/onboarding"
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
