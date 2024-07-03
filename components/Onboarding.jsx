@@ -65,21 +65,12 @@ export default function OnboardingComponent() {
   });
 
   const handleSubmit = async (formData) => {
-    console.log("Form Data: ", formData);
     setIsLoading(true);
 
     try {
-      const response = await completeOnboarding(formData);
+      await completeOnboarding(formData);
 
-      console.log("Response: ", response)
-
-      if (response === true) {
-        toast.success("Onboarding completed successfully");
-        router.push("/dashboard");
-        router.refresh();
-      } else {
-        throw new Error("An unknown error occurred");
-      }
+      toast.success("Onboarding complete 🎉");
     } catch (error) {
       toast.error(error.message);
     } finally {

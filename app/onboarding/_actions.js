@@ -25,8 +25,5 @@ export const completeOnboarding = async (formData) => {
   if (!error) {
     console.log("Onboarding complete. Redirecting to dashboard.");
     redirect("/dashboard");
-    return true;
   }
-
-  return false
 };
