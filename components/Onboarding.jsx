@@ -37,10 +37,10 @@ const formSchema = z.object({
   googleRedirectLink: z.string().url("Invalid Google Redirect link"),
   yelpBusinessLink: z.string().url("Invalid Yelp Business link"),
   yelpRedirectLink: z.string().url("Invalid Yelp Redirect link"),
+  complementarySolutions: z
+    .string()
+    .min(1, "Complementary solutions are required"),
   // businessChallenges: z.string().min(1, "Business goals are required"),
-  // complementarySolutions: z
-  //   .string()
-  //   .min(1, "Complementary solutions are required"),
 });
 
 export default function OnboardingComponent() {
@@ -59,8 +59,8 @@ export default function OnboardingComponent() {
       googleRedirectLink: "",
       yelpBusinessLink: "",
       yelpRedirectLink: "",
+      complementarySolutions: "",
       // businessChallenges: "",
-      // complementarySolutions: "",
     },
   });
 
@@ -199,6 +199,7 @@ export default function OnboardingComponent() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="positionOfContact"
@@ -222,93 +223,97 @@ export default function OnboardingComponent() {
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="googleMapsLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className="text-foreground"
-                    htmlFor="googleMapsLink"
-                  >
-                    Google Maps Link
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      id="googleMapsLink"
-                      placeholder="https://www.google.com/maps/..."
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="googleMapsLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="googleMapsLink"
+                    >
+                      Google Maps Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="googleMapsLink"
+                        placeholder="https://www.google.com/maps/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="googleRedirectLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className="text-foreground"
-                    htmlFor="googleRedirectLink"
-                  >
-                    Google Redirect Link
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      id="googleRedirectLink"
-                      placeholder="https://g.page/..."
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="googleRedirectLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="googleRedirectLink"
+                    >
+                      Google Redirect Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="googleRedirectLink"
+                        placeholder="https://g.page/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <FormField
-              control={form.control}
-              name="yelpBusinessLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className="text-foreground"
-                    htmlFor="yelpBusinessLink"
-                  >
-                    Yelp Business Link
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      id="yelpBusinessLink"
-                      placeholder="https://www.yelp.com/biz/..."
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="yelpBusinessLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="yelpBusinessLink"
+                    >
+                      Yelp Business Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="yelpBusinessLink"
+                        placeholder="https://www.yelp.com/biz/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="yelpRedirectLink"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className="text-foreground"
-                    htmlFor="yelpRedirectLink"
-                  >
-                    Yelp Redirect Link
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      id="yelpRedirectLink"
-                      placeholder="https://yelp.to/..."
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="yelpRedirectLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="yelpRedirectLink"
+                    >
+                      Yelp Redirect Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="yelpRedirectLink"
+                        placeholder="https://yelp.to/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* <FormField
               control={form.control}
@@ -330,7 +335,7 @@ export default function OnboardingComponent() {
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
 
             <FormField
               control={form.control}
@@ -352,10 +357,11 @@ export default function OnboardingComponent() {
                   </FormControl>
                 </FormItem>
               )}
-            /> */}
+            />
 
-            <FormMessage className="text-muted-foreground">
-              This information is used to create a primary location
+            <FormMessage className="text-muted-foreground text-xs">
+              This information will be used to create a primary location for
+              your business on the platform.
             </FormMessage>
 
             <div className="mt-6">
