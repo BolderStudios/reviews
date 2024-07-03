@@ -233,7 +233,6 @@ export default function Page() {
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(handleSubmit, (errors) => {
-                      // Display toast for each error
                       Object.values(errors).forEach((error) => {
                         toast.error(error.message);
                       });

@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 
 export const completeOnboarding = async (formData) => {
   const { userId } = auth();
+  console.log("Data from completeOnboarding: ", formData);
 
   if (!userId) {
     console.log("No Logged In User");
@@ -24,5 +25,8 @@ export const completeOnboarding = async (formData) => {
   if (!error) {
     console.log("Onboarding complete. Redirecting to dashboard.");
     redirect("/dashboard");
+    return true;
   }
+
+  return false
 };

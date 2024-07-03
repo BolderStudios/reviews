@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ButtonLoading } from "./ButtonLoading"; // Import the ButtonLoading component
+import { ButtonLoading } from "@/components/ui/ButtonLoading";
 import {
   Form,
   FormControl,

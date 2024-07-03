@@ -17,12 +17,7 @@ async function SignedInPages({ children }) {
   console.log("Dashboard page. onboardingComplete:", onboardingComplete);
 
   if (onboardingComplete !== true) {
-    return (
-      <>
-        <Onboarding />
-        {children}
-      </>
-    );
+    return <>{children}</>;
   }
 
   return (
