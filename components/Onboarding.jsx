@@ -71,7 +71,9 @@ export default function OnboardingComponent() {
     try {
       const response = await completeOnboarding(formData);
 
-      if (response) {
+      console.log("Response: ", response)
+
+      if (response === true) {
         toast.success("Onboarding completed successfully");
         router.push("/dashboard");
         router.refresh();
