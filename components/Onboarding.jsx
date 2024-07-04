@@ -4,7 +4,6 @@
 
 import { useState } from "react";
 import { useUser, SignOutButton } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,12 +64,12 @@ const formSchema = z.object({
   organizationName: z.string().min(1, "Business name is required"),
   organizationIndustry: z.string().min(1, "Please select an industry"),
   positionOfContact: z.string().min(1, "Please select a position"),
+  nameOfContact: z.string().min(1, "Review overseer's name is required"),
   employeeCount: z.coerce.number().min(1, "Add number of employees you have"),
   locationCount: z.coerce.number().min(1, "Add number of locations you run"),
   customerRetentionChallenges: z
     .string()
     .min(1, "Describe your custom retential challenges"),
-  nameOfContact: z.string().min(1, "Review overseer's name is required"),
   // googleMapsLink: z.string().url("Invalid Google Maps link"),
   // googleRedirectLink: z.string().url("Invalid Google Redirect link"),
   // yelpBusinessLink: z.string().url("Invalid Yelp Business link"),
@@ -84,9 +83,6 @@ export default function OnboardingComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [openIndustry, setOpenIndustry] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
-
-  const { user } = useUser();
-  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -219,9 +215,6 @@ export default function OnboardingComponent() {
                       </PopoverTrigger>
                       <PopoverContent className="w-[260px] p-0">
                         <Command className="w-full">
-                          <CommandEmpty className="w-full">
-                            No industry found.
-                          </CommandEmpty>
                           <CommandGroup className="w-full">
                             <CommandList className="w-full">
                               {industries?.map((industry) => (
