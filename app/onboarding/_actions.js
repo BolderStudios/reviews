@@ -10,16 +10,16 @@ export const completeOnboarding = async (formData) => {
   const { userId } = auth();
   console.log("Data from completeOnboarding: ", formData);
 
-  if (!userId) {
-    console.log("No Logged In User");
-    return { message: "No Logged In User" };
-  }
-
   const { data: user, error: userError } = await supabase
     .from("users")
     .select()
     .eq("clerk_id", userId)
     .single();
+
+  if (!userId || userError || !user) {
+    console.log("No Logged In User");
+    return { message: "No Logged In User" };
+  }
 
   const { data: locationData, error: locationError } = await supabase
     .from("locations")
