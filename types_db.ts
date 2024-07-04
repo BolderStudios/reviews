@@ -9,21 +9,133 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      todos: {
+      locations: {
         Row: {
           created_at: string
-          id: number
-          user_id: string | null
+          id: string
+          is_competitor: boolean
+          is_primary: boolean
+          name_of_contact: string
+          organization_name: string
+          position_of_contact: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          id?: number
-          user_id?: string | null
+          id?: string
+          is_competitor?: boolean
+          is_primary?: boolean
+          name_of_contact: string
+          organization_name: string
+          position_of_contact: string
+          user_id: string
         }
         Update: {
           created_at?: string
-          id?: number
-          user_id?: string | null
+          id?: string
+          is_competitor?: boolean
+          is_primary?: boolean
+          name_of_contact?: string
+          organization_name?: string
+          position_of_contact?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_locations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          cancel_at: number | null
+          cancel_at_period_end: boolean
+          canceled_at: number | null
+          clerk_user_id: string
+          created_at: string
+          current_period_end: number
+          current_period_start: number
+          id: string
+          plan_amount: number
+          start_date: number
+          stripe_customer_id: string
+          stripe_price_id: string
+          stripe_subscription_id: string
+          subscription_status: string
+          trial_end: number | null
+          trial_start: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cancel_at?: number | null
+          cancel_at_period_end?: boolean
+          canceled_at?: number | null
+          clerk_user_id: string
+          created_at?: string
+          current_period_end: number
+          current_period_start: number
+          id?: string
+          plan_amount: number
+          start_date: number
+          stripe_customer_id: string
+          stripe_price_id: string
+          stripe_subscription_id: string
+          subscription_status: string
+          trial_end?: number | null
+          trial_start?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cancel_at?: number | null
+          cancel_at_period_end?: boolean
+          canceled_at?: number | null
+          clerk_user_id?: string
+          created_at?: string
+          current_period_end?: number
+          current_period_start?: number
+          id?: string
+          plan_amount?: number
+          start_date?: number
+          stripe_customer_id?: string
+          stripe_price_id?: string
+          stripe_subscription_id?: string
+          subscription_status?: string
+          trial_end?: number | null
+          trial_start?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usernames: {
+        Row: {
+          created_at: string
+          id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          username?: string
         }
         Relationships: []
       }
@@ -32,22 +144,37 @@ export type Database = {
           clerk_email: string
           clerk_id: string
           created_at: string
+          customer_retention_challenges: string
+          employee_count: number | null
           id: string
-          is_active: boolean
+          is_admin: boolean
+          is_onboarding_complete: boolean
+          location_count: number | null
+          organization_industry: string
         }
         Insert: {
           clerk_email: string
           clerk_id: string
           created_at?: string
+          customer_retention_challenges: string
+          employee_count?: number | null
           id?: string
-          is_active?: boolean
+          is_admin?: boolean
+          is_onboarding_complete?: boolean
+          location_count?: number | null
+          organization_industry: string
         }
         Update: {
           clerk_email?: string
           clerk_id?: string
           created_at?: string
+          customer_retention_challenges?: string
+          employee_count?: number | null
           id?: string
-          is_active?: boolean
+          is_admin?: boolean
+          is_onboarding_complete?: boolean
+          location_count?: number | null
+          organization_industry?: string
         }
         Relationships: []
       }
@@ -56,10 +183,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      requesting_user_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

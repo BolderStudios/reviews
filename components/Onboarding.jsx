@@ -62,22 +62,15 @@ const positions = [
 ];
 
 const formSchema = z.object({
-  businessName: z.string().min(1, "Business name is required"),
-  businessType: z.string().min(1, "Please select an industry"),
+  organizationName: z.string().min(1, "Business name is required"),
+  organizationIndustry: z.string().min(1, "Please select an industry"),
   positionOfContact: z.string().min(1, "Please select a position"),
-  numberOfEmployees: z.coerce
-    .number()
-    .min(1, "Add number of employees you have"),
-  numberOfLocations: z.coerce
-    .number()
-    .min(1, "Add number of locations you run"),
-  businessChallenges: z
+  employeeCount: z.coerce.number().min(1, "Add number of employees you have"),
+  locationCount: z.coerce.number().min(1, "Add number of locations you run"),
+  customerRetentionChallenges: z
     .string()
     .min(1, "Describe your custom retential challenges"),
-  pointOfContactName: z.string().min(1, "Review overseer's name is required"),
-  positionOfContact: z
-    .string()
-    .min(1, "Review overseer's position is required"),
+  nameOfContact: z.string().min(1, "Review overseer's name is required"),
   // googleMapsLink: z.string().url("Invalid Google Maps link"),
   // googleRedirectLink: z.string().url("Invalid Google Redirect link"),
   // yelpBusinessLink: z.string().url("Invalid Yelp Business link"),
@@ -98,12 +91,12 @@ export default function OnboardingComponent() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      businessName: "",
-      businessType: "",
-      numberOfEmployees: "",
-      numberOfLocations: "",
-      businessChallenges: "",
-      pointOfContactName: "",
+      organizationName: "",
+      organizationIndustry: "",
+      employeeCount: "",
+      locationCount: "",
+      customerRetentionChallenges: "",
+      nameOfContact: "",
       positionOfContact: "",
       // googleMapsLink: "",
       // googleRedirectLink: "",
@@ -153,7 +146,7 @@ export default function OnboardingComponent() {
           />
         </div>
 
-        <div className="flex flex-col text-center gap-2 mb-6">
+        <div className="flex flex-col text-center gap-2 mb-10">
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-stone-900">
             Complete Your Profile
           </h4>
@@ -175,18 +168,18 @@ export default function OnboardingComponent() {
             <div className="flex gap-4">
               <FormField
                 control={form.control}
-                name="businessName"
+                name="organizationName"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel
                       className="text-foreground"
-                      htmlFor="businessName"
+                      htmlFor="organizationName"
                     >
                       What is your company called?
                     </FormLabel>
                     <FormControl>
                       <Input
-                        id="businessName"
+                        id="organizationName"
                         placeholder="Enter business name"
                         {...field}
                       />
@@ -197,12 +190,12 @@ export default function OnboardingComponent() {
 
               <FormField
                 control={form.control}
-                name="businessType"
+                name="organizationIndustry"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel
                       className="text-foreground"
-                      htmlFor="businessType"
+                      htmlFor="organizationIndustry"
                     >
                       What type of business is it?
                     </FormLabel>
@@ -224,16 +217,18 @@ export default function OnboardingComponent() {
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-full p-0">
-                        <Command>
-                          <CommandInput placeholder="Search industry..." />
-                          <CommandEmpty>No industry found.</CommandEmpty>
-                          <CommandGroup>
-                            <CommandList>
+                      <PopoverContent className="w-[260px] p-0">
+                        <Command className="w-full">
+                          <CommandEmpty className="w-full">
+                            No industry found.
+                          </CommandEmpty>
+                          <CommandGroup className="w-full">
+                            <CommandList className="w-full">
                               {industries?.map((industry) => (
                                 <CommandItem
                                   key={`industry-${industry.value}`}
                                   value={industry.value}
+                                  className="w-full"
                                   onSelect={(value) => {
                                     field.onChange(value);
                                     setOpenIndustry(false);
@@ -263,19 +258,19 @@ export default function OnboardingComponent() {
             <div className="flex gap-4">
               <FormField
                 control={form.control}
-                name="pointOfContactName"
+                name="nameOfContact"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel
                       className="text-foreground"
-                      htmlFor="pointOfContactName"
+                      htmlFor="nameOfContact"
                     >
                       Who is the point of contact?
                     </FormLabel>
                     <FormControl>
                       <Input
-                        id="pointOfContactName"
-                        placeholder="Enter name"
+                        id="nameOfContact"
+                        placeholder="Enter first name"
                         {...field}
                       />
                     </FormControl>
@@ -312,30 +307,36 @@ export default function OnboardingComponent() {
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-full p-0">
-                        <Command>
-                          <CommandInput placeholder="Search position..." />
-                          <CommandEmpty>No position found.</CommandEmpty>
-                          <CommandGroup>
-                            <CommandList>
+                      <PopoverContent className="w-[260px] p-0">
+                        <Command className="w-full">
+                          <CommandEmpty className="w-full">
+                            No position found.
+                          </CommandEmpty>
+                          <CommandGroup className="w-full">
+                            <CommandList className="w-full">
                               {positions.map((position) => (
                                 <CommandItem
                                   key={`position-${position.value}`}
                                   value={position.value}
+                                  className="w-full"
                                   onSelect={(value) => {
                                     field.onChange(value);
                                     setOpenPosition(false);
                                   }}
                                 >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      field.value === position.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                  {position.label}
+                                  <div className="flex items-center w-full">
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4 flex-shrink-0",
+                                        field.value === position.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <span className="flex-grow">
+                                      {position.label}
+                                    </span>
+                                  </div>
                                 </CommandItem>
                               ))}
                             </CommandList>
@@ -351,18 +352,18 @@ export default function OnboardingComponent() {
             <div className="flex gap-4">
               <FormField
                 control={form.control}
-                name="numberOfEmployees"
+                name="employeeCount"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel
                       className="text-foreground"
-                      htmlFor="numberOfEmployees"
+                      htmlFor="employeeCount"
                     >
                       How many employees do you have?
                     </FormLabel>
                     <FormControl>
                       <Input
-                        id="numberOfEmployees"
+                        id="employeeCount"
                         placeholder="Enter number of employees"
                         {...field}
                       />
@@ -373,18 +374,18 @@ export default function OnboardingComponent() {
 
               <FormField
                 control={form.control}
-                name="numberOfLocations"
+                name="locationCount"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel
                       className="text-foreground"
-                      htmlFor="numberOfLocations"
+                      htmlFor="locationCount"
                     >
                       How many locations do you run?
                     </FormLabel>
                     <FormControl>
                       <Input
-                        id="numberOfLocations"
+                        id="locationCount"
                         placeholder="Enter number of locations"
                         {...field}
                       />
@@ -488,18 +489,18 @@ export default function OnboardingComponent() {
 
             <FormField
               control={form.control}
-              name="businessChallenges"
+              name="customerRetentionChallenges"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel
                     className="text-foreground"
-                    htmlFor="businessChallenges"
+                    htmlFor="customerRetentionChallenges"
                   >
                     Customer Retential Challenges
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      id="businessChallenges"
+                      id="customerRetentionChallenges"
                       placeholder="Describe your business goals or challenges regarding customer retention"
                       {...field}
                     />
@@ -537,7 +538,7 @@ export default function OnboardingComponent() {
               </Link>{" "}
             </FormMessage>
 
-            <div className="mt-6">
+            <div>
               {isLoading ? (
                 <ButtonLoading
                   size="lg"

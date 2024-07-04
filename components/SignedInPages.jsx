@@ -16,13 +16,18 @@ async function SignedInPages({ children }) {
   const onboardingComplete = data?.is_onboarding_complete;
   console.log("Dashboard page. onboardingComplete:", onboardingComplete);
 
+  const { data: locations, error: locationsError } = await supabase.from("locations").select().eq("user_id", data.id);
+
+  console.log("Locations: ", locations);
+
+
   if (onboardingComplete !== true) {
     return <>{children}</>;
   }
 
   return (
     <div className="flex flex-1">
-      <SidebarNavigation />
+      <SidebarNavigation locations={locations} />
       <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Navbar />
         <div className="flex-grow">{children}</div>
