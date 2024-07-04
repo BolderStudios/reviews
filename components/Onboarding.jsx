@@ -531,8 +531,10 @@ export default function OnboardingComponent() {
             /> */}
 
             <FormMessage className="text-muted-foreground text-xs">
-              This information will be used to create a primary location for
-              your business on the platform.
+              By completing this form, you agree to our{" "}
+              <Link href="/terms" className="underline">
+                Terms of Service
+              </Link>{" "}
             </FormMessage>
 
             <div className="mt-6">
