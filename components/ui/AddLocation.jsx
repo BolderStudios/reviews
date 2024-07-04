@@ -216,13 +216,13 @@ export function AddLocation() {
                 />
               </div>
 
-              <FormDescription className="text-muted-foreground text-xs mt-2">
+              {/* <FormDescription className="text-muted-foreground text-xs mt-2">
                 If location is a competitor, write N/A in the name and position
                 fields.
-              </FormDescription>
+              </FormDescription> */}
             </div>
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="isCompetitor"
               render={({ field }) => (
@@ -232,14 +232,10 @@ export function AddLocation() {
                     <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                       Is this organization a competitor?
                     </p>
-
-                    {/* <p className="text-sm text-muted-foreground">
-                      You agree to our Terms of Service and Privacy Policy.
-                    </p> */}
                   </div>
                 </div>
               )}
-            />
+            /> */}
 
             <div>
               {isLoading ? (
@@ -249,7 +245,7 @@ export function AddLocation() {
                   content="Adding location ..."
                 />
               ) : (
-                <Button type="submit" size="lg" className="w-full">
+                <Button type="submit" size="lg" className="w-full mt-2">
                   Add Location
                 </Button>
               )}

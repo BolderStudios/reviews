@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import Link from "next/link";
 
 import { Check, ChevronsUpDown } from "lucide-react";
@@ -83,10 +84,9 @@ export default function OnboardingComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [openIndustry, setOpenIndustry] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
-
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
+  const [onboardingForm, setOnboardingForm] = useLocalStorage(
+    "onboarding_form",
+    {
       organizationName: "",
       organizationIndustry: "",
       employeeCount: "",
@@ -94,19 +94,48 @@ export default function OnboardingComponent() {
       customerRetentionChallenges: "",
       nameOfContact: "",
       positionOfContact: "",
-      // googleMapsLink: "",
-      // googleRedirectLink: "",
-      // yelpBusinessLink: "",
-      // yelpRedirectLink: "",
-      // complementarySolutions: "",
-    },
+    }
+  );
+
+  console.log("Organization name");
+  console.log(onboardingForm.organizationName);
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: onboardingForm,
+
+    // {
+    //   // googleMapsLink: "",
+    //   // googleRedirectLink: "",
+    //   // yelpBusinessLink: "",
+    //   // yelpRedirectLink: "",
+    //   // complementarySolutions: "",
+    // },
   });
+
+  const formValues = form.watch();
+
+  console.log("form values: ", formValues);
+
+  useEffect(() => {
+    setOnboardingForm(formValues);
+  }, [formValues, setOnboardingForm]);
 
   const handleSubmit = async (formData) => {
     setIsLoading(true);
 
     try {
       await completeOnboarding(formData);
+      form.reset({
+        organizationName: "",
+        organizationIndustry: "",
+        employeeCount: "",
+        locationCount: "",
+        customerRetentionChallenges: "",
+        nameOfContact: "",
+        positionOfContact: "",
+      });
+
       toast.success("Onboarding complete 🎉");
     } catch (error) {
       toast.error(error.message);
