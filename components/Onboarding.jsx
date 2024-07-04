@@ -116,438 +116,437 @@ export default function OnboardingComponent() {
   };
 
   return (
-    // <div className="w-screen h-screen relative flex items-center justify-center">
-    //   {/* Go Back button */}
-    //   <div className="absolute top-4 left-4">
-    //     <SignOutButton redirectUrl="/sign-in">
-    //       <Button
-    //         variant="outline"
-    //         className="flex items-center justify-center gap-[6px]"
-    //       >
-    //         <ArrowLeft size={14} className="mt-[1px]" />
-    //         <p className="leading-7">Signout</p>
-    //       </Button>
-    //     </SignOutButton>
-    //   </div>
+    <div className="w-screen h-screen relative flex items-center justify-center">
+      {/* Go Back button */}
+      <div className="absolute top-4 left-4">
+        <SignOutButton redirectUrl="/sign-in">
+          <Button
+            variant="outline"
+            className="flex items-center justify-center gap-[6px]"
+          >
+            <ArrowLeft size={14} className="mt-[1px]" />
+            <p className="leading-7">Signout</p>
+          </Button>
+        </SignOutButton>
+      </div>
 
-    //   {/* Main onboarding component */}
-    //   <div className="w-[600px] py-6 px-8">
-    //     <div className="flex flex-col items-center justify-center mb-6">
-    //       <Image
-    //         src={Logo}
-    //         alt="Brand Armor Logo"
-    //         width={99}
-    //         height={10}
-    //         priority
-    //       />
-    //     </div>
+      {/* Main onboarding component */}
+      <div className="w-[600px] py-6 px-8">
+        <div className="flex flex-col items-center justify-center mb-6">
+          <Image
+            src={Logo}
+            alt="Brand Armor Logo"
+            width={99}
+            height={10}
+            priority
+          />
+        </div>
 
-    //     <div className="flex flex-col text-center gap-2 mb-10">
-    //       <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-stone-900">
-    //         Complete Your Profile
-    //       </h4>
-    //       <p className="leading-5 text-stone-700">
-    //         Please provide some information about your business.
-    //       </p>
-    //     </div>
+        <div className="flex flex-col text-center gap-2 mb-10">
+          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight text-stone-900">
+            Complete Your Profile
+          </h4>
+          <p className="leading-5 text-stone-700">
+            Please provide some information about your business.
+          </p>
+        </div>
 
-    //     <Form {...form}>
-    //       <form
-    //         onSubmit={form.handleSubmit(handleSubmit, (errors) => {
-    //           // Display toast for each error
-    //           Object.values(errors).forEach((error) => {
-    //             toast.error(error.message);
-    //           });
-    //         })}
-    //         className="space-y-4"
-    //       >
-    //         <div className="flex gap-4">
-    //           <FormField
-    //             control={form.control}
-    //             name="organizationName"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="organizationName"
-    //                 >
-    //                   What is your company called?
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="organizationName"
-    //                     placeholder="Enter business name"
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit, (errors) => {
+              // Display toast for each error
+              Object.values(errors).forEach((error) => {
+                toast.error(error.message);
+              });
+            })}
+            className="space-y-4"
+          >
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="organizationName"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="organizationName"
+                    >
+                      What is your company called?
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="organizationName"
+                        placeholder="Enter business name"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-    //           <FormField
-    //             control={form.control}
-    //             name="organizationIndustry"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="organizationIndustry"
-    //                 >
-    //                   What type of business is it?
-    //                 </FormLabel>
-    //                 <Popover open={openIndustry} onOpenChange={setOpenIndustry}>
-    //                   <PopoverTrigger asChild>
-    //                     <FormControl>
-    //                       <Button
-    //                         variant="outline"
-    //                         role="combobox"
-    //                         aria-expanded={openIndustry}
-    //                         className="w-full justify-between"
-    //                       >
-    //                         {field.value
-    //                           ? industries.find(
-    //                               (industry) => industry.value === field.value
-    //                             )?.label
-    //                           : "Select industry..."}
-    //                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-    //                       </Button>
-    //                     </FormControl>
-    //                   </PopoverTrigger>
-    //                   <PopoverContent className="w-[260px] p-0">
-    //                     <Command className="w-full">
-    //                       <CommandGroup className="w-full">
-    //                         <CommandList className="w-full">
-    //                           {industries?.map((industry) => (
-    //                             <CommandItem
-    //                               key={`industry-${industry.value}`}
-    //                               value={industry.value}
-    //                               className="w-full"
-    //                               onSelect={(value) => {
-    //                                 field.onChange(value);
-    //                                 setOpenIndustry(false);
-    //                               }}
-    //                             >
-    //                               <Check
-    //                                 className={cn(
-    //                                   "mr-2 h-4 w-4",
-    //                                   field.value === industry.value
-    //                                     ? "opacity-100"
-    //                                     : "opacity-0"
-    //                                 )}
-    //                               />
-    //                               {industry.label}
-    //                             </CommandItem>
-    //                           ))}
-    //                         </CommandList>
-    //                       </CommandGroup>
-    //                     </Command>
-    //                   </PopoverContent>
-    //                 </Popover>
-    //               </FormItem>
-    //             )}
-    //           />
-    //         </div>
+              <FormField
+                control={form.control}
+                name="organizationIndustry"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="organizationIndustry"
+                    >
+                      What type of business is it?
+                    </FormLabel>
+                    <Popover open={openIndustry} onOpenChange={setOpenIndustry}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openIndustry}
+                            className="w-full justify-between"
+                          >
+                            {field.value
+                              ? industries.find(
+                                  (industry) => industry.value === field.value
+                                )?.label
+                              : "Select industry..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[260px] p-0">
+                        <Command className="w-full">
+                          <CommandGroup className="w-full">
+                            <CommandList className="w-full">
+                              {industries?.map((industry) => (
+                                <CommandItem
+                                  key={`industry-${industry.value}`}
+                                  value={industry.value}
+                                  className="w-full"
+                                  onSelect={(value) => {
+                                    field.onChange(value);
+                                    setOpenIndustry(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === industry.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {industry.label}
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-    //         <div className="flex gap-4">
-    //           <FormField
-    //             control={form.control}
-    //             name="nameOfContact"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="nameOfContact"
-    //                 >
-    //                   Who is the point of contact?
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="nameOfContact"
-    //                     placeholder="Enter first name"
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="nameOfContact"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="nameOfContact"
+                    >
+                      Who is the point of contact?
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="nameOfContact"
+                        placeholder="Enter first name"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-    //           <FormField
-    //             control={form.control}
-    //             name="positionOfContact"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="positionOfContact"
-    //                 >
-    //                   What is their position?
-    //                 </FormLabel>
-    //                 <Popover open={openPosition} onOpenChange={setOpenPosition}>
-    //                   <PopoverTrigger asChild>
-    //                     <FormControl>
-    //                       <Button
-    //                         variant="outline"
-    //                         role="combobox"
-    //                         aria-expanded={openPosition}
-    //                         className="w-full justify-between"
-    //                       >
-    //                         {field.value
-    //                           ? positions.find(
-    //                               (position) => position.value === field.value
-    //                             )?.label
-    //                           : "Select position..."}
-    //                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-    //                       </Button>
-    //                     </FormControl>
-    //                   </PopoverTrigger>
-    //                   <PopoverContent className="w-[260px] p-0">
-    //                     <Command className="w-full">
-    //                       <CommandEmpty className="w-full">
-    //                         No position found.
-    //                       </CommandEmpty>
-    //                       <CommandGroup className="w-full">
-    //                         <CommandList className="w-full">
-    //                           {positions.map((position) => (
-    //                             <CommandItem
-    //                               key={`position-${position.value}`}
-    //                               value={position.value}
-    //                               className="w-full"
-    //                               onSelect={(value) => {
-    //                                 field.onChange(value);
-    //                                 setOpenPosition(false);
-    //                               }}
-    //                             >
-    //                               <div className="flex items-center w-full">
-    //                                 <Check
-    //                                   className={cn(
-    //                                     "mr-2 h-4 w-4 flex-shrink-0",
-    //                                     field.value === position.value
-    //                                       ? "opacity-100"
-    //                                       : "opacity-0"
-    //                                   )}
-    //                                 />
-    //                                 <span className="flex-grow">
-    //                                   {position.label}
-    //                                 </span>
-    //                               </div>
-    //                             </CommandItem>
-    //                           ))}
-    //                         </CommandList>
-    //                       </CommandGroup>
-    //                     </Command>
-    //                   </PopoverContent>
-    //                 </Popover>
-    //               </FormItem>
-    //             )}
-    //           />
-    //         </div>
+              <FormField
+                control={form.control}
+                name="positionOfContact"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="positionOfContact"
+                    >
+                      What is their position?
+                    </FormLabel>
+                    <Popover open={openPosition} onOpenChange={setOpenPosition}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPosition}
+                            className="w-full justify-between"
+                          >
+                            {field.value
+                              ? positions.find(
+                                  (position) => position.value === field.value
+                                )?.label
+                              : "Select position..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[260px] p-0">
+                        <Command className="w-full">
+                          <CommandEmpty className="w-full">
+                            No position found.
+                          </CommandEmpty>
+                          <CommandGroup className="w-full">
+                            <CommandList className="w-full">
+                              {positions.map((position) => (
+                                <CommandItem
+                                  key={`position-${position.value}`}
+                                  value={position.value}
+                                  className="w-full"
+                                  onSelect={(value) => {
+                                    field.onChange(value);
+                                    setOpenPosition(false);
+                                  }}
+                                >
+                                  <div className="flex items-center w-full">
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4 flex-shrink-0",
+                                        field.value === position.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <span className="flex-grow">
+                                      {position.label}
+                                    </span>
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-    //         <div className="flex gap-4">
-    //           <FormField
-    //             control={form.control}
-    //             name="employeeCount"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="employeeCount"
-    //                 >
-    //                   How many employees do you have?
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="employeeCount"
-    //                     placeholder="Enter number of employees"
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="employeeCount"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="employeeCount"
+                    >
+                      How many employees do you have?
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="employeeCount"
+                        placeholder="Enter number of employees"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-    //           <FormField
-    //             control={form.control}
-    //             name="locationCount"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="locationCount"
-    //                 >
-    //                   How many locations do you run?
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="locationCount"
-    //                     placeholder="Enter number of locations"
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
-    //         </div>
+              <FormField
+                control={form.control}
+                name="locationCount"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="locationCount"
+                    >
+                      How many locations do you run?
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="locationCount"
+                        placeholder="Enter number of locations"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
-    //         {/* <div className="flex gap-4">
-    //           <FormField
-    //             control={form.control}
-    //             name="googleMapsLink"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="googleMapsLink"
-    //                 >
-    //                   Google Maps Link
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="googleMapsLink"
-    //                     placeholder="https://www.google.com/maps/..."
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
+            {/* <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="googleMapsLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="googleMapsLink"
+                    >
+                      Google Maps Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="googleMapsLink"
+                        placeholder="https://www.google.com/maps/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-    //           <FormField
-    //             control={form.control}
-    //             name="googleRedirectLink"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="googleRedirectLink"
-    //                 >
-    //                   Google Redirect Link
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="googleRedirectLink"
-    //                     placeholder="https://g.page/..."
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
-    //         </div> */}
+              <FormField
+                control={form.control}
+                name="googleRedirectLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="googleRedirectLink"
+                    >
+                      Google Redirect Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="googleRedirectLink"
+                        placeholder="https://g.page/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div> */}
 
-    //         {/* <div className="flex gap-4">
-    //           <FormField
-    //             control={form.control}
-    //             name="yelpBusinessLink"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="yelpBusinessLink"
-    //                 >
-    //                   Yelp Business Link
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="yelpBusinessLink"
-    //                     placeholder="https://www.yelp.com/biz/..."
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
+            {/* <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="yelpBusinessLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="yelpBusinessLink"
+                    >
+                      Yelp Business Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="yelpBusinessLink"
+                        placeholder="https://www.yelp.com/biz/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-    //           <FormField
-    //             control={form.control}
-    //             name="yelpRedirectLink"
-    //             render={({ field }) => (
-    //               <FormItem className="flex-1">
-    //                 <FormLabel
-    //                   className="text-foreground"
-    //                   htmlFor="yelpRedirectLink"
-    //                 >
-    //                   Yelp Redirect Link
-    //                 </FormLabel>
-    //                 <FormControl>
-    //                   <Input
-    //                     id="yelpRedirectLink"
-    //                     placeholder="https://yelp.to/..."
-    //                     {...field}
-    //                   />
-    //                 </FormControl>
-    //               </FormItem>
-    //             )}
-    //           />
-    //         </div> */}
+              <FormField
+                control={form.control}
+                name="yelpRedirectLink"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="yelpRedirectLink"
+                    >
+                      Yelp Redirect Link
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="yelpRedirectLink"
+                        placeholder="https://yelp.to/..."
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div> */}
 
-    //         <FormField
-    //           control={form.control}
-    //           name="customerRetentionChallenges"
-    //           render={({ field }) => (
-    //             <FormItem>
-    //               <FormLabel
-    //                 className="text-foreground"
-    //                 htmlFor="customerRetentionChallenges"
-    //               >
-    //                 Customer Retential Challenges
-    //               </FormLabel>
-    //               <FormControl>
-    //                 <Textarea
-    //                   id="customerRetentionChallenges"
-    //                   placeholder="Describe your business goals or challenges regarding customer retention"
-    //                   {...field}
-    //                 />
-    //               </FormControl>
-    //             </FormItem>
-    //           )}
-    //         />
+            <FormField
+              control={form.control}
+              name="customerRetentionChallenges"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel
+                    className="text-foreground"
+                    htmlFor="customerRetentionChallenges"
+                  >
+                    Customer Retential Challenges
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      id="customerRetentionChallenges"
+                      placeholder="Describe your business goals or challenges regarding customer retention"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
 
-    //         {/* <FormField
-    //           control={form.control}
-    //           name="complementarySolutions"
-    //           render={({ field }) => (
-    //             <FormItem>
-    //               <FormLabel
-    //                 className="text-foreground"
-    //                 htmlFor="complementarySolutions"
-    //               >
-    //                 Complementary Solutions
-    //               </FormLabel>
-    //               <FormControl>
-    //                 <Textarea
-    //                   id="complementarySolutions"
-    //                   placeholder="Describe complementary solutions we could offer to bring back customers"
-    //                   {...field}
-    //                 />
-    //               </FormControl>
-    //             </FormItem>
-    //           )}
-    //         /> */}
+            {/* <FormField
+              control={form.control}
+              name="complementarySolutions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel
+                    className="text-foreground"
+                    htmlFor="complementarySolutions"
+                  >
+                    Complementary Solutions
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      id="complementarySolutions"
+                      placeholder="Describe complementary solutions we could offer to bring back customers"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            /> */}
 
-    //         <FormMessage className="text-muted-foreground text-xs">
-    //           By completing this form, you agree to our{" "}
-    //           <Link href="/terms" className="underline">
-    //             Terms of Service
-    //           </Link>{" "}
-    //         </FormMessage>
+            <FormMessage className="text-muted-foreground text-xs">
+              By completing this form, you agree to our{" "}
+              <Link href="/terms" className="underline">
+                Terms of Service
+              </Link>{" "}
+            </FormMessage>
 
-    //         <div>
-    //           {isLoading ? (
-    //             <ButtonLoading
-    //               size="lg"
-    //               width="w-full"
-    //               content="Completing onboarding ..."
-    //             />
-    //           ) : (
-    //             <Button type="submit" size="lg" className="w-full">
-    //               Complete Onboarding
-    //             </Button>
-    //           )}
-    //         </div>
-    //       </form>
-    //     </Form>
-    //   </div>
-    // </div>
-    <div>Onboarding</div>
+            <div>
+              {isLoading ? (
+                <ButtonLoading
+                  size="lg"
+                  width="w-full"
+                  content="Completing onboarding ..."
+                />
+              ) : (
+                <Button type="submit" size="lg" className="w-full">
+                  Complete Onboarding
+                </Button>
+              )}
+            </div>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 }
