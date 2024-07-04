@@ -7,6 +7,7 @@ import supabase from "@/utils/supabaseClient";
 
 export default async function Page() {
   const { userId } = await auth();
+  
   const { data, error } = await supabase
     .from("users")
     .select()
