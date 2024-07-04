@@ -97,9 +97,6 @@ export default function OnboardingComponent() {
     }
   );
 
-  console.log("Organization name");
-  console.log(onboardingForm.organizationName);
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: onboardingForm,
@@ -115,8 +112,6 @@ export default function OnboardingComponent() {
 
   const formValues = form.watch();
 
-  console.log("form values: ", formValues);
-
   useEffect(() => {
     setOnboardingForm(formValues);
   }, [formValues, setOnboardingForm]);
@@ -126,17 +121,19 @@ export default function OnboardingComponent() {
 
     try {
       await completeOnboarding(formData);
-      form.reset({
-        organizationName: "",
-        organizationIndustry: "",
-        employeeCount: "",
-        locationCount: "",
-        customerRetentionChallenges: "",
-        nameOfContact: "",
-        positionOfContact: "",
-      });
-
       toast.success("Onboarding complete 🎉");
+
+      setTimeout(() => {
+        form.reset({
+          organizationName: "",
+          organizationIndustry: "",
+          employeeCount: "",
+          locationCount: "",
+          customerRetentionChallenges: "",
+          nameOfContact: "",
+          positionOfContact: "",
+        });
+      }, 1000);
     } catch (error) {
       toast.error(error.message);
     } finally {
