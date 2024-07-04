@@ -13,6 +13,23 @@ import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 
+import { Check, ChevronsUpDown } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandList,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 import { completeOnboarding } from "@/app/onboarding/_actions";
 import Logo from "@/public/logoBlack.png";
 import { Button } from "@/components/ui/button";
@@ -28,23 +45,53 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+const industries = [
+  { value: "restaurant", label: "Restaurant" },
+  { value: "retail", label: "Retail" },
+  { value: "healthcare", label: "Healthcare" },
+  { value: "technology", label: "Technology" },
+  // Add more industries as needed
+];
+
+const positions = [
+  { value: "owner", label: "Owner" },
+  { value: "manager", label: "Manager" },
+  { value: "director", label: "Director" },
+  { value: "supervisor", label: "Supervisor" },
+  // Add more positions as needed
+];
+
 const formSchema = z.object({
   businessName: z.string().min(1, "Business name is required"),
-  businessType: z.string().min(1, "Business type is required"),
-  pointOfContactName: z.string().min(1, "Review overseer's name is required"),
-  positionOfContact: z.string().min(1, "Position held is required"),
-  googleMapsLink: z.string().url("Invalid Google Maps link"),
-  googleRedirectLink: z.string().url("Invalid Google Redirect link"),
-  yelpBusinessLink: z.string().url("Invalid Yelp Business link"),
-  yelpRedirectLink: z.string().url("Invalid Yelp Redirect link"),
-  complementarySolutions: z
+  businessType: z.string().min(1, "Please select an industry"),
+  positionOfContact: z.string().min(1, "Please select a position"),
+  numberOfEmployees: z.coerce
+    .number()
+    .min(1, "Add number of employees you have"),
+  numberOfLocations: z.coerce
+    .number()
+    .min(1, "Add number of locations you run"),
+  businessChallenges: z
     .string()
-    .min(1, "Complementary solutions are required"),
-  // businessChallenges: z.string().min(1, "Business goals are required"),
+    .min(1, "Describe your custom retential challenges"),
+  pointOfContactName: z.string().min(1, "Review overseer's name is required"),
+  positionOfContact: z
+    .string()
+    .min(1, "Review overseer's position is required"),
+  // googleMapsLink: z.string().url("Invalid Google Maps link"),
+  // googleRedirectLink: z.string().url("Invalid Google Redirect link"),
+  // yelpBusinessLink: z.string().url("Invalid Yelp Business link"),
+  // yelpRedirectLink: z.string().url("Invalid Yelp Redirect link"),
+  // complementarySolutions: z
+  //   .string()
+  //   .min(1, "Complementary solutions are required"),
 });
 
 export default function OnboardingComponent() {
   const [isLoading, setIsLoading] = useState(false);
+  const [openIndustry, setOpenIndustry] = useState(false);
+  const [openPosition, setOpenPosition] = useState(false);
+
   const { user } = useUser();
   const router = useRouter();
 
@@ -53,14 +100,16 @@ export default function OnboardingComponent() {
     defaultValues: {
       businessName: "",
       businessType: "",
+      numberOfEmployees: "",
+      numberOfLocations: "",
+      businessChallenges: "",
       pointOfContactName: "",
       positionOfContact: "",
-      googleMapsLink: "",
-      googleRedirectLink: "",
-      yelpBusinessLink: "",
-      yelpRedirectLink: "",
-      complementarySolutions: "",
-      // businessChallenges: "",
+      // googleMapsLink: "",
+      // googleRedirectLink: "",
+      // yelpBusinessLink: "",
+      // yelpRedirectLink: "",
+      // complementarySolutions: "",
     },
   });
 
@@ -69,7 +118,6 @@ export default function OnboardingComponent() {
 
     try {
       await completeOnboarding(formData);
-
       toast.success("Onboarding complete 🎉");
     } catch (error) {
       toast.error(error.message);
@@ -158,13 +206,55 @@ export default function OnboardingComponent() {
                     >
                       What type of business is it?
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="businessType"
-                        placeholder="Enter business type"
-                        {...field}
-                      />
-                    </FormControl>
+                    <Popover open={openIndustry} onOpenChange={setOpenIndustry}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openIndustry}
+                            className="w-full justify-between"
+                          >
+                            {field.value
+                              ? industries.find(
+                                  (industry) => industry.value === field.value
+                                )?.label
+                              : "Select industry..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput placeholder="Search industry..." />
+                          <CommandEmpty>No industry found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandList>
+                              {industries?.map((industry) => (
+                                <CommandItem
+                                  key={`industry-${industry.value}`}
+                                  value={industry.value}
+                                  onSelect={(value) => {
+                                    field.onChange(value);
+                                    setOpenIndustry(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === industry.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {industry.label}
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </FormItem>
                 )}
               />
@@ -202,12 +292,100 @@ export default function OnboardingComponent() {
                       className="text-foreground"
                       htmlFor="positionOfContact"
                     >
-                      What's their position?
+                      What is their position?
+                    </FormLabel>
+                    <Popover open={openPosition} onOpenChange={setOpenPosition}>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPosition}
+                            className="w-full justify-between"
+                          >
+                            {field.value
+                              ? positions.find(
+                                  (position) => position.value === field.value
+                                )?.label
+                              : "Select position..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput placeholder="Search position..." />
+                          <CommandEmpty>No position found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandList>
+                              {positions.map((position) => (
+                                <CommandItem
+                                  key={`position-${position.value}`}
+                                  value={position.value}
+                                  onSelect={(value) => {
+                                    field.onChange(value);
+                                    setOpenPosition(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      field.value === position.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {position.label}
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="numberOfEmployees"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="numberOfEmployees"
+                    >
+                      How many employees do you have?
                     </FormLabel>
                     <FormControl>
                       <Input
-                        id="positionOfContact"
-                        placeholder="Enter position"
+                        id="numberOfEmployees"
+                        placeholder="Enter number of employees"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="numberOfLocations"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel
+                      className="text-foreground"
+                      htmlFor="numberOfLocations"
+                    >
+                      How many locations do you run?
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="numberOfLocations"
+                        placeholder="Enter number of locations"
                         {...field}
                       />
                     </FormControl>
@@ -216,7 +394,7 @@ export default function OnboardingComponent() {
               />
             </div>
 
-            <div className="flex gap-4">
+            {/* <div className="flex gap-4">
               <FormField
                 control={form.control}
                 name="googleMapsLink"
@@ -260,9 +438,9 @@ export default function OnboardingComponent() {
                   </FormItem>
                 )}
               />
-            </div>
+            </div> */}
 
-            <div className="flex gap-4">
+            {/* <div className="flex gap-4">
               <FormField
                 control={form.control}
                 name="yelpBusinessLink"
@@ -306,9 +484,9 @@ export default function OnboardingComponent() {
                   </FormItem>
                 )}
               />
-            </div>
+            </div> */}
 
-            {/* <FormField
+            <FormField
               control={form.control}
               name="businessChallenges"
               render={({ field }) => (
@@ -317,7 +495,7 @@ export default function OnboardingComponent() {
                     className="text-foreground"
                     htmlFor="businessChallenges"
                   >
-                    Business Goals/Challenges
+                    Customer Retential Challenges
                   </FormLabel>
                   <FormControl>
                     <Textarea
@@ -328,9 +506,9 @@ export default function OnboardingComponent() {
                   </FormControl>
                 </FormItem>
               )}
-            /> */}
+            />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="complementarySolutions"
               render={({ field }) => (
@@ -350,7 +528,7 @@ export default function OnboardingComponent() {
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
 
             <FormMessage className="text-muted-foreground text-xs">
               This information will be used to create a primary location for

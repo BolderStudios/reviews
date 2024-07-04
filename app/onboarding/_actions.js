@@ -2,7 +2,7 @@
 
 "use server";
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import supabase from "@/utils/supabaseClient";
 import { redirect } from "next/navigation";
 
