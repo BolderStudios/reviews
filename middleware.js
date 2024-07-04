@@ -14,11 +14,9 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   try {
     const url = req.nextUrl;
-    console.log("Middleware processing:", url.pathname);
 
     if (isProtectedRoute(req)) {
       const { userId, sessionClaims } = await auth();
-      console.log("Protected route. userId:", userId);
 
       if (!userId) {
         console.log("No user ID, redirecting to sign-in");
@@ -26,7 +24,6 @@ export default clerkMiddleware(async (auth, req) => {
         return NextResponse.redirect(signInUrl);
       }
 
-      console.log("User ID from middleware:", userId);
 
       const { data, error } = await supabase
         .from("users")
@@ -35,7 +32,6 @@ export default clerkMiddleware(async (auth, req) => {
         .single();
 
       const onboardingComplete = data?.is_onboarding_complete;
-      console.log("onboardingComplete:", onboardingComplete);
 
       if (!onboardingComplete && !req.nextUrl.pathname.startsWith('/onboarding')) {
         return NextResponse.redirect(new URL('/onboarding', req.url));
@@ -48,7 +44,6 @@ export default clerkMiddleware(async (auth, req) => {
       console.log("Non-protected route");
     }
 
-    console.log("Proceeding to next middleware/route handler");
     return NextResponse.next();
   } catch (error) {
     console.error("Middleware error:", error);
@@ -56,6 +51,14 @@ export default clerkMiddleware(async (auth, req) => {
   }
 });
 
+// export const config = {
+//   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+// };
+
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    "/((?!api/webhooks/clerk|.*\\..*|_next).*)",
+    "/",
+    "/((?!api/webhooks/clerk)api|trpc)(.*)"
+  ],
 };

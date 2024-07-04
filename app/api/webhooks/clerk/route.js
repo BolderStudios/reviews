@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import supabase from "@/utils/supabaseClient";
 
 export async function POST(req) {
+  console.log("Webhook received");
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
@@ -13,7 +14,11 @@ export async function POST(req) {
     );
   }
 
+  console.log("Headers:", Object.fromEntries(req.headers));
+
   const body = await req.text();
+
+  console.log("Body:", body);
   const payload = JSON.parse(body);
 
   // Log incoming headers and body for debugging
@@ -118,6 +123,7 @@ async function updateUserDataInDatabase(user) {
 
 async function deleteUserDataFromDatabase(user) {
   const id = user.id;
+  console.log("Deleting user with ID: ", id);
 
   const { data, error } = await supabase
     .from("users")
