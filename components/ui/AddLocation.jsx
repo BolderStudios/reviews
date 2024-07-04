@@ -40,8 +40,6 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const positions = [
   { value: "owner", label: "Owner" },
@@ -55,7 +53,6 @@ const formSchema = z.object({
   organizationName: z.string().min(1, "Organization name is required"),
   nameOfContact: z.string().min(1, "Point of contact name is required"),
   positionOfContact: z.string().min(1, "Please select a position"),
-  isCompetitor: z.boolean(),
 });
 
 export function AddLocation() {
@@ -68,7 +65,6 @@ export function AddLocation() {
       organizationName: "",
       nameOfContact: "",
       positionOfContact: "",
-      isCompetitor: false,
     },
   });
 
@@ -80,7 +76,11 @@ export function AddLocation() {
 
       if (response.success === true) {
         toast.success("Location added successfully!");
-        form.reset();
+        form.reset({
+          organizationName: "",
+          nameOfContact: "",
+          positionOfContact: "",
+        });
       } else {
         toast.error("Failed to add location. Please try again.");
       }
@@ -215,27 +215,7 @@ export function AddLocation() {
                   )}
                 />
               </div>
-
-              {/* <FormDescription className="text-muted-foreground text-xs mt-2">
-                If location is a competitor, write N/A in the name and position
-                fields.
-              </FormDescription> */}
             </div>
-
-            {/* <FormField
-              control={form.control}
-              name="isCompetitor"
-              render={({ field }) => (
-                <div className="items-top flex space-x-2 items-center justify-start">
-                  <Checkbox id="isCompetitor" {...field} />
-                  <div className="grid gap-1.5 leading-none">
-                    <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      Is this organization a competitor?
-                    </p>
-                  </div>
-                </div>
-              )}
-            /> */}
 
             <div>
               {isLoading ? (

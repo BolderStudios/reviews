@@ -9,6 +9,7 @@ const isProtectedRoute = createRouteMatcher([
   "/file-uploader",
   "/form",
   "/onboarding(.*)",
+  "/connections",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -24,7 +25,6 @@ export default clerkMiddleware(async (auth, req) => {
         return NextResponse.redirect(signInUrl);
       }
 
-
       const { data, error } = await supabase
         .from("users")
         .select()
@@ -33,12 +33,15 @@ export default clerkMiddleware(async (auth, req) => {
 
       const onboardingComplete = data?.is_onboarding_complete;
 
-      if (!onboardingComplete && !req.nextUrl.pathname.startsWith('/onboarding')) {
-        return NextResponse.redirect(new URL('/onboarding', req.url));
+      if (
+        !onboardingComplete &&
+        !req.nextUrl.pathname.startsWith("/onboarding")
+      ) {
+        return NextResponse.redirect(new URL("/onboarding", req.url));
       }
-  
-      if (onboardingComplete && req.nextUrl.pathname === '/onboarding') {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
+
+      if (onboardingComplete && req.nextUrl.pathname === "/onboarding") {
+        return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     } else {
       console.log("Non-protected route");
@@ -59,6 +62,6 @@ export const config = {
   matcher: [
     "/((?!api/webhooks/clerk|.*\\..*|_next).*)",
     "/",
-    "/((?!api/webhooks/clerk)api|trpc)(.*)"
+    "/((?!api/webhooks/clerk)api|trpc)(.*)",
   ],
 };

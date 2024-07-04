@@ -11,6 +11,7 @@ import {
   Check,
   ChevronsUpDown,
   Star,
+  ContainerIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -97,7 +98,6 @@ export default function SidebarNavigation({ locations = [] }) {
                           }}
                         >
                           <div className="flex items-center w-full">
-                           
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
@@ -144,6 +144,13 @@ export default function SidebarNavigation({ locations = [] }) {
               <Link href="/form" className={activeLinkClass("/form")}>
                 <FormInput className="h-4 w-4" />
                 Form Example
+              </Link>
+              <Link
+                href="/connections"
+                className={activeLinkClass("/connections")}
+              >
+                <ContainerIcon className="h-4 w-4" />
+                Connections
               </Link>
             </nav>
           </div>

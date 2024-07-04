@@ -71,10 +71,6 @@ const formSchema = z.object({
   customerRetentionChallenges: z
     .string()
     .min(1, "Describe your custom retential challenges"),
-  // googleMapsLink: z.string().url("Invalid Google Maps link"),
-  // googleRedirectLink: z.string().url("Invalid Google Redirect link"),
-  // yelpBusinessLink: z.string().url("Invalid Yelp Business link"),
-  // yelpRedirectLink: z.string().url("Invalid Yelp Redirect link"),
   // complementarySolutions: z
   //   .string()
   //   .min(1, "Complementary solutions are required"),
@@ -104,8 +100,6 @@ export default function OnboardingComponent() {
     // {
     //   // googleMapsLink: "",
     //   // googleRedirectLink: "",
-    //   // yelpBusinessLink: "",
-    //   // yelpRedirectLink: "",
     //   // complementarySolutions: "",
     // },
   });
@@ -123,17 +117,15 @@ export default function OnboardingComponent() {
       await completeOnboarding(formData);
       toast.success("Onboarding complete 🎉");
 
-      setTimeout(() => {
-        form.reset({
-          organizationName: "",
-          organizationIndustry: "",
-          employeeCount: "",
-          locationCount: "",
-          customerRetentionChallenges: "",
-          nameOfContact: "",
-          positionOfContact: "",
-        });
-      }, 1000);
+      form.reset({
+        organizationName: "",
+        organizationIndustry: "",
+        employeeCount: "",
+        locationCount: "",
+        customerRetentionChallenges: "",
+        nameOfContact: "",
+        positionOfContact: "",
+      });
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -413,98 +405,6 @@ export default function OnboardingComponent() {
                 )}
               />
             </div>
-
-            {/* <div className="flex gap-4">
-              <FormField
-                control={form.control}
-                name="googleMapsLink"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel
-                      className="text-foreground"
-                      htmlFor="googleMapsLink"
-                    >
-                      Google Maps Link
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="googleMapsLink"
-                        placeholder="https://www.google.com/maps/..."
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="googleRedirectLink"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel
-                      className="text-foreground"
-                      htmlFor="googleRedirectLink"
-                    >
-                      Google Redirect Link
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="googleRedirectLink"
-                        placeholder="https://g.page/..."
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div> */}
-
-            {/* <div className="flex gap-4">
-              <FormField
-                control={form.control}
-                name="yelpBusinessLink"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel
-                      className="text-foreground"
-                      htmlFor="yelpBusinessLink"
-                    >
-                      Yelp Business Link
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="yelpBusinessLink"
-                        placeholder="https://www.yelp.com/biz/..."
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="yelpRedirectLink"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel
-                      className="text-foreground"
-                      htmlFor="yelpRedirectLink"
-                    >
-                      Yelp Redirect Link
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="yelpRedirectLink"
-                        placeholder="https://yelp.to/..."
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div> */}
 
             <FormField
               control={form.control}
