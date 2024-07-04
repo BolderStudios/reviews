@@ -217,7 +217,7 @@ export function AddLocation() {
               </div>
 
               <FormDescription className="text-muted-foreground text-xs mt-2">
-                If location is a competitor, say N/A in the name and position
+                If location is a competitor, write N/A in the name and position
                 fields.
               </FormDescription>
             </div>
@@ -226,13 +226,10 @@ export function AddLocation() {
               control={form.control}
               name="isCompetitor"
               render={({ field }) => (
-                <div className="items-top flex space-x-2">
+                <div className="items-top flex space-x-2 items-center justify-start">
                   <Checkbox id="isCompetitor" {...field} />
                   <div className="grid gap-1.5 leading-none">
-                    <p
-                      htmlFor="isCompetitor"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
+                    <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                       Is this organization a competitor?
                     </p>
 

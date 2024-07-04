@@ -22,5 +22,6 @@ export default async function Page() {
     redirect("/dashboard");
   }
 
-  return <Onboarding />;
+  return <></>
+  // return <Onboarding />;
 }

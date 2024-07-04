@@ -35,7 +35,12 @@ async function SignedInPages({ children }) {
   }
 
   if (onboardingComplete !== true) {
-    return <>{children}</>;
+    return (
+      <>
+        <Onboarding />
+        {children}
+      </>
+    );
   }
 
   return (
