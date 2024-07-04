@@ -14,7 +14,12 @@ async function SignedInPages({ children }) {
     .single();
 
   const onboardingComplete = data?.is_onboarding_complete;
-  console.log("Dashboard page. onboardingComplete:", onboardingComplete);
+  console.log("SignedInPages —> onboardingComplete:", onboardingComplete);
+
+  if (!userId || error || !data) {
+    console.log("No Logged In User");
+    return { message: "No Logged In User" };
+  }
 
   const { data: locations, error: locationsError } = await supabase.from("locations").select().eq("user_id", data.id);
 
