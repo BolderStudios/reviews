@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -12,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { addLocationFunc } from "@/app/actions";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -71,11 +74,16 @@ export function AddLocation() {
 
   const handleSubmit = async (formData) => {
     setIsLoading(true);
+
     try {
-      // Add your submission logic here
-      console.log("formData", formData);
-      toast.success("Location added successfully!");
-      // Reset form or close dialog here
+      const response = await addLocationFunc(formData);
+
+      if (response.success === true) {
+        toast.success("Location added successfully!");
+        form.reset();
+      } else {
+        toast.error("Failed to add location. Please try again.");
+      }
     } catch (error) {
       toast.error("Failed to add location. Please try again.");
     } finally {
@@ -100,11 +108,11 @@ export function AddLocation() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit, (errors) => {
-                // Display toast for each error
-                Object.values(errors).forEach((error) => {
-                  toast.error(error.message);
-                });
-              })}
+              // Display toast for each error
+              Object.values(errors).forEach((error) => {
+                toast.error(error.message);
+              });
+            })}
             className="space-y-4"
           >
             <FormField
@@ -236,13 +244,19 @@ export function AddLocation() {
               )}
             />
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <div>
               {isLoading ? (
-                <ButtonLoading content="Adding location..." />
+                <ButtonLoading
+                  size="lg"
+                  width="w-full"
+                  content="Adding location ..."
+                />
               ) : (
-                "Add Location"
+                <Button type="submit" size="lg" className="w-full">
+                  Add Location
+                </Button>
               )}
-            </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>

@@ -163,3 +163,34 @@ export async function uploadFile(
     return { message: "Failed to upload file", success: false };
   }
 }
+
+export async function addLocationFunc(formData) {
+  console.log("Adding location —> ", formData);
+  const { userId } = await auth();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("clerk_id", userId);
+
+  const { data: addedLocation, error: addLocationError } = await supabase
+    .from("locations")
+    .insert([
+      {
+        user_id: data[0].id,
+        clerk_id: userId,
+        organization_name: formData.organizationName,
+        name_of_contact: formData.nameOfContact,
+        position_of_contact: formData.positionOfContact,
+        is_competitor: formData.isCompetitor,
+      },
+    ]);
+
+  if (!error) {
+    console.log("Location added successfully");
+    return { message: "Location added successfully", success: true };
+  } else {
+    console.error("Error adding location: ", error);
+    return { message: "Failed to add location", success: false };
+  }
+}
