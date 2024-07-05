@@ -19,7 +19,8 @@
 # misc
 .DS_Store
 *.pem
-*.json
+keywords.json
+components.json
 
 # debug
 npm-debug.log*
