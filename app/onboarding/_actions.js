@@ -34,6 +34,15 @@ export const completeOnboarding = async (formData) => {
       },
     ]);
 
+  // Get primary location's ID which should be the only location
+  const { data: primaryLocation, error: primaryLocationError } = await supabase
+    .from("locations")
+    .select("*")
+    .eq("is_primary", true)
+    .single();
+
+  console.log("Onboarding —> primaryLocation", primaryLocation);
+
   const { data, error } = await supabase
     .from("users")
     .update({
@@ -42,6 +51,7 @@ export const completeOnboarding = async (formData) => {
       employee_count: formData.employeeCount,
       location_count: formData.locationCount,
       customer_retention_challenges: formData.customerRetentionChallenges,
+      selected_location: primaryLocation.id,
     })
     .eq("clerk_id", userId);
 

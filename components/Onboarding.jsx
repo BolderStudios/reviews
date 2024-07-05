@@ -50,7 +50,6 @@ const industries = [
   { value: "retail", label: "Retail" },
   { value: "healthcare", label: "Healthcare" },
   { value: "technology", label: "Technology" },
-  // Add more industries as needed
 ];
 
 const positions = [
@@ -58,7 +57,6 @@ const positions = [
   { value: "manager", label: "Manager" },
   { value: "director", label: "Director" },
   { value: "supervisor", label: "Supervisor" },
-  // Add more positions as needed
 ];
 
 const formSchema = z.object({
@@ -96,12 +94,6 @@ export default function OnboardingComponent() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: onboardingForm,
-
-    // {
-    //   // googleMapsLink: "",
-    //   // googleRedirectLink: "",
-    //   // complementarySolutions: "",
-    // },
   });
 
   const formValues = form.watch();

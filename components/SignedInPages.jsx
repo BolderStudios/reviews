@@ -24,6 +24,7 @@ async function SignedInPages({ children }) {
   console.log("SignedInPages —> data:", data);
 
   let locations = [];
+  let userSelectedLocation;
 
   if (data !== null) {
     const { data: userLocations, error: locationsError } = await supabase
@@ -31,7 +32,14 @@ async function SignedInPages({ children }) {
       .select()
       .eq("user_id", data?.id);
 
+    const { data: selectedLocation, error: selectedLocationError } =
+      await supabase
+        .from("locations")
+        .select("*")
+        .eq("id", data?.selected_location_id);
+
     locations = userLocations;
+    userSelectedLocation = selectedLocation;
   }
 
   if (onboardingComplete !== true) {
@@ -45,7 +53,10 @@ async function SignedInPages({ children }) {
 
   return (
     <div className="flex flex-1">
-      <SidebarNavigation locations={locations} />
+      <SidebarNavigation
+        locations={locations}
+        userSelectedLocation={userSelectedLocation[0]}
+      />
       <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Navbar />
         <div className="flex-grow">{children}</div>

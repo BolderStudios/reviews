@@ -7,6 +7,7 @@ import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { redirect } from "next/navigation";
 
 export async function createUsername(username) {
   console.log("from createUsername action: ", username);
@@ -183,7 +184,7 @@ export async function addLocationFunc(formData) {
         organization_name: formData.organizationName,
         name_of_contact: formData.nameOfContact,
         position_of_contact: formData.positionOfContact,
-        is_competitor: formData.isCompetitor,
+        is_primary: false,
       },
     ]);
 
@@ -193,6 +194,30 @@ export async function addLocationFunc(formData) {
   } else {
     console.error("Error adding location: ", error);
     return { message: "Failed to add location", success: false };
+  }
+}
+
+export async function updateSelectedLocation(locationObject) {
+  const { userId } = await auth();
+
+  const { data, error } = await supabase
+    .from("users")
+    .update([
+      {
+        selected_location_id: locationObject.id,
+      },
+    ])
+    .eq("clerk_id", userId);
+
+  if (!error) {
+    console.log("Selected location ID was updated successfully");
+    return {
+      message: "Selected location ID was updated successfully",
+      success: true,
+    };
+  } else {
+    console.log("Failed to update location ID");
+    return { message: "Failed to update location ID", success: false };
   }
 }
 

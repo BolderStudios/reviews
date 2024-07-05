@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Home,
@@ -35,10 +35,20 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { AddLocation } from "@/components/ui/AddLocation";
+import { updateSelectedLocation } from "@/app/actions";
 
-export default function SidebarNavigation({ locations = [] }) {
+export default function SidebarNavigation({
+  locations = [],
+  userSelectedLocation,
+}) {
   const [open, setOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] =
+    useState(userSelectedLocation);
+
+  useEffect(() => {
+    updateSelectedLocation(selectedLocation);
+  }, [selectedLocation]);
+
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
@@ -75,6 +85,7 @@ export default function SidebarNavigation({ locations = [] }) {
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
+
               <PopoverContent className="w-[247px] p-0">
                 <Command>
                   <CommandList className="w-full">
@@ -90,7 +101,7 @@ export default function SidebarNavigation({ locations = [] }) {
                       {locations.map((location) => (
                         <CommandItem
                           className="w-full p-2"
-                          key={`location-item-${location.created_at}-${location.organization_name}`}
+                          key={`location-${location.id}`}
                           value={location.organization_name}
                           onSelect={() => {
                             setSelectedLocation(location);

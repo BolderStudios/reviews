@@ -11,34 +11,55 @@ export type Database = {
     Tables: {
       locations: {
         Row: {
+          clerk_id: string
           created_at: string
+          google_place_coordinates: string | null
+          google_place_id: string | null
           id: string
           is_competitor: boolean
+          is_fetching: boolean
+          is_google_configured: boolean
           is_primary: boolean
+          is_yelp_configured: boolean
           name_of_contact: string
           organization_name: string
           position_of_contact: string
           user_id: string
+          yelp_profile_url: string | null
         }
         Insert: {
+          clerk_id: string
           created_at?: string
+          google_place_coordinates?: string | null
+          google_place_id?: string | null
           id?: string
           is_competitor?: boolean
+          is_fetching?: boolean
+          is_google_configured?: boolean
           is_primary?: boolean
+          is_yelp_configured?: boolean
           name_of_contact: string
           organization_name: string
           position_of_contact: string
           user_id: string
+          yelp_profile_url?: string | null
         }
         Update: {
+          clerk_id?: string
           created_at?: string
+          google_place_coordinates?: string | null
+          google_place_id?: string | null
           id?: string
           is_competitor?: boolean
+          is_fetching?: boolean
+          is_google_configured?: boolean
           is_primary?: boolean
+          is_yelp_configured?: boolean
           name_of_contact?: string
           organization_name?: string
           position_of_contact?: string
           user_id?: string
+          yelp_profile_url?: string | null
         }
         Relationships: [
           {
@@ -144,37 +165,40 @@ export type Database = {
           clerk_email: string
           clerk_id: string
           created_at: string
-          customer_retention_challenges: string
+          customer_retention_challenges: string | null
           employee_count: number | null
           id: string
           is_admin: boolean
           is_onboarding_complete: boolean
           location_count: number | null
-          organization_industry: string
+          organization_industry: string | null
+          selected_location_id: string | null
         }
         Insert: {
           clerk_email: string
           clerk_id: string
           created_at?: string
-          customer_retention_challenges: string
+          customer_retention_challenges?: string | null
           employee_count?: number | null
           id?: string
           is_admin?: boolean
           is_onboarding_complete?: boolean
           location_count?: number | null
-          organization_industry: string
+          organization_industry?: string | null
+          selected_location_id?: string | null
         }
         Update: {
           clerk_email?: string
           clerk_id?: string
           created_at?: string
-          customer_retention_challenges?: string
+          customer_retention_challenges?: string | null
           employee_count?: number | null
           id?: string
           is_admin?: boolean
           is_onboarding_complete?: boolean
           location_count?: number | null
-          organization_industry?: string
+          organization_industry?: string | null
+          selected_location_id?: string | null
         }
         Relationships: []
       }

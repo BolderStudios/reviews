@@ -215,6 +215,9 @@ export function AddLocation() {
                   )}
                 />
               </div>
+              <FormDescription className="text-xs mt-2">
+                After succesfully adding a location, refresh the page.
+              </FormDescription>
             </div>
 
             <div>
@@ -222,6 +225,7 @@ export function AddLocation() {
                 <ButtonLoading
                   size="lg"
                   width="w-full"
+                  className="mt-2"
                   content="Adding location ..."
                 />
               ) : (
