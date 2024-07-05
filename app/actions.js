@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 export async function createUsername(username) {
   console.log("from createUsername action: ", username);
@@ -194,3 +195,13 @@ export async function addLocationFunc(formData) {
     return { message: "Failed to add location", success: false };
   }
 }
+
+// export async function updateIsFetching(boolState) {
+//   console.log("Updating state —> ", formData);
+//   const { userId } = await auth();
+
+//   const { data, error } = await supabase
+//     .from("users")
+//     .select("*")
+//     .eq("clerk_id", userId);
+// }

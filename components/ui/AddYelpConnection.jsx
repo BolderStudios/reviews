@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { addLocationFunc } from "@/app/actions";
+import { fetchYelpReviews } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "@/components/ui/ButtonLoading";
 import {
@@ -43,20 +43,44 @@ export function AddYelpConnection() {
   const handleSubmit = async (formData) => {
     setIsLoading(true);
 
+    console.log("FormData: ", formData);
     try {
-      // Needs to be updated depending on Google or Yelp as locations
-      const response = await addLocationFunc(formData);
+      // Replace with your actual Cloudflare Worker URL
+      const workerUrl =
+        "https://fetch-yelp-reviews.kuznetsov-dg495.workers.dev/";
 
-      if (response.success === true) {
-        toast.success("Platform added successfully!");
+      const response = await fetch(workerUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        cache: "no-cache",
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Yelp reviews fetched successfully!");
+        // Handle the fetched reviews here
+        console.log("Fetched reviews:", result.reviews);
+        console.log("Total reviews:", result.totalReviews);
+
+        // You might want to store the reviews in state or pass them to another function
+        // setReviews(result.reviews);
+        // updateTotalReviews(result.totalReviews);
+
         form.reset({
           yelpBusinessLink: "",
         });
       } else {
-        toast.error("Failed to add location. Please try again.");
+        toast.error(
+          result.message || "Failed to fetch Yelp reviews. Please try again."
+        );
       }
     } catch (error) {
-      toast.error("Failed to add location. Please try again.");
+      console.error("Error fetching Yelp reviews:", error);
+      toast.error("Failed to fetch Yelp reviews. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -99,7 +123,7 @@ export function AddYelpConnection() {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <div className="text-sm text-muted-foreground">
                     Enter the full URL of your Yelp business profile. You can
                     find this by:
                     <ol className="list-decimal list-inside mt-2 space-y-1 leading-5">
@@ -114,7 +138,7 @@ export function AddYelpConnection() {
                       Example:
                       https://www.yelp.com/biz/awesome-cafe-san-francisco
                     </p>
-                  </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />
