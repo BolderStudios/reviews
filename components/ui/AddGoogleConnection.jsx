@@ -25,6 +25,7 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   googlePlaceId: z.string().min(1, "Place ID is required"),
@@ -32,6 +33,7 @@ const formSchema = z.object({
 });
 
 export function AddGoogleConnection() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
@@ -58,6 +60,7 @@ export function AddGoogleConnection() {
       toast.error("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
+      router.refresh();
     }
   };
 
@@ -96,7 +99,7 @@ export function AddGoogleConnection() {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <div className="text-sm text-muted-foreground">
                     Enter your Google Place ID. You can find this by:
                     <ol className="list-decimal list-inside mt-2 space-y-1">
                       <li>
@@ -113,7 +116,7 @@ export function AddGoogleConnection() {
                       <li>Search for your business name</li>
                       <li>Copy the Place ID shown in the results</li>
                     </ol>
-                  </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />
@@ -133,7 +136,7 @@ export function AddGoogleConnection() {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <div className="text-sm text-muted-foreground">
                     Enter the latitude and longitude of your business location,
                     separated by a comma. You can find these coordinates by:
                     <ol className="list-decimal list-inside mt-2 space-y-1">
@@ -141,7 +144,7 @@ export function AddGoogleConnection() {
                       <li>Right-click on your business location</li>
                       <li>Copy the coordinates shown at the top</li>
                     </ol>
-                  </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

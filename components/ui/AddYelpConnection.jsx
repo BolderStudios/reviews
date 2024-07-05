@@ -8,12 +8,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { fetchYelpReviews } from "@/app/actions";
+import {
+  fetchYelpReviews,
+  updateIsFetching,
+  updateLocationAfterYelpFetch,
+} from "../../utils/server-helpers";
+// import {
+//   fetchYelpReviews,
+//   updateIsFetching,
+//   updateLocationAfterYelpFetch,
+// } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "@/components/ui/ButtonLoading";
 import {
@@ -22,74 +31,100 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   yelpBusinessLink: z.string().url("Please enter a valid Yelp business URL"),
 });
 
-export function AddYelpConnection() {
-  const [isLoading, setIsLoading] = useState(false);
+export function AddYelpConnection({
+  is_fetching,
+  is_yelp_configured,
+  yelp_profile_url,
+}) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(is_fetching);
+  const [fetchStarted, setFetchStarted] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const toastShown = useRef(false);
+
+  useEffect(() => {
+    if (is_fetching && !toastShown.current) {
+      toast.info(
+        "Yelp reviews are being fetched. Please wait or refresh the page later to see updates."
+      );
+      toastShown.current = true;
+    }
+  }, [is_fetching]);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      yelpBusinessLink: "",
+      yelpBusinessLink: yelp_profile_url || "",
     },
   });
 
   const handleSubmit = async (formData) => {
-    setIsLoading(true);
-
-    console.log("FormData: ", formData);
     try {
-      // Replace with your actual Cloudflare Worker URL
-      const workerUrl =
-        "https://fetch-yelp-reviews.kuznetsov-dg495.workers.dev/";
-
-      const response = await fetch(workerUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        cache: "no-cache",
-      });
-
-      const result = await response.json();
+      setIsLoading(true);
+      setFetchStarted(true);
+      const result = await fetchYelpReviews(formData);
 
       if (result.success) {
-        toast.success("Yelp reviews fetched successfully!");
-        // Handle the fetched reviews here
-        console.log("Fetched reviews:", result.reviews);
-        console.log("Total reviews:", result.totalReviews);
+        toast.success(
+          "Yelp reviews fetch initiated. Please refresh the page in a few minutes to see updates."
+        );
+        const locationUpdateResult = await updateLocationAfterYelpFetch(
+          formData
+        );
 
-        // You might want to store the reviews in state or pass them to another function
-        // setReviews(result.reviews);
-        // updateTotalReviews(result.totalReviews);
-
-        form.reset({
-          yelpBusinessLink: "",
-        });
+        if (locationUpdateResult.success) {
+          router.refresh();
+        } else {
+          toast.error("Failed to update location. Please try again.");
+        }
       } else {
         toast.error(
-          result.message || "Failed to fetch Yelp reviews. Please try again."
+          result.message ||
+            "Failed to initiate Yelp reviews fetch. Please try again."
         );
       }
     } catch (error) {
-      console.error("Error fetching Yelp reviews:", error);
-      toast.error("Failed to fetch Yelp reviews. Please try again.");
+      console.error("Error initiating Yelp reviews fetch:", error);
+
+      toast.error("Failed to initiate Yelp reviews fetch. Please try again.");
+      await updateIsFetching(false);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const buttonContent = () => {
+    if (is_yelp_configured) return "Yelp Profile Connected";
+    if (fetchStarted) return "Fetch Initiated - Refresh Later";
+    return "Add Yelp Connection";
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full">Add Yelp Connection</Button>
+        {isLoading ? (
+          <ButtonLoading
+            width="w-full"
+            content="Processing..."
+            onClick={() => setIsDialogOpen(true)}
+          />
+        ) : (
+          <Button
+            className="w-full"
+            disabled={fetchStarted}
+            onClick={() => setIsDialogOpen(true)}
+          >
+            {buttonContent()}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
@@ -101,11 +136,7 @@ export function AddYelpConnection() {
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit, (errors) => {
-              Object.values(errors).forEach((error) => {
-                toast.error(error.message);
-              });
-            })}
+            onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >
             <FormField
@@ -134,7 +165,6 @@ export function AddYelpConnection() {
                       <li>Pasting it into the field above</li>
                     </ol>
                     <p className="leading-5 mt-2">
-                      {" "}
                       Example:
                       https://www.yelp.com/biz/awesome-cafe-san-francisco
                     </p>
@@ -144,14 +174,12 @@ export function AddYelpConnection() {
             />
 
             {isLoading ? (
-              <ButtonLoading
-                size="lg"
-                width="w-full"
-                content="Connecting to Yelp..."
-              />
+              <ButtonLoading width="w-full" content="Connecting to Yelp..." />
             ) : (
-              <Button type="submit" size="lg" className="w-full">
-                Connect Yelp Profile
+              <Button type="submit" className="w-full" disabled={fetchStarted}>
+                {is_yelp_configured
+                  ? "Update Yelp Profile"
+                  : "Connect Yelp Profile"}
               </Button>
             )}
           </form>

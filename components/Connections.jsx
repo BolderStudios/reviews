@@ -1,11 +1,14 @@
 "use client";
+
 import Image from "next/image";
 import YelpLogo from "@/public/yelp_logo.svg";
 import GoogleLogo from "@/public/google_logo.png";
 import { AddYelpConnection } from "./ui/AddYelpConnection";
 import { AddGoogleConnection } from "./ui/AddGoogleConnection";
 
-export default function Connections() {
+export default function Connections({ selectedLocation }) {
+  console.log("Selected location from Connections: ", selectedLocation);
+
   return (
     <div className="px-8 py-6">
       <h2 className="font-bold text-2xl mb-6">Review Platforms</h2>
@@ -28,7 +31,11 @@ export default function Connections() {
             <p className="text-sm text-gray-600 mb-4">
               Connect your Yelp business profile to manage reviews.
             </p>
-            <AddYelpConnection />
+            <AddYelpConnection
+              is_fetching={selectedLocation.is_fetching}
+              is_yelp_configured={selectedLocation.is_yelp_configured}
+              yelp_profile_url={selectedLocation.yelp_profile_url}
+            />
           </div>
         </div>
 
@@ -49,7 +56,14 @@ export default function Connections() {
             <p className="text-sm text-gray-600 mb-4">
               Connect your Google Business Profile to manage reviews.
             </p>
-            <AddGoogleConnection />
+            <AddGoogleConnection
+              is_google_configured={selectedLocation.is_google_configured}
+              is_fetching={selectedLocation.is_fetching}
+              google_place_id={selectedLocation.google_place_id}
+              google_place_coordinates={
+                selectedLocation.google_place_coordinates
+              }
+            />
           </div>
         </div>
       </div>
