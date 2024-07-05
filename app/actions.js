@@ -7,7 +7,6 @@ import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { redirect } from "next/navigation";
 
 export async function createUsername(username) {
   console.log("from createUsername action: ", username);
