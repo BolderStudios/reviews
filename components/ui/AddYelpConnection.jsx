@@ -22,6 +22,7 @@ import {
   fetchYelpReviews,
   updateIsFetching,
   updateLocationAfterYelpFetch,
+  fetchYelpReviewsRequest,
 } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "@/components/ui/ButtonLoading";
@@ -100,6 +101,48 @@ export function AddYelpConnection({
       setIsLoading(false);
     }
   };
+
+  // const handleSubmit = async (formData) => {
+  //   try {
+  //     setIsLoading(true);
+  //     setFetchStarted(true);
+  //     await updateIsFetching(true);
+
+  //     const result = await fetchYelpReviewsRequest(formData);
+
+  //     console.log("Result: ", result);
+
+  //     if (result.success) {
+  //       toast.success(
+  //         "Yelp reviews fetched successfully. Updating your profile..."
+  //       );
+  //       const locationUpdateResult = await updateLocationAfterYelpFetch(
+  //         formData
+  //       );
+
+  //       if (locationUpdateResult.success) {
+  //         toast.success(
+  //           "Your profile has been updated with the latest Yelp reviews."
+  //         );
+  //         router.refresh();
+  //       } else {
+  //         toast.error(
+  //           "Failed to update location with Yelp reviews. Please try again."
+  //         );
+  //       }
+  //     } else {
+  //       toast.error(
+  //         result.message || "Failed to fetch Yelp reviews. Please try again."
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching Yelp reviews:", error);
+  //     toast.error("Failed to fetch Yelp reviews. Please try again.");
+  //   } finally {
+  //     setIsLoading(false);
+  //     await updateIsFetching(false);
+  //   }
+  // };
 
   const buttonContent = () => {
     if (is_yelp_configured) return "Yelp Profile Connected";

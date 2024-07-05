@@ -220,33 +220,25 @@ export async function updateSelectedLocation(locationObject) {
   }
 }
 
+
+// Fetching from my own file base
 export async function fetchYelpReviewsRequest(formData) {
   console.log("Fetching reviews —> ", formData);
-
   const alias = formData.yelpBusinessLink.split("/").pop();
-  const { userId } = await auth();
-
   try {
     // Initial request to get the total number of reviews
     const initialResponse = await postYelpReviewTask(alias, 10);
     const taskId = initialResponse.data.tasks[0].id;
-
     // Poll for results to get the total review count
     const initialResults = await pollYelpResults(taskId);
     const totalReviews = initialResults.totalReviews;
-
     // If there are more reviews, fetch all of them
     if (totalReviews > 10) {
       const fullResponse = await postYelpReviewTask(alias, totalReviews);
       const fullTaskId = fullResponse.data.tasks[0].id;
       const allReviews = await pollYelpResults(fullTaskId);
-
-      // Save the Yelp profile URL
-      // await saveYelpProfileUrl(userId, formData.yelpBusinessLink);
-
       console.log("More than 10 reviews");
       console.log(allReviews.reviews);
-
       return {
         success: true,
         reviews: allReviews.reviews,
@@ -254,11 +246,8 @@ export async function fetchYelpReviewsRequest(formData) {
       };
     } else {
       // If 10 or fewer reviews, return the initial results
-      // await saveYelpProfileUrl(userId, formData.yelpBusinessLink);
-
       console.log("Less or equal to 10 reviews");
       console.log(initialResults.reviews);
-
       return {
         success: true,
         reviews: initialResults.reviews,
@@ -296,7 +285,6 @@ async function postYelpReviewTask(alias, depth) {
 async function pollYelpResults(taskId) {
   const maxAttempts = 10;
   const pollingInterval = 20000;
-
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
       const response = await axios({
@@ -308,7 +296,6 @@ async function pollYelpResults(taskId) {
         },
         headers: { "content-type": "application/json" },
       });
-
       if (response.data.tasks[0].status_code === 20000) {
         const result = response.data.tasks[0].result[0];
         return {
@@ -320,13 +307,13 @@ async function pollYelpResults(taskId) {
     } catch (error) {
       console.error("Error polling Yelp results:", error);
     }
-
     await new Promise((resolve) => setTimeout(resolve, pollingInterval));
   }
-
   throw new Error("Timeout while fetching Yelp reviews");
 }
 
+
+// Extrenal API
 export async function fetchYelpReviews(formData) {
   try {
     await updateIsFetching(true);
