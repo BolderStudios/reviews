@@ -30,7 +30,7 @@ const formSchema = z.object({
 });
 
 export function AddYelpConnection({
-  is_fetching = false,
+  is_fetching,
   is_yelp_configured,
   yelp_profile_url,
 }) {
