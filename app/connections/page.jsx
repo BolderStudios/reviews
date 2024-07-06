@@ -26,7 +26,7 @@ export default async function Page() {
   return (
     <Connections
       selectedLocation={selectedLocation}
-      isFetching={data.isFetching}
+      isFetching={data.is_fetching}
     />
   );
 }
