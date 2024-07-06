@@ -13,16 +13,24 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useLocalStorage } from "@uidotdev/usehooks";
 // import {
 //   fetchYelpReviews,
 //   updateIsFetching,
 //   updateLocationAfterYelpFetch,
 // } from "../../utils/server-helpers"
+// import {
+//   fetchYelpReviews,
+//   updateIsFetching,
+//   updateLocationAfterYelpFetch,
+//   fetchYelpReviewsRequest,
+// } from "@/app/actions";
+
 import {
-  fetchYelpReviews,
+  fetchYelpReviewsRequest,
   updateIsFetching,
   updateLocationAfterYelpFetch,
-  fetchYelpReviewsRequest,
+  checkYelpFetchStatus,
 } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { ButtonLoading } from "@/components/ui/ButtonLoading";
@@ -49,7 +57,20 @@ export function AddYelpConnection({
   const [isLoading, setIsLoading] = useState(is_fetching);
   const [fetchStarted, setFetchStarted] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [yelpFetchTaskId, setYelpFetchTaskId] = useLocalStorage(
+    "yelpFetchTaskId",
+    ""
+  );
+
   const toastShown = useRef(false);
+  const effectRan = useRef(false);
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      yelpBusinessLink: yelp_profile_url || "",
+    },
+  });
 
   useEffect(() => {
     if (is_fetching && !toastShown.current) {
@@ -60,89 +81,107 @@ export function AddYelpConnection({
     }
   }, [is_fetching]);
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      yelpBusinessLink: yelp_profile_url || "",
-    },
-  });
+  useEffect(() => {
+    let intervalId;
+
+    console.log("storedTaskId:", yelpFetchTaskId);
+    if (yelpFetchTaskId !== "") {
+      setIsLoading(true);
+      setFetchStarted(true);
+
+      intervalId = setInterval(async () => {
+        console.log("Checking Yelp fetch status...");
+
+        try {
+          const status = await checkYelpFetchStatus(yelpFetchTaskId);
+          console.log("Yelp fetch status:", status);
+
+          if (status.success) {
+            if (status.status === "completed") {
+              toast.success("Yelp reviews fetch completed!");
+              setIsLoading(false);
+              setFetchStarted(false);
+              await updateIsFetching(false);
+              setYelpFetchTaskId("");
+              router.refresh();
+              clearInterval(intervalId);
+            } else if (status.status === "failed") {
+              toast.error("Yelp reviews fetch failed. Please try again.");
+              setIsLoading(false);
+              setFetchStarted(false);
+              await updateIsFetching(false);
+              setYelpFetchTaskId("");
+              clearInterval(intervalId);
+            }
+          } else if (status.status === "no_task_id") {
+            console.log("No task ID found, clearing interval");
+            clearInterval(intervalId);
+          }
+        } catch (error) {
+          console.error("Error checking Yelp fetch status:", error);
+          toast.error(
+            "An error occurred while checking Yelp fetch status. Please try again."
+          );
+          setIsLoading(false);
+          setFetchStarted(false);
+          await updateIsFetching(false);
+          setYelpFetchTaskId("");
+          clearInterval(intervalId);
+        }
+      }, 5000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [yelpFetchTaskId, router, setYelpFetchTaskId]);
 
   const handleSubmit = async (formData) => {
+    console.log("Submitting Yelp fetch request...");
+    // Get location id 
+    console.log("formData:", formData);
+
     try {
       setIsLoading(true);
       setFetchStarted(true);
-      const result = await fetchYelpReviews(formData);
+      await updateIsFetching(true);
+
+      const result = await fetchYelpReviewsRequest(formData);
+      console.log("Yelp fetch request result:", result);
 
       if (result.success) {
         toast.success(
-          "Yelp reviews fetch initiated. Please refresh the page in a few minutes to see updates."
+          "Yelp reviews fetch initiated. We'll update you when it's complete."
         );
+        setYelpFetchTaskId(result.taskId);
         const locationUpdateResult = await updateLocationAfterYelpFetch(
           formData
         );
 
         if (locationUpdateResult.success) {
-          router.refresh();
+          console.log("Location updated successfully");
         } else {
-          toast.error("Failed to update location. Please try again.");
+          console.error("Failed to update location");
+          toast.error(
+            "Failed to update location with Yelp profile. Please try again."
+          );
         }
       } else {
+        console.error("Failed to initiate Yelp reviews fetch");
         toast.error(
           result.message ||
             "Failed to initiate Yelp reviews fetch. Please try again."
         );
+        setIsLoading(false);
+        setFetchStarted(false);
+        await updateIsFetching(false);
       }
     } catch (error) {
-      console.error("Error initiating Yelp reviews fetch:", error);
-
-      toast.error("Failed to initiate Yelp reviews fetch. Please try again.");
-      await updateIsFetching(false);
-    } finally {
+      console.error("Error in Yelp fetch process:", error);
+      toast.error("An unexpected error occurred. Please try again.");
       setIsLoading(false);
+      setFetchStarted(false);
+      await updateIsFetching(false);
     }
   };
-
-  // const handleSubmit = async (formData) => {
-  //   try {
-  //     setIsLoading(true);
-  //     setFetchStarted(true);
-  //     await updateIsFetching(true);
-
-  //     const result = await fetchYelpReviewsRequest(formData);
-
-  //     console.log("Result: ", result);
-
-  //     if (result.success) {
-  //       toast.success(
-  //         "Yelp reviews fetched successfully. Updating your profile..."
-  //       );
-  //       const locationUpdateResult = await updateLocationAfterYelpFetch(
-  //         formData
-  //       );
-
-  //       if (locationUpdateResult.success) {
-  //         toast.success(
-  //           "Your profile has been updated with the latest Yelp reviews."
-  //         );
-  //         router.refresh();
-  //       } else {
-  //         toast.error(
-  //           "Failed to update location with Yelp reviews. Please try again."
-  //         );
-  //       }
-  //     } else {
-  //       toast.error(
-  //         result.message || "Failed to fetch Yelp reviews. Please try again."
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching Yelp reviews:", error);
-  //     toast.error("Failed to fetch Yelp reviews. Please try again.");
-  //   } finally {
-  //     setIsLoading(false);
-  //     await updateIsFetching(false);
-  //   }
-  // };
 
   const buttonContent = () => {
     if (is_yelp_configured) return "Yelp Profile Connected";
@@ -216,15 +255,15 @@ export function AddYelpConnection({
               )}
             />
 
-            {isLoading ? (
-              <ButtonLoading width="w-full" content="Connecting to Yelp..." />
-            ) : (
-              <Button type="submit" className="w-full" disabled={fetchStarted}>
-                {is_yelp_configured
-                  ? "Update Yelp Profile"
-                  : "Connect Yelp Profile"}
-              </Button>
-            )}
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || fetchStarted}
+            >
+              {is_yelp_configured
+                ? "Update Yelp Profile"
+                : "Connect Yelp Profile"}
+            </Button>
           </form>
         </Form>
       </DialogContent>
