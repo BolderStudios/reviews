@@ -30,13 +30,13 @@ const formSchema = z.object({
 });
 
 export function AddYelpConnection({
-  is_fetching,
+  is_fetching = false,
   is_yelp_configured,
   yelp_profile_url,
 }) {
   console.log("is_fetching:", is_fetching);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(is_fetching === undefined ? false : is_fetching);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm({
@@ -60,7 +60,9 @@ export function AddYelpConnection({
           { duration: 5000 }
         );
 
-        const locationUpdateResult = await updateLocationAfterYelpFetch(formData);
+        const locationUpdateResult = await updateLocationAfterYelpFetch(
+          formData
+        );
         if (locationUpdateResult.success) {
           toast.success("Yelp profile URL updated successfully.");
         } else {
