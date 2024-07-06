@@ -135,9 +135,12 @@ async function postYelpReviewTask(alias, depth, env) {
 }
 
 async function pollYelpResults(taskId, env) {
-	const pollingInterval = 5000;
+	const maxAttempts = 100;
+	let pollingInterval = 10000; // Start with 10 seconds
+	const maxPollingInterval = 90000; // Max 1.5 minute between polls
+	const backoffFactor = 1.5;
 
-	while (true) {
+	for (let attempt = 0; attempt < maxAttempts; attempt++) {
 		try {
 			const response = await axios({
 				method: 'get',
@@ -149,7 +152,7 @@ async function pollYelpResults(taskId, env) {
 				headers: { 'content-type': 'application/json' },
 			});
 
-			console.log(`Polling, status code: ${response.data.tasks[0].status_code}`);
+			console.log(`Polling attempt ${attempt + 1}, status code: ${response.data.tasks[0].status_code}`);
 
 			if (response.data.tasks[0].status_code === 20000) {
 				const result = response.data.tasks[0].result[0];
@@ -170,6 +173,11 @@ async function pollYelpResults(taskId, env) {
 			}
 		}
 
+		// Implement exponential backoff
 		await new Promise((resolve) => setTimeout(resolve, pollingInterval));
+		pollingInterval = Math.min(pollingInterval * backoffFactor, maxPollingInterval);
 	}
+
+	// If we've reached this point, we've exceeded the maximum number of attempts
+	throw new Error('Maximum polling attempts reached without completion');
 }
