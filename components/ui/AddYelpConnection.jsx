@@ -36,7 +36,9 @@ export function AddYelpConnection({
 }) {
   console.log("is_fetching:", is_fetching);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(is_fetching === undefined ? false : is_fetching);
+  const [isLoading, setIsLoading] = useState(
+    is_fetching === undefined ? false : is_fetching
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm({
@@ -97,7 +99,11 @@ export function AddYelpConnection({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full" onClick={() => setIsDialogOpen(true)}>
+        <Button
+          disabled={isLoading || is_fetching}
+          className="w-full"
+          onClick={() => setIsDialogOpen(true)}
+        >
           {is_fetching ? "Yelp Fetch in Progress" : buttonContent()}
         </Button>
       </DialogTrigger>
