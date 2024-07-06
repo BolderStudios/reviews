@@ -6,7 +6,7 @@ import GoogleLogo from "@/public/google_logo.png";
 import { AddYelpConnection } from "./ui/AddYelpConnection";
 import { AddGoogleConnection } from "./ui/AddGoogleConnection";
 
-export default function Connections({ selectedLocation }) {
+export default function Connections({ selectedLocation, isFetching }) {
   console.log("Selected location from Connections: ", selectedLocation);
 
   return (
@@ -32,7 +32,7 @@ export default function Connections({ selectedLocation }) {
               Connect your Yelp business profile to manage reviews.
             </p>
             <AddYelpConnection
-              is_fetching={selectedLocation.is_fetching}
+              is_fetching={isFetching}
               is_yelp_configured={selectedLocation.is_yelp_configured}
               yelp_profile_url={selectedLocation.yelp_profile_url}
             />

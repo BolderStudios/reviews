@@ -220,167 +220,27 @@ export async function updateSelectedLocation(locationObject) {
   }
 }
 
-// Fetching from my own file base
-// export async function fetchYelpReviewsRequest(formData) {
-//   console.log("Fetching reviews —> ", formData);
-//   const alias = formData.yelpBusinessLink.split("/").pop();
-//   try {
-//     // Initial request to get the total number of reviews
-//     const initialResponse = await postYelpReviewTask(alias, 10);
-//     const taskId = initialResponse.data.tasks[0].id;
-//     // Poll for results to get the total review count
-//     const initialResults = await pollYelpResults(taskId);
-//     const totalReviews = initialResults.totalReviews;
-//     // If there are more reviews, fetch all of them
-//     if (totalReviews > 10) {
-//       const fullResponse = await postYelpReviewTask(alias, totalReviews);
-//       const fullTaskId = fullResponse.data.tasks[0].id;
-//       const allReviews = await pollYelpResults(fullTaskId);
-//       console.log("More than 10 reviews");
-//       console.log(allReviews.reviews);
-//       return {
-//         success: true,
-//         reviews: allReviews.reviews,
-//         totalReviews: allReviews.totalReviews,
-//       };
-//     } else {
-//       // If 10 or fewer reviews, return the initial results
-//       console.log("Less or equal to 10 reviews");
-//       console.log(initialResults.reviews);
-//       return {
-//         success: true,
-//         reviews: initialResults.reviews,
-//         totalReviews: initialResults.totalReviews,
-//       };
-//     }
-//   } catch (error) {
-//     console.log(`Yelp fetching error —> `, error);
-//     return {
-//       success: false,
-//       message: "Failed to fetch Yelp reviews",
-//     };
-//   }
-// }
-
-export async function checkYelpFetchStatus(taskId) {
-  console.log("Checking Yelp fetch status for task:", taskId);
-  try {
-    if (!taskId || taskId === "") {
-      console.log("No task ID provided");
-      return { success: false, status: 'no_task_id' };
-    }
-    const response = await pollYelpResults(taskId);
-    console.log("Yelp fetch status response:", response);
-    return {
-      success: true,
-      status: response.success ? 'completed' : 'pending',
-      reviews: response.reviews,
-      totalReviews: response.totalReviews
-    };
-  } catch (error) {
-    console.error("Error checking Yelp fetch status:", error);
-    return { success: false, status: 'failed', message: error.message };
-  }
-}
-
-// Update fetchYelpReviewsRequest to return a taskId
-export async function fetchYelpReviewsRequest(formData) {
-  console.log("Fetching reviews —> ", formData);
-  const alias = formData.yelpBusinessLink.split("/").pop();
-  
-  try {
-    const initialResponse = await postYelpReviewTask(alias, 10);
-    const taskId = initialResponse.data.tasks[0].id;
-    console.log("Yelp fetch task initiated with ID:", taskId);
-    return { success: true, taskId };
-  } catch (error) {
-    console.log(`Yelp fetching error —> `, error);
-    return {
-      success: false,
-      message: "Failed to initiate Yelp reviews fetch",
-    };
-  }
-}
-
-async function postYelpReviewTask(alias, depth) {
-  return axios({
-    method: "post",
-    url: "https://api.dataforseo.com/v3/business_data/yelp/reviews/task_post",
-    auth: {
-      username: "0986881@lbcc.edu",
-      password: "4045d2967d70b68e",
-    },
-    data: [
-      {
-        language_name: "English",
-        alias: alias,
-        depth: depth,
-      },
-    ],
-    headers: { "content-type": "application/json" },
-    cache: "no-cache"
-  });
-}
-
-async function pollYelpResults(taskId) {
-  const maxAttempts = 10;
-  const pollingInterval = 20000;
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    try {
-      const response = await axios({
-        method: "get",
-        url: `https://api.dataforseo.com/v3/business_data/yelp/reviews/task_get/${taskId}`,
-        auth: {
-          username: "0986881@lbcc.edu",
-          password: "4045d2967d70b68e",
-        },
-        headers: { "content-type": "application/json" },
-        cache: "no-cache"
-      });
-      if (response.data.tasks[0].status_code === 20000) {
-        const result = response.data.tasks[0].result[0];
-        return {
-          success: true,
-          reviews: result.items,
-          totalReviews: result.reviews_count,
-        };
-      } else {
-        console.log("Task not ready, status code:", response.data.tasks[0].status_code);
-      }
-    } catch (error) {
-      console.error("Error polling Yelp results:", error);
-      if (error.response && error.response.status === 500) {
-        console.log("Received 500 error, breaking polling loop");
-        throw error;
-      }
-    }
-    await new Promise((resolve) => setTimeout(resolve, pollingInterval));
-  }
-  return { success: false, message: "Timeout while fetching Yelp reviews" };
-}
-
-// Extrenal API
+// Worker API
 export async function fetchYelpReviews(formData) {
   try {
     console.log("Worker was initiated");
-    await updateIsFetching(true);
     const workerUrl = "https://fetch-yelp-reviews.kuznetsov-dg495.workers.dev/";
-    const response = await fetch(workerUrl, {
+    
+    // Use fetch with no-cors mode to avoid CORS issues
+    fetch(workerUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
+      mode: 'no-cors'  // This prevents the browser from waiting for a response
     });
 
-    console.log("Result from the worker was received");
-    const result = await response.json();
-    return result;
+    console.log("Fetch request sent to worker");
+    return { success: true };
   } catch (error) {
-    console.error("Fetch error:", error);
+    console.error("Error initiating fetch:", error);
     return { success: false, message: error.message };
-  } finally {
-    await updateIsFetching(false);
   }
 }
 

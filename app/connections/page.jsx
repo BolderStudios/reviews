@@ -21,5 +21,5 @@ export default async function Page() {
       .eq("id", data.selected_location_id)
       .single();
 
-  return <Connections selectedLocation={selectedLocation} />;
+  return <Connections selectedLocation={selectedLocation} isFetching={data.isFetching} />;
 }

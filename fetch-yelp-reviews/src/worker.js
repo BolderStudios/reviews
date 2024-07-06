@@ -7,7 +7,7 @@ const supabaseAnonKey =
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBleHRyZmtxa3l6aHVtYXZocHFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk2MjkzMjAsImV4cCI6MjAzNTIwNTMyMH0.mtIoATJNYZ3RVjdoPInOd6jEK2qTb7AFSEwqBa9VJjw';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const HARDCODED_LOCATION_ID = '45e2fe99-10ed-48e6-abbc-6af826ab7947';
+const HARDCODED_USER_ID = 'e3d9a6e3-7b14-466c-b1a9-7a2881932e12';
 
 export default {
 	async fetch(request, env, ctx) {
@@ -28,10 +28,10 @@ export default {
 
 		if (request.method === 'POST') {
 			try {
-				await updateIsFetching("true");
+				await updateIsFetching('true');
 				const formData = await request.json();
 				const result = await fetchYelpReviews(formData, env, ctx);
-				await updateIsFetching("false");
+				await updateIsFetching('false');
 
 				return new Response(JSON.stringify(result), {
 					headers: {
@@ -61,7 +61,7 @@ export default {
 
 async function updateIsFetching(isFetching) {
 	try {
-		const { data, error } = await supabase.from("locations").update({ is_fetching: isFetching }).eq("id", HARDCODED_LOCATION_ID);
+		const { data, error } = await supabase.from('users').update({ is_fetching: isFetching }).eq('id', HARDCODED_USER_ID);
 
 		if (error) {
 			console.error('Error updating is_fetching:', error);

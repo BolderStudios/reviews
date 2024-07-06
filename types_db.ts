@@ -17,7 +17,6 @@ export type Database = {
           google_place_id: string | null
           id: string
           is_competitor: boolean
-          is_fetching: boolean
           is_google_configured: boolean
           is_primary: boolean
           is_yelp_configured: boolean
@@ -34,7 +33,6 @@ export type Database = {
           google_place_id?: string | null
           id?: string
           is_competitor?: boolean
-          is_fetching?: boolean
           is_google_configured?: boolean
           is_primary?: boolean
           is_yelp_configured?: boolean
@@ -51,7 +49,6 @@ export type Database = {
           google_place_id?: string | null
           id?: string
           is_competitor?: boolean
-          is_fetching?: boolean
           is_google_configured?: boolean
           is_primary?: boolean
           is_yelp_configured?: boolean
@@ -169,6 +166,7 @@ export type Database = {
           employee_count: number | null
           id: string
           is_admin: boolean
+          is_fetching: boolean
           is_onboarding_complete: boolean
           location_count: number | null
           organization_industry: string | null
@@ -182,6 +180,7 @@ export type Database = {
           employee_count?: number | null
           id?: string
           is_admin?: boolean
+          is_fetching?: boolean
           is_onboarding_complete?: boolean
           location_count?: number | null
           organization_industry?: string | null
@@ -195,6 +194,7 @@ export type Database = {
           employee_count?: number | null
           id?: string
           is_admin?: boolean
+          is_fetching?: boolean
           is_onboarding_complete?: boolean
           location_count?: number | null
           organization_industry?: string | null
