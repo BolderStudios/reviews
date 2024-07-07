@@ -164,6 +164,7 @@ export type Database = {
           created_at: string
           customer_retention_challenges: string | null
           employee_count: number | null
+          fetching_error_message: string | null
           id: string
           is_admin: boolean
           is_fetching: boolean
@@ -178,6 +179,7 @@ export type Database = {
           created_at?: string
           customer_retention_challenges?: string | null
           employee_count?: number | null
+          fetching_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
@@ -192,6 +194,7 @@ export type Database = {
           created_at?: string
           customer_retention_challenges?: string | null
           employee_count?: number | null
+          fetching_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
@@ -199,6 +202,33 @@ export type Database = {
           location_count?: number | null
           organization_industry?: string | null
           selected_location_id?: string | null
+        }
+        Relationships: []
+      }
+      yelp_fetch_tasks: {
+        Row: {
+          attempts: number | null
+          created_at: string
+          id: string
+          status: string | null
+          task_id: string | null
+          yelp_business_link: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string
+          id?: string
+          status?: string | null
+          task_id?: string | null
+          yelp_business_link?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string
+          id?: string
+          status?: string | null
+          task_id?: string | null
+          yelp_business_link?: string | null
         }
         Relationships: []
       }

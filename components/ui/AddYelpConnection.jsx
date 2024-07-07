@@ -1,20 +1,12 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { fetchYelpReviews, updateLocationAfterYelpFetch } from "@/app/actions";
 import { Button } from "@/components/ui/button";
+import { initiateYelpFetch, getFetchStatus } from "@/app/actions";
 import {
   Form,
   FormControl,
@@ -24,6 +16,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const formSchema = z.object({
   yelpBusinessLink: z.string().url("Please enter a valid Yelp business URL"),
@@ -34,12 +34,12 @@ export function AddYelpConnection({
   is_yelp_configured,
   yelp_profile_url,
 }) {
-  console.log("is_fetching:", is_fetching);
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(
-    is_fetching === undefined ? false : is_fetching
-  );
+  const [isLoading, setIsLoading] = useState(is_fetching || false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const hasShownFetchingToast = useRef(false);
+  const lastErrorMessageRef = useRef("");
+  const hasShownErrorToastRef = useRef(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -48,50 +48,75 @@ export function AddYelpConnection({
     },
   });
 
-  const handleSubmit = async (formData) => {
-    console.log("Submitting Yelp fetch request...");
-    setIsLoading(true);
+  useEffect(() => {
+    let intervalId;
 
-    try {
-      const result = await fetchYelpReviews(formData);
-      console.log("Yelp fetch initiation result:", result);
+    const checkFetchStatus = async () => {
+      const { success, data } = await getFetchStatus();
 
-      if (result.success) {
-        toast.success(
-          "Yelp reviews fetch initiated. This process may take a few minutes. Please refresh the page later to see updates.",
-          { duration: 5000 }
-        );
-
-        const locationUpdateResult = await updateLocationAfterYelpFetch(
-          formData
-        );
-        if (locationUpdateResult.success) {
-          toast.success("Yelp profile URL updated successfully.");
+      if (success) {
+        if (data.is_fetching) {
+          setIsLoading(true);
+          if (!hasShownFetchingToast.current) {
+            toast.info(
+              "Yelp review fetch is in progress. This may take up to 10 minutes."
+            );
+            hasShownFetchingToast.current = true;
+          }
         } else {
-          toast.error("Failed to update Yelp profile URL. Please try again.");
+          setIsLoading(false);
+          if (
+            data.fetch_error_message &&
+            data.fetch_error_message !== lastErrorMessageRef.current
+          ) {
+            lastErrorMessageRef.current = data.fetch_error_message;
+            if (!hasShownErrorToastRef.current) {
+              toast.error(`Fetch error: ${data.fetch_error_message}`);
+              hasShownErrorToastRef.current = true;
+            }
+          } else if (hasShownFetchingToast.current) {
+            hasShownFetchingToast.current = false;
+            hasShownErrorToastRef.current = false;
+            if (!data.fetch_error_message) {
+              toast.success("Yelp reviews fetched successfully!");
+              router.push("/dashboard");
+            }
+          }
         }
-
-        router.refresh();
-      } else {
-        console.error("Failed to initiate Yelp reviews fetch");
-        toast.error(
-          result.message ||
-            "Failed to initiate Yelp reviews fetch. Please try again.",
-          { duration: 5000 }
-        );
       }
-    } catch (error) {
-      console.error("Error in Yelp fetch process:", error);
-      toast.error("An unexpected error occurred. Please try again.", {
-        duration: 5000,
-      });
-    } finally {
-      setIsLoading(false);
+    };
+
+    // Initial check
+    checkFetchStatus();
+
+    // Set up interval
+    intervalId = setInterval(checkFetchStatus, 30000);
+
+    // Cleanup function
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [router]);
+
+  const handleSubmit = async (formData) => {
+    setIsLoading(true);
+    const { success } = await initiateYelpFetch(formData);
+
+    if (success) {
+      toast.info(
+        "Yelp review fetch initiated. This process will take up to 10 minutes. You can close this dialog and check back later."
+      );
       setIsDialogOpen(false);
+      router.refresh();
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
+      router.refresh();
     }
   };
 
   const buttonContent = () => {
+    if (isLoading) return "Fetching Yelp Reviews...";
     if (is_yelp_configured) return "Update Yelp Profile";
     return "Connect Yelp Profile";
   };
@@ -100,11 +125,11 @@ export function AddYelpConnection({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={isLoading || is_fetching}
+          disabled={isLoading}
           className="w-full"
           onClick={() => setIsDialogOpen(true)}
         >
-          {is_fetching ? "Yelp Fetch in Progress" : buttonContent()}
+          {buttonContent()}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px]">
@@ -112,7 +137,8 @@ export function AddYelpConnection({
           <DialogTitle>Yelp Connection</DialogTitle>
           <DialogDescription>
             Connect your Yelp business profile to monitor and manage your
-            reviews.
+            reviews. This process will fetch your latest Yelp reviews and may
+            take up to 10 minutes.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -137,29 +163,17 @@ export function AddYelpConnection({
                   </FormControl>
                   <div className="text-sm text-muted-foreground">
                     Enter the full URL of your Yelp business profile. You can
-                    find this by:
-                    <ol className="list-decimal list-inside mt-2 space-y-1 leading-5">
-                      <li>Going to your business page on Yelp</li>
-                      <li>
-                        Copying the entire URL from your browser's address bar
-                      </li>
-                      <li>Pasting it into the field above</li>
-                    </ol>
-                    <p className="leading-5 mt-2">
-                      Example:
-                      https://www.yelp.com/biz/awesome-cafe-san-francisco
-                    </p>
+                    find this by visiting your business page on Yelp.
                   </div>
                 </FormItem>
               )}
             />
-
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || is_fetching}
-            >
-              {isLoading ? "Processing..." : buttonContent()}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading
+                ? "Fetching..."
+                : is_yelp_configured
+                ? "Update and Fetch Reviews"
+                : "Connect and Fetch Reviews"}
             </Button>
           </form>
         </Form>

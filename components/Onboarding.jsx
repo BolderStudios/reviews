@@ -23,7 +23,7 @@ import {
   CommandInput,
   CommandList,
   CommandItem,
-} from "@/components/ui/command";
+} from "@/components/ui/command.jsx";
 import {
   Popover,
   PopoverContent,

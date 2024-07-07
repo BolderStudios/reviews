@@ -79,33 +79,52 @@ async function fetchYelpReviews(formData, env, ctx) {
 	const alias = formData.yelpBusinessLink.split('/').pop();
 
 	try {
+		// Initial request to get the total number of reviews
 		const initialResponse = await postYelpReviewTask(alias, 10, env);
-		const taskId = initialResponse.data.tasks[0].id;
-		console.log(`Task ID: ${taskId}`);
+		const initialTaskId = initialResponse.data.tasks[0].id;
+		console.log(`Initial Task ID: ${initialTaskId}`);
 
-		const initialResults = await pollYelpResults(taskId, env);
+		const initialResults = await pollYelpResults(initialTaskId, env);
 		const totalReviews = initialResults.totalReviews;
 		console.log(`Total reviews: ${totalReviews}`);
 
-		if (totalReviews > 10) {
-			const fullResponse = await postYelpReviewTask(alias, totalReviews, env);
-			const fullTaskId = fullResponse.data.tasks[0].id;
-			const allReviews = await pollYelpResults(fullTaskId, env);
-
-			console.log('More than 10 reviews');
-			return {
-				success: true,
-				reviews: allReviews.reviews,
-				totalReviews: allReviews.totalReviews,
-			};
-		} else {
-			console.log('Less or equal to 10 reviews');
+		// If there are 10 or fewer reviews, return them immediately
+		if (totalReviews <= 10) {
+			console.log('10 or fewer reviews, returning initial results');
 			return {
 				success: true,
 				reviews: initialResults.reviews,
 				totalReviews: initialResults.totalReviews,
 			};
 		}
+
+		// For more than 10 reviews, fetch in batches of 100
+		let allReviews = [];
+		const batchSize = 100;
+		const batches = Math.ceil(totalReviews / batchSize);
+
+		for (let i = 0; i < batches; i++) {
+			const offset = i * batchSize;
+			const depth = Math.min(batchSize, totalReviews - offset);
+
+			console.log(`Fetching batch ${i + 1} of ${batches}, offset: ${offset}, depth: ${depth}`);
+
+			const batchResponse = await postYelpReviewTask(alias, depth, env, offset);
+			const batchTaskId = batchResponse.data.tasks[0].id;
+			console.log(`Batch ${i + 1} Task ID: ${batchTaskId}`);
+
+			const batchResults = await pollYelpResults(batchTaskId, env);
+			allReviews = allReviews.concat(batchResults.reviews);
+
+			console.log(`Fetched ${allReviews.length} reviews so far`);
+		}
+
+		console.log(`Fetched all ${allReviews.length} reviews`);
+		return {
+			success: true,
+			reviews: allReviews,
+			totalReviews: totalReviews,
+		};
 	} catch (error) {
 		console.log(`Yelp fetching error —> `, error);
 		return {
@@ -115,7 +134,7 @@ async function fetchYelpReviews(formData, env, ctx) {
 	}
 }
 
-async function postYelpReviewTask(alias, depth, env) {
+async function postYelpReviewTask(alias, depth, env, offset = 0) {
 	return axios({
 		method: 'post',
 		url: 'https://api.dataforseo.com/v3/business_data/yelp/reviews/task_post',
@@ -128,6 +147,7 @@ async function postYelpReviewTask(alias, depth, env) {
 				language_name: 'English',
 				alias: alias,
 				depth: depth,
+				offset: offset,
 			},
 		],
 		headers: { 'content-type': 'application/json' },
@@ -137,8 +157,8 @@ async function postYelpReviewTask(alias, depth, env) {
 async function pollYelpResults(taskId, env) {
 	const maxAttempts = 100;
 	let pollingInterval = 10000; // Start with 10 seconds
-	const maxPollingInterval = 90000; // Max 1.5 minute between polls
-	const backoffFactor = 1.5;
+	const maxPollingInterval = 60000; // Max 1.5 minute between polls
+	const backoffFactor = 1.25;
 
 	for (let attempt = 0; attempt < maxAttempts; attempt++) {
 		try {
