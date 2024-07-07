@@ -9,8 +9,7 @@ import axios from "axios";
 import Anthropic from "@anthropic-ai/sdk";
 
 const anthropic = new Anthropic({
-  apiKey:
-    "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", // defaults to process.env["ANTHROPIC_API_KEY"]
+  apiKey: process.env.ANTHROPIC_API_KEY, // defaults to process.env["ANTHROPIC_API_KEY"]
 });
 
 export async function POST(request) {
