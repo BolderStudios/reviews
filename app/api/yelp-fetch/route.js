@@ -164,8 +164,8 @@ async function generateResponses(
 }
 
 async function pollYelpResults(taskId) {
-  const maxAttempts = 10; // Reduced for faster error detection
-  const pollingInterval = 60000;
+  const maxAttempts = 999; // Reduced for faster error detection
+  const pollingInterval = 90000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
