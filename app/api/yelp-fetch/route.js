@@ -95,29 +95,29 @@ async function fetchYelpReviews(yelpBusinessLink, locationId, clerkId) {
     const { data: locationData } = await getLocationInfo(locationId);
 
     console.log("Location Data fetched —> ", locationData);
-    const { name_of_contact, position_of_contact, organization_name } =
-      locationData;
+    // const { name_of_contact, position_of_contact, organization_name } =
+    //   locationData;
 
-    console.log("Initial reviews fetched before calling AI —> ", initialResults.reviews);
+    // console.log("Initial reviews fetched before calling AI —> ", initialResults.reviews);
 
-    const fetchedReviews = initialResults.reviews
+    // const fetchedReviews = initialResults.reviews
 
-    fetchedReviews.forEach(async (review) => {
-      const rating = review.rating.value;
-      const customer_name = review.user_profile.name;
-      const review_text = review.review_text;
+    // fetchedReviews.forEach(async (review) => {
+    //   const rating = review.rating.value;
+    //   const customer_name = review.user_profile.name;
+    //   const review_text = review.review_text;
 
-      const response = await generateResponses(
-        organization_name,
-        name_of_contact,
-        position_of_contact,
-        rating,
-        customer_name,
-        review_text
-      );
+    //   const response = await generateResponses(
+    //     organization_name,
+    //     name_of_contact,
+    //     position_of_contact,
+    //     rating,
+    //     customer_name,
+    //     review_text
+    //   );
 
-      console.log("Generated Responses —> ", response);
-    });
+    //   console.log("Generated Responses —> ", response);
+    // });
 
     return {
       success: true,
