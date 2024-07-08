@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
+import { useRouter } from "next/navigation";
 import {
   Home,
   ShoppingCart,
@@ -41,16 +42,19 @@ export default function SidebarNavigation({
   locations = [],
   userSelectedLocation,
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] =
     useState(userSelectedLocation);
 
-  useEffect(() => {
-    updateSelectedLocation(selectedLocation);
-  }, [selectedLocation]);
-
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
+  console.log("Current pathname: ", currentPathname);
+
+  useEffect(() => {
+    updateSelectedLocation(selectedLocation, currentPathname);
+    router.refresh();
+  }, [selectedLocation]);
 
   const activeLinkClass = (href) =>
     `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
@@ -157,7 +161,7 @@ export default function SidebarNavigation({
                 Form Example
               </Link>
               <Link
-                href="/connections"
+                href={`/connections/${selectedLocation?.id || ""}`}
                 className={activeLinkClass("/connections")}
               >
                 <ContainerIcon className="h-4 w-4" />

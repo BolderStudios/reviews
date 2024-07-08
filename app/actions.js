@@ -11,6 +11,7 @@ import {
   updateIsFetching,
   updateFetchErrorMessage,
 } from "@/utils/actionsHelpers";
+import { redirect } from "next/navigation";
 
 export async function createUsername(username) {
   console.log("from createUsername action: ", username);
@@ -200,7 +201,7 @@ export async function addLocationFunc(formData) {
   }
 }
 
-export async function updateSelectedLocation(locationObject) {
+export async function updateSelectedLocation(locationObject, currentPathname) {
   const { userId } = await auth();
 
   const { data, error } = await supabase
@@ -213,51 +214,20 @@ export async function updateSelectedLocation(locationObject) {
     .eq("clerk_id", userId);
 
   if (!error) {
-    console.log("Selected location ID was updated successfully");
-    return {
-      message: "Selected location ID was updated successfully",
-      success: true,
-    };
-  } else {
     console.log("Failed to update location ID");
+    console.log("Current pathname from backend: ", currentPathname);
+    if (currentPathname === "connections") {
+      redirect(`/connections/${locationObject.id}`);
+    }
+    console.log("Selected location ID was updated successfully");
+    // return {
+    //   message: "Selected location ID was updated successfully",
+    //   success: true,
+    // };
+  } else {
     return { message: "Failed to update location ID", success: false };
   }
 }
-
-// export async function initiateYelpFetch(formData) {
-//   console.log("Form data —> ", formData);
-//   const { userId } = await auth();
-
-//   try {
-//     const { data: userData, error: userError } = await supabase
-//       .from("users")
-//       .select("*")
-//       .eq("clerk_id", userId)
-//       .single();
-
-//     if (userError) throw new Error("Failed to fetch user data");
-
-//     const url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/yelp-fetch`;
-//     const options = {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         locationId: userData.selected_location_id,
-//         yelpBusinessLink: formData.yelpBusinessLink,
-//         clerkId: userId,
-//       }),
-//     };
-
-//     fetch(url, options);
-//     return { success: true };
-//   } catch (error) {
-//     console.error("Error initiating Yelp fetch:", error);
-//     await updateFetchErrorMessage(userId, error.message);
-//     return { success: false };
-//   }
-// }
 
 export async function initiateYelpFetch(formData) {
   console.log("Form data —> ", formData);
@@ -304,4 +274,21 @@ export async function getFetchStatus() {
     return { success: false, error: error.message };
   }
   return { success: true, data };
+}
+
+export async function getLocationInfo(location_id) {
+  const { userId } = await auth();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("clerk_id", userId)
+    .single();
+
+  const { data: selectedLocation, error: selectedLocationError } =
+    await supabase.from("locations").select("*").eq("id", location_id).single();
+
+  const is_fetching = data.is_fetching;
+
+  return { success: true, selectedLocation, is_fetching };
 }

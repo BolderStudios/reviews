@@ -1,3 +1,5 @@
+// "@/components/connection.jsx"
+
 "use client";
 
 import Image from "next/image";
@@ -5,10 +7,10 @@ import YelpLogo from "@/public/yelp_logo.svg";
 import GoogleLogo from "@/public/google_logo.png";
 import { AddYelpConnection } from "./ui/AddYelpConnection";
 import { AddGoogleConnection } from "./ui/AddGoogleConnection";
+import { getLocationInfo } from "@/app/actions";
+import { usePathname } from "next/navigation";
 
 export default function Connections({ selectedLocation, isFetching }) {
-  console.log("Selected location from Connections: ", selectedLocation);
-
   return (
     <div className="px-8 py-6">
       <h2 className="font-bold text-2xl mb-6">Review Platforms</h2>

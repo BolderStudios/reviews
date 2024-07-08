@@ -1,10 +1,11 @@
-import React from "react";
-import Connections from "@/components/Connections";
+// "@/app/connections/page.jsx"
+
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export default async function Page() {
-  // Get ID of selected location
   const { userId } = await auth();
 
   const { data, error } = await supabase
@@ -13,20 +14,5 @@ export default async function Page() {
     .eq("clerk_id", userId)
     .single();
 
-  // Pass location's object into the component
-  const { data: selectedLocation, error: selectedLocationError } =
-    await supabase
-      .from("locations")
-      .select("*")
-      .eq("id", data.selected_location_id)
-      .single();
-
-  console.log("User data: ", data);
-
-  return (
-    <Connections
-      selectedLocation={selectedLocation}
-      isFetching={data.is_fetching}
-    />
-  );
+  return redirect(`/connections/${data.selected_location_id}`);
 }
