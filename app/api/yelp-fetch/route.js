@@ -1,3 +1,5 @@
+// "@/app/api/yelp-fetch/route.js"
+
 import { NextResponse } from "next/server";
 import supabase from "@/utils/supabaseClient";
 import {

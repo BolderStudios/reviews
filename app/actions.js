@@ -6,6 +6,11 @@ import { revalidatePath } from "next/cache";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
+import { inngest } from "@/inngest/client";
+import {
+  updateIsFetching,
+  updateFetchErrorMessage,
+} from "@/utils/actionsHelpers";
 
 export async function createUsername(username) {
   console.log("from createUsername action: ", username);
@@ -219,6 +224,41 @@ export async function updateSelectedLocation(locationObject) {
   }
 }
 
+// export async function initiateYelpFetch(formData) {
+//   console.log("Form data —> ", formData);
+//   const { userId } = await auth();
+
+//   try {
+//     const { data: userData, error: userError } = await supabase
+//       .from("users")
+//       .select("*")
+//       .eq("clerk_id", userId)
+//       .single();
+
+//     if (userError) throw new Error("Failed to fetch user data");
+
+//     const url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/yelp-fetch`;
+//     const options = {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         locationId: userData.selected_location_id,
+//         yelpBusinessLink: formData.yelpBusinessLink,
+//         clerkId: userId,
+//       }),
+//     };
+
+//     fetch(url, options);
+//     return { success: true };
+//   } catch (error) {
+//     console.error("Error initiating Yelp fetch:", error);
+//     await updateFetchErrorMessage(userId, error.message);
+//     return { success: false };
+//   }
+// }
+
 export async function initiateYelpFetch(formData) {
   console.log("Form data —> ", formData);
   const { userId } = await auth();
@@ -232,25 +272,21 @@ export async function initiateYelpFetch(formData) {
 
     if (userError) throw new Error("Failed to fetch user data");
 
-    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/yelp-fetch`;
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    // Send event to Inngest
+    await inngest.send({
+      name: "fetch/yelp.reviews",
+      data: {
         locationId: userData.selected_location_id,
         yelpBusinessLink: formData.yelpBusinessLink,
         clerkId: userId,
-      }),
-    };
+      },
+    });
 
-    fetch(url, options);
-    return { success: true };
+    return { success: true, message: "Yelp review fetch initiated" };
   } catch (error) {
     console.error("Error initiating Yelp fetch:", error);
-    await updateFetchErrorMessage(userId, error.message);
-    return { success: false };
+    await updateFetchErrorMessage(error.message, userId);
+    return { success: false, error: error.message };
   }
 }
 
