@@ -130,3 +130,274 @@ export async function generateInsights(
 
   return message;
 }
+
+export async function storeReview(
+  review,
+  response,
+  insights,
+  locationId,
+  clerkId
+) {
+  try {
+    const { data: inserted_review, error: inserted_review_error } =
+      await supabase
+        .from("reviews")
+        .insert([
+          {
+            location_id: locationId,
+            yelp_review_id: review.review_id,
+            timestamp: review.timestamp,
+            rating: review.rating.value,
+            review_text: review.review_text,
+            customer_name: review.user_profile.name,
+            customer_profile_url: review.user_profile.url,
+            customer_image_url: review.user_profile.image_url,
+            has_responded_to: review.responses === null ? false : true,
+            source: "yelp",
+            generated_response: response.content[0].text,
+            sentiment: insights.sentimentLabel,
+            summary: insights.summary,
+            return_likelihood:
+              insights.businessInsights?.returnLikelihood?.indication || null,
+          },
+        ])
+        .select("*");
+
+    if (inserted_review_error) throw inserted_review_error;
+
+    console.log("Inserted Review -> ", inserted_review);
+
+    // Process businessSpecificCategories
+    if (
+      insights.businessSpecificCategories &&
+      insights.businessSpecificCategories.length > 0
+    ) {
+      for (const category of insights.businessSpecificCategories) {
+        const { data: inserted_category, error: inserted_category_error } =
+          await supabase
+            .from("business_categories")
+            .insert([
+              {
+                review_id: inserted_review[0].id,
+                location_id: locationId,
+                name: category.name,
+                context: category.context,
+              },
+            ])
+            .select("*");
+
+        if (inserted_category_error) throw inserted_category_error;
+
+        console.log("Inserted Category -> ", inserted_category);
+
+        // Process contexts and keywords
+        await Promise.all([
+          ...(category.positiveContexts || []).map((context) =>
+            insertContext(
+              inserted_review[0].id,
+              inserted_category[0].id,
+              context,
+              "positive"
+            )
+          ),
+          ...(category.negativeContexts || []).map((context) =>
+            insertContext(
+              inserted_review[0].id,
+              inserted_category[0].id,
+              context,
+              "negative"
+            )
+          ),
+          ...(category.neutralContexts || []).map((context) =>
+            insertContext(
+              inserted_review[0].id,
+              inserted_category[0].id,
+              context,
+              "neutral"
+            )
+          ),
+          ...(category.categorySpecificKeywords || []).map((keyword) =>
+            insertKeyword(
+              inserted_review[0].id,
+              inserted_category[0].id,
+              keyword
+            )
+          ),
+        ]);
+      }
+    }
+
+    // Process detailed sentiment analysis
+    if (insights.detailedSentimentAnalysis) {
+      await Promise.all([
+        ...(insights.detailedSentimentAnalysis.positiveAspects || []).map(
+          (aspect) =>
+            insertDetailedAspect(inserted_review[0].id, aspect, "positive")
+        ),
+        ...(insights.detailedSentimentAnalysis.negativeAspects || []).map(
+          (aspect) =>
+            insertDetailedAspect(inserted_review[0].id, aspect, "negative")
+        ),
+      ]);
+    }
+
+    // Process staff mentions
+    if (insights.businessInsights && insights.businessInsights.staffMentions) {
+      await Promise.all(
+        insights.businessInsights.staffMentions
+          .filter(
+            (mention) => mention.name && mention.name.toLowerCase() !== "n/a"
+          )
+          .map((mention) =>
+            insertStaffMention(inserted_review[0].id, locationId, mention)
+          )
+      );
+    }
+
+    // Process product/service feedback
+    if (
+      insights.businessInsights &&
+      insights.businessInsights.productServiceFeedback
+    ) {
+      await Promise.all(
+        insights.businessInsights.productServiceFeedback.map((feedback) =>
+          insertProductServiceFeedback(
+            inserted_review[0].id,
+            locationId,
+            feedback
+          )
+        )
+      );
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error in storeReview:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteReviewsForLocation(locationId) {
+  try {
+    const { data: existing_reviews, error: existing_reviews_error } =
+      await supabase.from("reviews").select("*").eq("location_id", locationId);
+
+    if (existing_reviews_error) {
+      console.error("Error fetching existing reviews:", existing_reviews_error);
+      return { success: false, error: existing_reviews_error.message };
+    }
+
+    if (!existing_reviews || existing_reviews.length === 0) {
+      console.log("No existing reviews found for location", locationId);
+      return { success: true, deletedCount: 0 };
+    }
+
+    console.log("Existing reviews for location", existing_reviews.length);
+
+    const { data, error } = await supabase
+      .from("reviews")
+      .delete()
+      .match({ location_id: locationId });
+
+    if (error) throw error;
+
+    console.log(`Deleted all reviews for location ${locationId}`);
+    return { success: true, deletedCount: existing_reviews.length };
+  } catch (error) {
+    console.error(`Error deleting reviews for location ${locationId}:`, error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Helper functions for inserting data
+async function insertContext(reviewId, categoryId, context, sentiment) {
+  if (!context) return null;
+  const { data, error } = await supabase
+    .from("business_category_mentions")
+    .insert([
+      {
+        review_id: reviewId,
+        business_category_id: categoryId,
+        context: context,
+        sentiment: sentiment,
+      },
+    ])
+    .select("*");
+
+  if (error) throw error;
+  return data;
+}
+
+async function insertKeyword(reviewId, categoryId, keyword) {
+  if (!keyword || !keyword.keyword) return null;
+  const { data, error } = await supabase
+    .from("keywords")
+    .insert([
+      {
+        review_id: reviewId,
+        business_category_id: categoryId,
+        name: keyword.keyword,
+        sentiment: keyword.sentiment,
+      },
+    ])
+    .select("*");
+
+  if (error) throw error;
+  return data;
+}
+
+async function insertDetailedAspect(reviewId, aspect, sentiment) {
+  if (!aspect || !aspect.aspect) return null;
+  const { data, error } = await supabase
+    .from("detailed_aspects")
+    .insert([
+      {
+        review_id: reviewId,
+        aspect: aspect.aspect,
+        detail: aspect.detail,
+        impact: aspect.impact,
+        sentiment: sentiment,
+      },
+    ])
+    .select("*");
+
+  if (error) throw error;
+  return data;
+}
+
+async function insertStaffMention(reviewId, locationId, mention) {
+  if (!mention || !mention.name || mention.name.toLowerCase() === "n/a")
+    return null;
+  const { data, error } = await supabase
+    .from("staff_mentions")
+    .insert([
+      {
+        review_id: reviewId,
+        location_id: locationId,
+        employee_name: mention.name,
+        context: mention.context,
+      },
+    ])
+    .select("*");
+
+  if (error) throw error;
+  return data;
+}
+
+async function insertProductServiceFeedback(reviewId, locationId, feedback) {
+  if (!feedback || !feedback.item) return null;
+  const { data, error } = await supabase
+    .from("product_service_feedback")
+    .insert([
+      {
+        review_id: reviewId,
+        location_id: locationId,
+        item: feedback.item,
+        feedback: feedback.feedback,
+      },
+    ])
+    .select("*");
+
+  if (error) throw error;
+  return data;
+}

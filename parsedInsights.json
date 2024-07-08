@@ -1,0 +1,160 @@
+{
+    sentimentLabel: 'Positive',
+    summary: 'The review highly praises Bolder Studios for their excellent work in repairing a family room after water damage. The customer emphasizes the team\'s professionalism, skills, and effective communication.',
+    positivePoints: [
+        {
+            aspect: 'Team Quality',
+            detail: 'Best team with highly skilled and passionate workers'
+        },
+        {
+            aspect: 'Communication',
+            detail: 'Prompt responses and answers to questions'
+        },
+        {
+            aspect: 'Professionalism',
+            detail: 'Reliable, honest, and hard-working approach'
+        }
+    ],
+    negativePoints: [],
+    businessInsights: {
+        customerExperience: {
+            highlightedAspects: ['Skilled workforce', 'Effective communication', 'Professionalism'],
+            suggestedImprovements: []
+        },
+        staffMentions: [{
+            name: 'The Robledos',
+            context: 'Mentioned as very professional'
+        }],
+        productServiceFeedback: [{
+            item: 'Family room repair',
+            feedback: 'Excellent execution of repairs due to plumbing leak and water damage'
+        }],
+        operationalObservations: [{
+            aspect: 'Communication efficiency',
+            detail: 'Team provides prompt responses and answers to customer questions'
+        }],
+        competitiveInsights: {
+            advantages: [{
+                advantage: 'Perceived as the best team available'
+            }],
+            disadvantages: []
+        },
+        returnLikelihood: {
+            indication: 'Likely',
+            basedOn: 'Customer\'s high praise and statement: *Why look anywhere else when you have the best team here*'
+        }
+    },
+    generalKeywordMentions: [
+        {
+            keyword: 'professional',
+            sentiment: 'Positive',
+            count: 1,
+            contexts: ['The Robledos are very professional']
+        },
+        {
+            keyword: 'communicate',
+            sentiment: 'Positive',
+            count: 1,
+            contexts: ['The one thing we like about their team is how they communicate']
+        },
+        {
+            keyword: 'reliable',
+            sentiment: 'Positive',
+            count: 1,
+            contexts: ['They are reliable, honest and hard working']
+        }
+    ],
+    businessSpecificCategories: [
+        {
+            name: 'Repair Quality',
+            positiveMentions: 1,
+            positiveContexts: [
+                'hired them to do our family room that needed repairs due to a plumbing leak and water damage'
+            ],
+            negativeMentions: 0,
+            negativeContexts: [],
+            neutralMentions: 0,
+            neutralContexts: [],
+            categorySpecificKeywords: [
+                {
+                    keyword: 'repairs',
+                    sentiment: 'Positive'
+                },
+                {
+                    keyword: 'water damage',
+                    sentiment: 'Neutral'
+                }
+            ],
+            context: 'The review specifically mentions the quality of repairs for water damage, which is a key service of the business'
+        },
+        {
+            name: 'Staff Expertise',
+            positiveMentions: 2,
+            positiveContexts: [
+                'highly skilled workers',
+                'passionate about bringing out the best in what you want for your home'
+            ],
+            negativeMentions: 0,
+            negativeContexts: [],
+            neutralMentions: 0,
+            neutralContexts: [],
+            categorySpecificKeywords: [{
+                    keyword: 'skilled',
+                    sentiment: 'Positive'
+                },
+                {
+                    keyword: 'passionate',
+                    sentiment: 'Positive'
+                }
+            ],
+            context: 'The review emphasizes the high skill level and passion of the workers, which is crucial for a home repair and renovation business'
+        },
+        {
+            name: 'Customer Service',
+            positiveMentions: 2,
+            positiveContexts: [
+                'They are prompt and they have answers to our questions right away',
+                'They are reliable, honest and hard working'
+            ],
+            negativeMentions: 0,
+            negativeContexts: [],
+            neutralMentions: 0,
+            neutralContexts: [],
+            categorySpecificKeywords: [{
+                    keyword: 'prompt',
+                    sentiment: 'Positive'
+                },
+                {
+                    keyword: 'honest',
+                    sentiment: 'Positive'
+                }
+            ],
+            context: 'The review highlights excellent customer service through prompt communication and reliability'
+        }
+    ],
+    detailedSentimentAnalysis: {
+        positiveAspects: [
+            {
+                aspect: 'Overall team quality',
+                detail: 'The review begins with a strong endorsement: **Why look anywhere else when you have the best team here**',
+                impact: 'High'
+            },
+            {
+                aspect: 'Professional and skilled workforce',
+                detail: 'Described as **very professional** with **highly skilled workers who are passionate** about their work',
+                impact: 'High'
+            },
+            {
+                aspect: 'Effective communication',
+                detail: 'Highlighted as a key strength: **They are prompt and they have answers to our questions right away**',
+                impact: 'Medium'
+            },
+            {
+                aspect: 'Work ethic and integrity',
+                detail: 'Team described as **reliable, honest and hard working**',
+                impact: 'Medium'
+            }
+        ],
+        negativeAspects: []
+    }
+}

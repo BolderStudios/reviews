@@ -9,6 +9,8 @@ import {
   generateResponse,
   generateInsights,
   updateSelectedLocation,
+  storeReview,
+  deleteReviewsForLocation,
 } from "@/utils/actionsHelpers";
 import axios from "axios";
 import pLimit from "p-limit";
@@ -106,6 +108,98 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
         throw new Error(allReviews.message);
       }
 
+      const { data: locationData } = await getLocationInfo(locationId);
+      console.log("Location Data fetched —> ", locationData);
+      const { name_of_contact, position_of_contact, organization_name } =
+        locationData;
+
+      const fetchedAllReviews = allReviews.reviews;
+      console.log("Fetched all reviews length —> ", fetchedAllReviews.length);
+
+      const deleteResult = await deleteReviewsForLocation(locationId);
+      if (!deleteResult.success) {
+        console.error(
+          `Failed to delete existing reviews: ${deleteResult.error}`
+        );
+        // Decide whether you want to continue or throw an error here
+        // throw new Error(`Failed to delete existing reviews: ${deleteResult.error}`);
+      } else {
+        if (deleteResult.deletedCount === 0) {
+          console.log(
+            "No existing reviews found for this location ID —> ",
+            locationId
+          );
+        } else {
+          console.log(
+            "Deleted existing reviews -> ",
+            deleteResult.deletedCount
+          );
+        }
+      }
+
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      const processReviews = fetchedAllReviews.map((review) =>
+        limit(async () => {
+          await delay(1250);
+
+          const rating = review.rating.value;
+          const customer_name = review.user_profile.name;
+          const review_text = review.review_text;
+
+          try {
+            const response = await retryRequest(() =>
+              generateResponse(
+                organization_name,
+                name_of_contact,
+                position_of_contact,
+                rating,
+                customer_name,
+                review_text
+              )
+            );
+
+            const insights = await retryRequest(() =>
+              generateInsights(
+                organization_name,
+                name_of_contact,
+                position_of_contact,
+                rating,
+                customer_name,
+                review_text
+              )
+            );
+
+            console.log("Generated Response —> ", response);
+            console.log("Generated Insights —> ", insights);
+
+            const parsedInsights = JSON.parse(insights.content[0].text);
+
+            console.log("Parsed insights -> ", parsedInsights);
+
+            // Store the review in the database
+            try {
+              const storeResult = await storeReview(
+                review,
+                response,
+                parsedInsights,
+                locationId,
+                clerkId
+              );
+              console.log("Review stored successfully:", storeResult);
+            } catch (storeError) {
+              console.error("Error storing review:", storeError);
+              // I might want to implement some retry logic here or log the error for manual review
+            }
+
+            return { response, insights };
+          } catch (error) {
+            console.error("Error processing review:", error);
+            return { error: error.message };
+          }
+        })
+      );
+      await Promise.all(processReviews);
+
       console.log(
         `Successfully fetched all ${allReviews.reviews.length} reviews`
       );
@@ -117,6 +211,94 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
     }
 
     console.log(`Returning initial ${initialResults.reviews.length} reviews`);
+    console.log("Actual reviews —> ", initialResults.reviews);
+
+    const { data: locationData } = await getLocationInfo(locationId);
+    console.log("Location Data fetched —> ", locationData);
+    const { name_of_contact, position_of_contact, organization_name } =
+      locationData;
+
+    const fetchedAllReviews = initialResults.reviews;
+    console.log("Fetched all reviews length —> ", fetchedAllReviews.length);
+    const deleteResult = await deleteReviewsForLocation(locationId);
+    if (!deleteResult.success) {
+      console.error(`Failed to delete existing reviews: ${deleteResult.error}`);
+      // Decide whether you want to continue or throw an error here
+      // throw new Error(`Failed to delete existing reviews: ${deleteResult.error}`);
+    } else {
+      if (deleteResult.deletedCount === 0) {
+        console.log(
+          "No existing reviews found for this location ID —> ",
+          locationId
+        );
+      } else {
+        console.log("Deleted existing reviews -> ", deleteResult.deletedCount);
+      }
+    }
+
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const processReviews = fetchedAllReviews.map((review) =>
+      limit(async () => {
+        await delay(1250);
+
+        const rating = review.rating.value;
+        const customer_name = review.user_profile.name;
+        const review_text = review.review_text;
+
+        try {
+          const response = await retryRequest(() =>
+            generateResponse(
+              organization_name,
+              name_of_contact,
+              position_of_contact,
+              rating,
+              customer_name,
+              review_text
+            )
+          );
+
+          const insights = await retryRequest(() =>
+            generateInsights(
+              organization_name,
+              name_of_contact,
+              position_of_contact,
+              rating,
+              customer_name,
+              review_text
+            )
+          );
+
+          console.log("Generated Response —> ", response);
+          console.log("Generated Insights —> ", insights);
+
+          const parsedInsights = JSON.parse(insights.content[0].text);
+
+          console.log("Parsed insights -> ", parsedInsights);
+
+          // Store the review in the database
+          try {
+            const storeResult = await storeReview(
+              review,
+              response,
+              parsedInsights,
+              locationId,
+              clerkId
+            );
+            console.log("Review stored successfully:", storeResult);
+          } catch (storeError) {
+            console.error("Error storing review:", storeError);
+            // I might want to implement some retry logic here or log the error for manual review
+          }
+
+          return { response, insights };
+        } catch (error) {
+          console.error("Error processing review:", error);
+          return { error: error.message };
+        }
+      })
+    );
+    await Promise.all(processReviews);
+
     return {
       success: true,
       reviews: initialResults.reviews,
@@ -224,3 +406,16 @@ export default serve({
   functions: [fetchYelpReviews],
   streaming: "allow",
 });
+
+async function retryRequest(fn, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    console.log("Retry attempt", i + 1);
+
+    try {
+      return await fn();
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+    }
+  }
+}

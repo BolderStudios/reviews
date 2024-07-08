@@ -9,6 +9,7 @@ exports.updateSelectedLocation = updateSelectedLocation;
 exports.getLocationInfo = getLocationInfo;
 exports.generateResponse = generateResponse;
 exports.generateInsights = generateInsights;
+exports.storeReview = storeReview;
 
 var _supabaseClient = _interopRequireDefault(require("@/utils/supabaseClient"));
 
@@ -249,3 +250,312 @@ function generateInsights(organization_name, contant_name, contact_position, rat
     }
   });
 }
+
+function storeReview(review, response, insights, locationId, clerkId) {
+  var _ref5, inserted_review, inserted_review_error, businessSpecificCategories;
+
+  return regeneratorRuntime.async(function storeReview$(_context16) {
+    while (1) {
+      switch (_context16.prev = _context16.next) {
+        case 0:
+          _context16.next = 2;
+          return regeneratorRuntime.awrap(_supabaseClient["default"].from("reviews").insert([{
+            location_id: locationId,
+            yelp_review_id: review.review_id,
+            timestamp: review.timestamp,
+            rating: review.rating.value,
+            review_text: review.review_text,
+            customer_name: review.user_profile.name,
+            customer_profile_url: review.user_profile.url,
+            customer_image_url: review.user_profile.image_url,
+            has_responded_to: review.responses === null ? false : true,
+            source: "yelp",
+            generated_response: response.content[0].text,
+            sentiment: insights.sentimentLabel,
+            summary: insights.summary,
+            return_likelihood: insights.businessInsights.returnLikelihood.indication
+          }]).select("*"));
+
+        case 2:
+          _ref5 = _context16.sent;
+          inserted_review = _ref5.data;
+          inserted_review_error = _ref5.error;
+          console.log("Inserted Review -> ", inserted_review);
+          businessSpecificCategories = insights.businessSpecificCategories;
+          businessSpecificCategories.forEach(function _callee5(category) {
+            var _ref6, inserted_category, inserted_category_error;
+
+            return regeneratorRuntime.async(function _callee5$(_context11) {
+              while (1) {
+                switch (_context11.prev = _context11.next) {
+                  case 0:
+                    console.log("Category -> ", category);
+                    _context11.next = 3;
+                    return regeneratorRuntime.awrap(_supabaseClient["default"].from("business_categories").insert([{
+                      review_id: inserted_review[0].id,
+                      location_id: locationId,
+                      name: category.name,
+                      context: category.context
+                    }]).select("*"));
+
+                  case 3:
+                    _ref6 = _context11.sent;
+                    inserted_category = _ref6.data;
+                    inserted_category_error = _ref6.error;
+                    console.log("Inserted Category -> ", inserted_category);
+                    category.positiveContexts.forEach(function _callee(context) {
+                      var _ref7, inserted_context, inserted_context_error;
+
+                      return regeneratorRuntime.async(function _callee$(_context7) {
+                        while (1) {
+                          switch (_context7.prev = _context7.next) {
+                            case 0:
+                              console.log("Context -> ", context);
+                              _context7.next = 3;
+                              return regeneratorRuntime.awrap(_supabaseClient["default"].from("business_category_mentions").insert([{
+                                review_id: inserted_review[0].id,
+                                category_id: inserted_category[0].id,
+                                context: context,
+                                sentiment: "positive"
+                              }]).select("*"));
+
+                            case 3:
+                              _ref7 = _context7.sent;
+                              inserted_context = _ref7.data;
+                              inserted_context_error = _ref7.error;
+                              console.log("Inserted Context -> ", inserted_context);
+
+                            case 7:
+                            case "end":
+                              return _context7.stop();
+                          }
+                        }
+                      });
+                    });
+                    category.negativeContexts.forEach(function _callee2(context) {
+                      var _ref8, inserted_context, inserted_context_error;
+
+                      return regeneratorRuntime.async(function _callee2$(_context8) {
+                        while (1) {
+                          switch (_context8.prev = _context8.next) {
+                            case 0:
+                              console.log("Context -> ", context);
+                              _context8.next = 3;
+                              return regeneratorRuntime.awrap(_supabaseClient["default"].from("business_category_mentions").insert([{
+                                review_id: inserted_review[0].id,
+                                business_category_id: inserted_category[0].id,
+                                context: context,
+                                sentiment: "negative"
+                              }]).select("*"));
+
+                            case 3:
+                              _ref8 = _context8.sent;
+                              inserted_context = _ref8.data;
+                              inserted_context_error = _ref8.error;
+                              console.log("Inserted Context -> ", inserted_context);
+
+                            case 7:
+                            case "end":
+                              return _context8.stop();
+                          }
+                        }
+                      });
+                    });
+                    category.neutralContexts.forEach(function _callee3(context) {
+                      var _ref9, inserted_context, inserted_context_error;
+
+                      return regeneratorRuntime.async(function _callee3$(_context9) {
+                        while (1) {
+                          switch (_context9.prev = _context9.next) {
+                            case 0:
+                              console.log("Context -> ", context);
+                              _context9.next = 3;
+                              return regeneratorRuntime.awrap(_supabaseClient["default"].from("business_category_mentions").insert([{
+                                review_id: inserted_review[0].id,
+                                business_category_id: inserted_category[0].id,
+                                context: context,
+                                sentiment: "neutral"
+                              }]).select("*"));
+
+                            case 3:
+                              _ref9 = _context9.sent;
+                              inserted_context = _ref9.data;
+                              inserted_context_error = _ref9.error;
+                              console.log("Inserted Context -> ", inserted_context);
+
+                            case 7:
+                            case "end":
+                              return _context9.stop();
+                          }
+                        }
+                      });
+                    });
+                    category.categorySpecificKeywords.forEach(function _callee4(keyword) {
+                      var _ref10, inserted_keyword, inserted_keyword_error;
+
+                      return regeneratorRuntime.async(function _callee4$(_context10) {
+                        while (1) {
+                          switch (_context10.prev = _context10.next) {
+                            case 0:
+                              console.log("Keyword -> ", keyword);
+                              _context10.next = 3;
+                              return regeneratorRuntime.awrap(_supabaseClient["default"].from("keywords").insert([{
+                                review_id: inserted_review[0].id,
+                                business_category_id: inserted_category[0].id,
+                                name: keyword.keyword,
+                                sentiment: keyword.sentiment
+                              }]).select("*"));
+
+                            case 3:
+                              _ref10 = _context10.sent;
+                              inserted_keyword = _ref10.data;
+                              inserted_keyword_error = _ref10.error;
+                              console.log("Inserted Keyword -> ", inserted);
+
+                            case 7:
+                            case "end":
+                              return _context10.stop();
+                          }
+                        }
+                      });
+                    });
+
+                  case 11:
+                  case "end":
+                    return _context11.stop();
+                }
+              }
+            });
+          });
+          insights.detailedSentimentAnalysis.positiveAspects.forEach(function _callee6(aspect) {
+            var _ref11, inserted_aspect, inserted_aspect_error;
+
+            return regeneratorRuntime.async(function _callee6$(_context12) {
+              while (1) {
+                switch (_context12.prev = _context12.next) {
+                  case 0:
+                    console.log("Aspect -> ", aspect);
+                    _context12.next = 3;
+                    return regeneratorRuntime.awrap(_supabaseClient["default"].from("detailed_aspects").insert([{
+                      review_id: inserted_review[0].id,
+                      aspect: aspect.aspect,
+                      detail: aspect.detail,
+                      impact: aspect.impact,
+                      sentiment: "positive"
+                    }]).select("*"));
+
+                  case 3:
+                    _ref11 = _context12.sent;
+                    inserted_aspect = _ref11.data;
+                    inserted_aspect_error = _ref11.error;
+                    console.log("Inserted Aspect -> ", inserted_aspect);
+
+                  case 7:
+                  case "end":
+                    return _context12.stop();
+                }
+              }
+            });
+          });
+          insights.detailedSentimentAnalysis.negativeAspects.forEach(function _callee7(aspect) {
+            var _ref12, inserted_aspect, inserted_aspect_error;
+
+            return regeneratorRuntime.async(function _callee7$(_context13) {
+              while (1) {
+                switch (_context13.prev = _context13.next) {
+                  case 0:
+                    console.log("Aspect -> ", aspect);
+                    _context13.next = 3;
+                    return regeneratorRuntime.awrap(_supabaseClient["default"].from("detailed_aspects").insert([{
+                      review_id: inserted_review[0].id,
+                      aspect: aspect.aspect,
+                      detail: aspect.detail,
+                      impact: aspect.impact,
+                      sentiment: "negative"
+                    }]).select("*"));
+
+                  case 3:
+                    _ref12 = _context13.sent;
+                    inserted_aspect = _ref12.data;
+                    inserted_aspect_error = _ref12.error;
+                    console.log("Inserted Aspect -> ", inserted_aspect);
+
+                  case 7:
+                  case "end":
+                    return _context13.stop();
+                }
+              }
+            });
+          });
+          insights.businessInsights.staffMentions.forEach(function _callee8(mention) {
+            var _ref13, inserted_mention, inserted_mention_error;
+
+            return regeneratorRuntime.async(function _callee8$(_context14) {
+              while (1) {
+                switch (_context14.prev = _context14.next) {
+                  case 0:
+                    console.log("Mention -> ", mention);
+                    _context14.next = 3;
+                    return regeneratorRuntime.awrap(_supabaseClient["default"].from("staff_mentions").insert([{
+                      review_id: inserted_review[0].id,
+                      location_id: locationId,
+                      employee_name: mention.name,
+                      role: mention.role,
+                      context: mention.context
+                    }]).select("*"));
+
+                  case 3:
+                    _ref13 = _context14.sent;
+                    inserted_mention = _ref13.data;
+                    inserted_mention_error = _ref13.error;
+                    console.log("Inserted Mention -> ", inserted_mention);
+
+                  case 7:
+                  case "end":
+                    return _context14.stop();
+                }
+              }
+            });
+          });
+          insights.businessInsights.productServiceFeedback.forEach(function _callee9(feedback) {
+            var _ref14, inserted_feedback, inserted_feedback_error;
+
+            return regeneratorRuntime.async(function _callee9$(_context15) {
+              while (1) {
+                switch (_context15.prev = _context15.next) {
+                  case 0:
+                    console.log("Feedback -> ", feedback);
+                    _context15.next = 3;
+                    return regeneratorRuntime.awrap(_supabaseClient["default"].from("product_service_feedback").insert([{
+                      review_id: inserted_review[0].id,
+                      location_id: locationId,
+                      item: feedback.item,
+                      feedback: feedback.feedback
+                    }]).select("*"));
+
+                  case 3:
+                    _ref14 = _context15.sent;
+                    inserted_feedback = _ref14.data;
+                    inserted_feedback_error = _ref14.error;
+                    console.log("Inserted Feedback -> ", inserted_feedback);
+
+                  case 7:
+                  case "end":
+                    return _context15.stop();
+                }
+              }
+            });
+          });
+          return _context16.abrupt("return", {
+            success: true
+          });
+
+        case 13:
+        case "end":
+          return _context16.stop();
+      }
+    }
+  });
+}
+
+;
