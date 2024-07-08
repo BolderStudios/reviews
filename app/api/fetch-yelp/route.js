@@ -12,9 +12,6 @@ export async function POST(request) {
       data: { yelpBusinessLink, locationId, clerkId },
     });
 
-    await updateIsFetching("true", clerkId);
-    await updateFetchErrorMessage("", clerkId);
-
     return NextResponse.json(
       { message: "Yelp review fetch initiated" },
       { status: 202 }

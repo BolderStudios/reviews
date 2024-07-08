@@ -207,6 +207,10 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
     };
   } catch (error) {
     console.log(`Yelp fetching error —> `, error);
+
+    await updateIsFetching(false, clerkId);
+    await updateFetchErrorMessage(error.message, clerkId);
+
     return {
       success: false,
       message: `Failed to fetch Yelp reviews: ${error.message}`,
