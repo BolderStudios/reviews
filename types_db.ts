@@ -9,6 +9,170 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      business_categories: {
+        Row: {
+          context: string | null
+          created_at: string
+          id: string
+          location_id: string
+          name: string
+          review_id: string
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string
+          id?: string
+          location_id: string
+          name: string
+          review_id: string
+        }
+        Update: {
+          context?: string | null
+          created_at?: string
+          id?: string
+          location_id?: string
+          name?: string
+          review_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_business_categories_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_business_categories_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_category_mentions: {
+        Row: {
+          business_category_id: string | null
+          content: string | null
+          created_at: string
+          id: string
+          review_id: string | null
+          sentiment: string | null
+        }
+        Insert: {
+          business_category_id?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          review_id?: string | null
+          sentiment?: string | null
+        }
+        Update: {
+          business_category_id?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          review_id?: string | null
+          sentiment?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_business_category_mentions_business_category_id_fkey"
+            columns: ["business_category_id"]
+            isOneToOne: false
+            referencedRelation: "business_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_business_category_mentions_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      detailed_aspects: {
+        Row: {
+          aspec: string | null
+          created_at: string
+          detail: string | null
+          id: string
+          impact: string | null
+          review_id: string | null
+          sentiment: string | null
+        }
+        Insert: {
+          aspec?: string | null
+          created_at?: string
+          detail?: string | null
+          id?: string
+          impact?: string | null
+          review_id?: string | null
+          sentiment?: string | null
+        }
+        Update: {
+          aspec?: string | null
+          created_at?: string
+          detail?: string | null
+          id?: string
+          impact?: string | null
+          review_id?: string | null
+          sentiment?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_detailed_aspects_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      keywords: {
+        Row: {
+          business_category_id: string | null
+          created_at: string
+          id: string
+          name: string | null
+          review_id: string | null
+          sentiment: string | null
+        }
+        Insert: {
+          business_category_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          review_id?: string | null
+          sentiment?: string | null
+        }
+        Update: {
+          business_category_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          review_id?: string | null
+          sentiment?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_keywords_business_category_id_fkey"
+            columns: ["business_category_id"]
+            isOneToOne: false
+            referencedRelation: "business_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_keywords_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           clerk_id: string
@@ -64,6 +228,181 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_service_feedback: {
+        Row: {
+          created_at: string
+          feedback: string | null
+          id: string
+          item: string | null
+          location_id: string | null
+          review_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          item?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          feedback?: string | null
+          id?: string
+          item?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_product_service_feedback_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_product_service_feedback_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_responses: {
+        Row: {
+          created_at: string
+          id: string
+          response_text: string | null
+          review_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          response_text?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          response_text?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_review_responses_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          created_at: string
+          customer_image_url: string | null
+          customer_name: string | null
+          customer_profile_url: string | null
+          has_responded_to: boolean
+          id: string
+          location_id: string | null
+          rating: number | null
+          return_likelihood: string | null
+          review_text: string | null
+          sentiment: string | null
+          source: string | null
+          summary: string | null
+          timestamp: string | null
+          yelp_review_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_image_url?: string | null
+          customer_name?: string | null
+          customer_profile_url?: string | null
+          has_responded_to?: boolean
+          id?: string
+          location_id?: string | null
+          rating?: number | null
+          return_likelihood?: string | null
+          review_text?: string | null
+          sentiment?: string | null
+          source?: string | null
+          summary?: string | null
+          timestamp?: string | null
+          yelp_review_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_image_url?: string | null
+          customer_name?: string | null
+          customer_profile_url?: string | null
+          has_responded_to?: boolean
+          id?: string
+          location_id?: string | null
+          rating?: number | null
+          return_likelihood?: string | null
+          review_text?: string | null
+          sentiment?: string | null
+          source?: string | null
+          summary?: string | null
+          timestamp?: string | null
+          yelp_review_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_reviews_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_mentions: {
+        Row: {
+          context: string | null
+          created_at: string
+          employee_name: string | null
+          id: string
+          location_id: string | null
+          review_id: string | null
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string
+          employee_name?: string | null
+          id?: string
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          context?: string | null
+          created_at?: string
+          employee_name?: string | null
+          id?: string
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_staff_mentions_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_staff_mentions_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -164,7 +503,7 @@ export type Database = {
           created_at: string
           customer_retention_challenges: string | null
           employee_count: number | null
-          fetching_error_message: string | null
+          fetch_error_message: string | null
           id: string
           is_admin: boolean
           is_fetching: boolean
@@ -179,7 +518,7 @@ export type Database = {
           created_at?: string
           customer_retention_challenges?: string | null
           employee_count?: number | null
-          fetching_error_message?: string | null
+          fetch_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
@@ -194,7 +533,7 @@ export type Database = {
           created_at?: string
           customer_retention_challenges?: string | null
           employee_count?: number | null
-          fetching_error_message?: string | null
+          fetch_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
@@ -202,33 +541,6 @@ export type Database = {
           location_count?: number | null
           organization_industry?: string | null
           selected_location_id?: string | null
-        }
-        Relationships: []
-      }
-      yelp_fetch_tasks: {
-        Row: {
-          attempts: number | null
-          created_at: string
-          id: string
-          status: string | null
-          task_id: string | null
-          yelp_business_link: string | null
-        }
-        Insert: {
-          attempts?: number | null
-          created_at?: string
-          id?: string
-          status?: string | null
-          task_id?: string | null
-          yelp_business_link?: string | null
-        }
-        Update: {
-          attempts?: number | null
-          created_at?: string
-          id?: string
-          status?: string | null
-          task_id?: string | null
-          yelp_business_link?: string | null
         }
         Relationships: []
       }
