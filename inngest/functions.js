@@ -1,6 +1,7 @@
 // "@/inngest/functions.js"
 
 import { inngest } from "./client";
+import { serve } from "inngest/next"; 
 import {
   updateIsFetching,
   updateFetchErrorMessage,
@@ -53,7 +54,6 @@ export const fetchYelpReviews = inngest.createFunction(
     }
   }
 );
-
 async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
   const alias = yelpBusinessLink.split("/").pop();
   try {
@@ -183,3 +183,9 @@ async function postYelpReviewTask(alias, depth) {
     throw new Error(`HTTP error! Status: ${error.response?.status}`);
   }
 }
+
+export default serve({
+  client: inngest,
+  functions: [fetchYelpReviews],
+  streaming: "allow", 
+});

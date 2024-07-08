@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PUT = exports.POST = exports.GET = void 0;
+exports.PUT = exports.POST = exports.GET = exports.runtime = void 0;
 
 var _next = require("inngest/next");
 
@@ -12,12 +12,15 @@ var _client = require("@/inngest/client");
 var _functions = require("@/inngest/functions");
 
 // "@/app/api/inngest/route.js"
-// Create an API that serves zero functions
+// Enable Edge Runtime
+var runtime = "edge"; // Create an API that serves your functions with streaming enabled
+
+exports.runtime = runtime;
+
 var _serve = (0, _next.serve)({
   client: _client.inngest,
-  functions: [
-  /* your functions will be passed here later! */
-  _functions.helloWorld, _functions.fetchYelpReviews]
+  functions: [_functions.helloWorld, _functions.fetchYelpReviews],
+  streaming: "allow"
 }),
     GET = _serve.GET,
     POST = _serve.POST,
