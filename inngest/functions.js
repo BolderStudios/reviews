@@ -81,124 +81,12 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
         throw new Error(allReviews.message);
       }
 
-      console.log(`All reviews fetched —> `, allReviews.reviews.length);
-
-      const fetchedAllReviews = allReviews.reviews;
-      const { data: locationData } = await getLocationInfo(locationId);
-
-      console.log("Location Data fetched —> ", locationData);
-      const { name_of_contact, position_of_contact, organization_name } =
-        locationData;
-
-      //   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-      //   const processReviews = fetchedAllReviews.map((review) =>
-      //     limit(async () => {
-      //       await delay(3000);
-
-      //       const rating = review.rating.value;
-      //       const customer_name = review.user_profile.name;
-      //       const review_text = review.review_text;
-
-      //       try {
-      //         const response = await retryRequest(() =>
-      //           generateResponse(
-      //             organization_name,
-      //             name_of_contact,
-      //             position_of_contact,
-      //             rating,
-      //             customer_name,
-      //             review_text
-      //           )
-      //         );
-
-      //         const insights = await retryRequest(() =>
-      //           generateInsights(
-      //             organization_name,
-      //             name_of_contact,
-      //             position_of_contact,
-      //             rating,
-      //             customer_name,
-      //             review_text
-      //           )
-      //         );
-
-      //         console.log("Generated Response —> ", response);
-      //         console.log("Generated Insights —> ", insights);
-
-      //         return { response, insights };
-      //       } catch (error) {
-      //         console.error("Error processing review:", error);
-      //         return { error: error.message };
-      //       }
-      //     })
-      //   );
-      //   await Promise.all(processReviews);
-
       return {
         success: true,
         reviews: allReviews.reviews,
         totalReviews: allReviews.totalReviews,
       };
     }
-
-    // Only working with Initial Reviews for now
-    const { data: locationData } = await getLocationInfo(locationId);
-
-    console.log("Location Data fetched —> ", locationData);
-    const { name_of_contact, position_of_contact, organization_name } =
-      locationData;
-
-    console.log(
-      "Initial reviews fetched before calling AI —> ",
-      initialResults.reviews
-    );
-
-    const fetchedReviews = initialResults.reviews;
-    // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    // const processReviews = fetchedReviews.map((review) =>
-    //   limit(async () => {
-    //     await delay(3000);
-
-    //     const rating = review.rating.value;
-    //     const customer_name = review.user_profile.name;
-    //     const review_text = review.review_text;
-
-    //     try {
-    //       const response = await retryRequest(() =>
-    //         generateResponse(
-    //           organization_name,
-    //           name_of_contact,
-    //           position_of_contact,
-    //           rating,
-    //           customer_name,
-    //           review_text
-    //         )
-    //       );
-
-    //       const insights = await retryRequest(() =>
-    //         generateInsights(
-    //           organization_name,
-    //           name_of_contact,
-    //           position_of_contact,
-    //           rating,
-    //           customer_name,
-    //           review_text
-    //         )
-    //       );
-
-    //       console.log("Generated Response —> ", response);
-    //       console.log("Generated Insights —> ", insights);
-
-    //       return { response, insights };
-    //     } catch (error) {
-    //       console.error("Error processing review:", error);
-    //       return { error: error.message };
-    //     }
-    //   })
-    // );
-    // await Promise.all(processReviews);
 
     return {
       success: true,
@@ -219,7 +107,7 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
 }
 
 async function pollYelpResults(taskId) {
-  const maxAttempts = 999; // Reduced for faster error detection
+  const maxAttempts = 999;
   const pollingInterval = 30000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
