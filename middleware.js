@@ -54,14 +54,14 @@ export default clerkMiddleware(async (auth, req) => {
   }
 });
 
-// export const config = {
-//   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
-// };
-
 export const config = {
-  matcher: [
-    "/((?!api/webhooks/clerk|.*\\..*|_next).*)",
-    "/",
-    "/((?!api/webhooks/clerk)api|trpc)(.*)",
-  ],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
+
+// export const config = {
+//   matcher: [
+//     "/((?!api/webhooks/clerk|.*\\..*|_next).*)",
+//     "/",
+//     "/((?!api/webhooks/clerk)api|trpc)(.*)",
+//   ],
+// };
