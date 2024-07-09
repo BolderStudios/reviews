@@ -28,18 +28,18 @@ export const processYelpReviews = inngest.createFunction(
   { id: "process-yelp-reviews" },
   { event: "process/yelp.reviews" },
   async ({ event, step }) => {
-    console.log("Starting processYelpReviews function");
+    step.log("Starting processYelpReviews function");
     const { reviews, locationId, clerkId } = event.data;
 
     try {
-      console.log("Log from processYelpReviews, reviews: ", reviews.length);
+      step.log("Log from processYelpReviews, reviews: ", reviews.length);
       const result = await step.run("Process Fetch Reviews", async () => {
         return await processYelpReviewsLogic(reviews, locationId, clerkId);
       });
 
       return { success: true, ...result };
     } catch (error) {
-      console.error(`Error in processYelpReviews function: ${error.message}`);
+      step.error(`Error in processYelpReviews function: ${error.message}`);
       await updateFetchErrorMessage(error.message, clerkId);
       return { success: false, error: error.message };
     }
@@ -54,17 +54,17 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
 
   try {
     const { data: locationData } = await getLocationInfo(locationId);
-    console.log("Location Data fetched —> ", locationData);
+    step.log("Location Data fetched —> ", locationData);
     const { name_of_contact, position_of_contact, organization_name } =
       locationData;
 
-    console.log("Processing reviews, count: ", reviews.length);
+    step.log("Processing reviews, count: ", reviews.length);
 
     const deleteResult = await deleteReviewsForLocation(locationId);
     if (!deleteResult.success) {
-      console.error(`Failed to delete existing reviews: ${deleteResult.error}`);
+      step.error(`Failed to delete existing reviews: ${deleteResult.error}`);
     } else {
-      console.log(
+      step.log(
         `Deleted ${deleteResult.deletedCount} existing reviews for location ${locationId}`
       );
     }
@@ -88,7 +88,7 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
             //   30000
             // );
 
-            console.log("Generating insights for review...", review);
+            step.log("Generating insights for review...", review);
 
             const insights = await retryRequest(
               () => generateInsights(review.review_text),
@@ -102,13 +102,13 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
               !Array.isArray(insights.content) ||
               insights.content.length === 0
             ) {
-              console.error("Invalid insights structure:", insights);
+              step.error("Invalid insights structure:", insights);
               throw new Error("Invalid insights structure");
             }
 
             const parsedInsights = JSON.parse(insights.content[0].text);
 
-            console.log("Storing review...", review);
+            step.log("Storing review...", review);
             const storeResult = await storeReview(
               review,
               parsedInsights,
@@ -116,11 +116,11 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
               clerkId
             );
 
-            console.log(`Successfully processed review ${review.review_id}`);
+            step.log(`Successfully processed review ${review.review_id}`);
             return { success: true, reviewId: review.review_id };
           } catch (error) {
-            console.log("Review itself: ", review);
-            console.error(
+            step.log("Review itself: ", review);
+            step.error(
               `Error processing review ${review.review_id}:`,
               error
             );
@@ -137,13 +137,13 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
     const successfulReviews = processedReviews.filter((r) => r.success).length;
     const failedReviews = processedReviews.filter((r) => !r.success).length;
 
-    console.log(
+    step.log(
       `Processed ${successfulReviews} reviews successfully, ${failedReviews} failed`
     );
 
     return { processedCount: successfulReviews, failedCount: failedReviews };
   } catch (error) {
-    console.error("Error in processYelpReviewsLogic:", error);
+    step.error("Error in processYelpReviewsLogic:", error);
     throw error;
   }
 };
@@ -152,18 +152,18 @@ export const fetchYelpReviews = inngest.createFunction(
   { id: "fetch-yelp-reviews" },
   { event: "fetch/yelp.reviews" },
   async ({ event, step }) => {
-    console.log("Starting fetchYelpReviews function");
+    step.log("Starting fetchYelpReviews function");
     const { yelpBusinessLink, locationId, clerkId } = event.data;
-    console.log(
+    step.log(
       `Received data: yelpBusinessLink=${yelpBusinessLink}, locationId=${locationId}, clerkId=${clerkId}`
     );
 
     try {
-      console.log("Updating isFetching status to true");
+      step.log("Updating isFetching status to true");
       await updateIsFetching("true", clerkId);
       await updateFetchErrorMessage("", clerkId);
 
-      console.log("Starting Fetch Yelp Reviews logic");
+      step.log("Starting Fetch Yelp Reviews logic");
       const result = await step.run("Fetch Yelp Reviews", async () => {
         return await fetchYelpReviewsLogic(
           yelpBusinessLink,
@@ -174,7 +174,7 @@ export const fetchYelpReviews = inngest.createFunction(
 
       const { reviews } = result;
 
-      console.log(
+      step.log(
         "Sending reviews to process/yelp.reviews function",
         reviews.length
       );
@@ -184,16 +184,16 @@ export const fetchYelpReviews = inngest.createFunction(
         data: { reviews, locationId, clerkId },
       });
 
-      console.log("Updating selected location");
+      step.log("Updating selected location");
       await updateSelectedLocation(locationId, yelpBusinessLink);
 
-      console.log("Updating isFetching status to false");
+      step.log("Updating isFetching status to false");
       await updateIsFetching("false", clerkId);
 
-      console.log("Fetch Yelp Reviews completed successfully");
+      step.log("Fetch Yelp Reviews completed successfully");
       return { success: true, ...result };
     } catch (error) {
-      console.error(`Error in Inngest function: ${error.message}`);
+      step.error(`Error in Inngest function: ${error.message}`);
       await updateIsFetching(false, clerkId);
       await updateFetchErrorMessage(error.message, clerkId);
       return { success: false, error: error.message };
@@ -202,48 +202,48 @@ export const fetchYelpReviews = inngest.createFunction(
 );
 
 async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
-  console.log("Starting fetchYelpReviewsLogic");
+  step.log("Starting fetchYelpReviewsLogic");
   const alias = yelpBusinessLink.split("/").pop();
-  console.log(`Extracted alias: ${alias}`);
+  step.log(`Extracted alias: ${alias}`);
 
   try {
-    console.log("Posting initial Yelp review task");
+    step.log("Posting initial Yelp review task");
     const initialResponse = await postYelpReviewTask(alias, 10);
 
     if (!initialResponse.tasks || initialResponse.tasks.length === 0) {
-      console.error("No tasks found in initial response");
+      step.error("No tasks found in initial response");
       throw new Error("No tasks found in response.");
     }
 
     const taskId = initialResponse.tasks[0].id;
-    console.log(`Initial task ID: ${taskId}`);
+    step.log(`Initial task ID: ${taskId}`);
 
-    console.log("Polling for initial results");
+    step.log("Polling for initial results");
     const initialResults = await pollYelpResults(taskId);
 
     if (!initialResults.success) {
-      console.error(`Initial polling failed: ${initialResults.message}`);
+      step.error(`Initial polling failed: ${initialResults.message}`);
       throw new Error(initialResults.message);
     }
 
     const totalReviews = initialResults.totalReviews;
-    console.log(`Total reviews found: ${totalReviews}`);
+    step.log(`Total reviews found: ${totalReviews}`);
 
     if (totalReviews > 10) {
-      console.log(`Fetching all ${totalReviews} reviews`);
+      step.log(`Fetching all ${totalReviews} reviews`);
       const fullResponse = await postYelpReviewTask(alias, totalReviews);
       const fullTaskId = fullResponse.tasks[0].id;
-      console.log(`Full task ID: ${fullTaskId}`);
+      step.log(`Full task ID: ${fullTaskId}`);
 
-      console.log("Polling for all reviews");
+      step.log("Polling for all reviews");
       const allReviews = await pollYelpResults(fullTaskId);
 
       if (!allReviews.success) {
-        console.error(`Full polling failed: ${allReviews.message}`);
+        step.error(`Full polling failed: ${allReviews.message}`);
         throw new Error(allReviews.message);
       }
 
-      console.log(
+      step.log(
         `Successfully fetched all ${allReviews.reviews.length} reviews`
       );
       return {
@@ -253,8 +253,8 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
       };
     }
 
-    console.log(`Returning initial ${initialResults.reviews.length} reviews`);
-    console.log("Actual reviews —> ", initialResults.reviews);
+    step.log(`Returning initial ${initialResults.reviews.length} reviews`);
+    step.log("Actual reviews —> ", initialResults.reviews);
 
     return {
       success: true,
@@ -262,7 +262,7 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
       totalReviews: initialResults.totalReviews,
     };
   } catch (error) {
-    console.error(`Yelp fetching error: ${error.message}`);
+    step.error(`Yelp fetching error: ${error.message}`);
     await updateIsFetching(false, clerkId);
     await updateFetchErrorMessage(error.message, clerkId);
     return {
@@ -273,13 +273,13 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
 }
 
 async function pollYelpResults(taskId) {
-  console.log(`Starting to poll Yelp results for task ID: ${taskId}`);
+  step.log(`Starting to poll Yelp results for task ID: ${taskId}`);
   const maxAttempts = 999;
   const pollingInterval = 10000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
-      console.log(`Polling attempt ${attempt + 1}`);
+      step.log(`Polling attempt ${attempt + 1}`);
       const response = await axios({
         method: "get",
         url: `https://api.dataforseo.com/v3/business_data/yelp/reviews/task_get/${taskId}`,
@@ -290,11 +290,11 @@ async function pollYelpResults(taskId) {
         headers: { "content-type": "application/json" },
       });
 
-      console.log(
+      step.log(
         `Polling attempt ${attempt + 1}, status code: ${response.status}`
       );
 
-      console.log(
+      step.log(
         "Response status code —> ",
         response.data.tasks[0].status_code
       );
@@ -303,11 +303,11 @@ async function pollYelpResults(taskId) {
         const result = response.data.tasks[0].result[0];
 
         if (!result || result.reviews_count === null) {
-          console.error("No reviews found in response");
+          step.error("No reviews found in response");
           return { success: false, message: "No reviews found in response" };
         }
 
-        console.log(`Successfully fetched ${result.items.length} reviews`);
+        step.log(`Successfully fetched ${result.items.length} reviews`);
         return {
           success: true,
           reviews: result.items,
@@ -316,19 +316,19 @@ async function pollYelpResults(taskId) {
       }
 
       if (attempt === maxAttempts - 1) {
-        console.error("Max polling attempts reached");
+        step.error("Max polling attempts reached");
         return { success: false, message: "Max polling attempts reached" };
       }
 
-      console.log(`Waiting ${pollingInterval}ms before next attempt`);
+      step.log(`Waiting ${pollingInterval}ms before next attempt`);
       await new Promise((resolve) => setTimeout(resolve, pollingInterval));
     } catch (error) {
-      console.error(`Error polling Yelp results: ${error.message}`);
+      step.error(`Error polling Yelp results: ${error.message}`);
       if (error.response && error.response.status === 500) {
         // Handle specific HTTP errors
-        console.error(`Server error: ${error.response.status}`);
+        step.error(`Server error: ${error.response.status}`);
       } else {
-        console.error(`General error: ${error.message}`);
+        step.error(`General error: ${error.message}`);
       }
 
       return {
@@ -338,12 +338,12 @@ async function pollYelpResults(taskId) {
     }
   }
 
-  console.error("Timeout while fetching Yelp reviews");
+  step.error("Timeout while fetching Yelp reviews");
   return { success: false, message: "Timeout while fetching Yelp reviews" };
 }
 
 async function postYelpReviewTask(alias, depth) {
-  console.log(`Posting Yelp review task for alias: ${alias}, depth: ${depth}`);
+  step.log(`Posting Yelp review task for alias: ${alias}, depth: ${depth}`);
   try {
     const response = await axios({
       method: "post",
@@ -362,7 +362,7 @@ async function postYelpReviewTask(alias, depth) {
       headers: { "content-type": "application/json" },
     });
 
-    console.log("Task posted successfully:", response.data);
+    step.log("Task posted successfully:", response.data);
     return response.data;
   } catch (error) {
     console.error(`HTTP error posting task: ${error.message}`);

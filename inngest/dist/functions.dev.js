@@ -65,10 +65,10 @@ var processYelpReviews = _client.inngest.createFunction({
       switch (_context3.prev = _context3.next) {
         case 0:
           event = _ref2.event, step = _ref2.step;
-          console.log("Starting processYelpReviews function");
+          step.log("Starting processYelpReviews function");
           _event$data = event.data, reviews = _event$data.reviews, locationId = _event$data.locationId, clerkId = _event$data.clerkId;
           _context3.prev = 3;
-          console.log("Log from processYelpReviews, reviews: ", reviews.length);
+          step.log("Log from processYelpReviews, reviews: ", reviews.length);
           _context3.next = 7;
           return regeneratorRuntime.awrap(step.run("Process Fetch Reviews", function _callee2() {
             return regeneratorRuntime.async(function _callee2$(_context2) {
@@ -98,7 +98,7 @@ var processYelpReviews = _client.inngest.createFunction({
         case 11:
           _context3.prev = 11;
           _context3.t0 = _context3["catch"](3);
-          console.error("Error in processYelpReviews function: ".concat(_context3.t0.message));
+          step.error("Error in processYelpReviews function: ".concat(_context3.t0.message));
           _context3.next = 16;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateFetchErrorMessage)(_context3.t0.message, clerkId));
 
@@ -140,9 +140,9 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
         case 5:
           _ref3 = _context5.sent;
           locationData = _ref3.data;
-          console.log("Location Data fetched —> ", locationData);
+          step.log("Location Data fetched —> ", locationData);
           name_of_contact = locationData.name_of_contact, position_of_contact = locationData.position_of_contact, organization_name = locationData.organization_name;
-          console.log("Processing reviews, count: ", reviews.length);
+          step.log("Processing reviews, count: ", reviews.length);
           _context5.next = 12;
           return regeneratorRuntime.awrap((0, _actionsHelpers.deleteReviewsForLocation)(locationId));
 
@@ -150,9 +150,9 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
           deleteResult = _context5.sent;
 
           if (!deleteResult.success) {
-            console.error("Failed to delete existing reviews: ".concat(deleteResult.error));
+            step.error("Failed to delete existing reviews: ".concat(deleteResult.error));
           } else {
-            console.log("Deleted ".concat(deleteResult.deletedCount, " existing reviews for location ").concat(locationId));
+            step.log("Deleted ".concat(deleteResult.deletedCount, " existing reviews for location ").concat(locationId));
           }
 
           _context5.next = 16;
@@ -181,7 +181,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                       //   5,
                       //   30000
                       // );
-                      console.log("Generating insights for review...", review);
+                      step.log("Generating insights for review...", review);
                       _context4.next = 6;
                       return regeneratorRuntime.awrap(retryRequest(function () {
                         return (0, _actionsHelpers.generateInsights)(review.review_text);
@@ -195,18 +195,18 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                         break;
                       }
 
-                      console.error("Invalid insights structure:", insights);
+                      step.error("Invalid insights structure:", insights);
                       throw new Error("Invalid insights structure");
 
                     case 10:
                       parsedInsights = JSON.parse(insights.content[0].text);
-                      console.log("Storing review...", review);
+                      step.log("Storing review...", review);
                       _context4.next = 14;
                       return regeneratorRuntime.awrap((0, _actionsHelpers.storeReview)(review, parsedInsights, locationId, clerkId));
 
                     case 14:
                       storeResult = _context4.sent;
-                      console.log("Successfully processed review ".concat(review.review_id));
+                      step.log("Successfully processed review ".concat(review.review_id));
                       return _context4.abrupt("return", {
                         success: true,
                         reviewId: review.review_id
@@ -215,8 +215,8 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                     case 19:
                       _context4.prev = 19;
                       _context4.t0 = _context4["catch"](2);
-                      console.log("Review itself: ", review);
-                      console.error("Error processing review ".concat(review.review_id, ":"), _context4.t0);
+                      step.log("Review itself: ", review);
+                      step.error("Error processing review ".concat(review.review_id, ":"), _context4.t0);
                       return _context4.abrupt("return", {
                         success: false,
                         reviewId: review.review_id,
@@ -240,7 +240,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
           failedReviews = processedReviews.filter(function (r) {
             return !r.success;
           }).length;
-          console.log("Processed ".concat(successfulReviews, " reviews successfully, ").concat(failedReviews, " failed"));
+          step.log("Processed ".concat(successfulReviews, " reviews successfully, ").concat(failedReviews, " failed"));
           return _context5.abrupt("return", {
             processedCount: successfulReviews,
             failedCount: failedReviews
@@ -249,7 +249,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
         case 23:
           _context5.prev = 23;
           _context5.t0 = _context5["catch"](2);
-          console.error("Error in processYelpReviewsLogic:", _context5.t0);
+          step.error("Error in processYelpReviewsLogic:", _context5.t0);
           throw _context5.t0;
 
         case 27:
@@ -272,11 +272,11 @@ var fetchYelpReviews = _client.inngest.createFunction({
       switch (_context7.prev = _context7.next) {
         case 0:
           event = _ref4.event, step = _ref4.step;
-          console.log("Starting fetchYelpReviews function");
+          step.log("Starting fetchYelpReviews function");
           _event$data2 = event.data, yelpBusinessLink = _event$data2.yelpBusinessLink, locationId = _event$data2.locationId, clerkId = _event$data2.clerkId;
-          console.log("Received data: yelpBusinessLink=".concat(yelpBusinessLink, ", locationId=").concat(locationId, ", clerkId=").concat(clerkId));
+          step.log("Received data: yelpBusinessLink=".concat(yelpBusinessLink, ", locationId=").concat(locationId, ", clerkId=").concat(clerkId));
           _context7.prev = 4;
-          console.log("Updating isFetching status to true");
+          step.log("Updating isFetching status to true");
           _context7.next = 8;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateIsFetching)("true", clerkId));
 
@@ -285,7 +285,7 @@ var fetchYelpReviews = _client.inngest.createFunction({
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateFetchErrorMessage)("", clerkId));
 
         case 10:
-          console.log("Starting Fetch Yelp Reviews logic");
+          step.log("Starting Fetch Yelp Reviews logic");
           _context7.next = 13;
           return regeneratorRuntime.awrap(step.run("Fetch Yelp Reviews", function _callee5() {
             return regeneratorRuntime.async(function _callee5$(_context6) {
@@ -309,7 +309,7 @@ var fetchYelpReviews = _client.inngest.createFunction({
         case 13:
           result = _context7.sent;
           reviews = result.reviews;
-          console.log("Sending reviews to process/yelp.reviews function", reviews.length);
+          step.log("Sending reviews to process/yelp.reviews function", reviews.length);
           _context7.next = 18;
           return regeneratorRuntime.awrap(_client.inngest.send({
             name: "process/yelp.reviews",
@@ -321,17 +321,17 @@ var fetchYelpReviews = _client.inngest.createFunction({
           }));
 
         case 18:
-          console.log("Updating selected location");
+          step.log("Updating selected location");
           _context7.next = 21;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateSelectedLocation)(locationId, yelpBusinessLink));
 
         case 21:
-          console.log("Updating isFetching status to false");
+          step.log("Updating isFetching status to false");
           _context7.next = 24;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateIsFetching)("false", clerkId));
 
         case 24:
-          console.log("Fetch Yelp Reviews completed successfully");
+          step.log("Fetch Yelp Reviews completed successfully");
           return _context7.abrupt("return", _objectSpread({
             success: true
           }, result));
@@ -339,7 +339,7 @@ var fetchYelpReviews = _client.inngest.createFunction({
         case 28:
           _context7.prev = 28;
           _context7.t0 = _context7["catch"](4);
-          console.error("Error in Inngest function: ".concat(_context7.t0.message));
+          step.error("Error in Inngest function: ".concat(_context7.t0.message));
           _context7.next = 33;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateIsFetching)(false, clerkId));
 
@@ -369,11 +369,11 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
-          console.log("Starting fetchYelpReviewsLogic");
+          step.log("Starting fetchYelpReviewsLogic");
           alias = yelpBusinessLink.split("/").pop();
-          console.log("Extracted alias: ".concat(alias));
+          step.log("Extracted alias: ".concat(alias));
           _context8.prev = 3;
-          console.log("Posting initial Yelp review task");
+          step.log("Posting initial Yelp review task");
           _context8.next = 7;
           return regeneratorRuntime.awrap(postYelpReviewTask(alias, 10));
 
@@ -385,13 +385,13 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
             break;
           }
 
-          console.error("No tasks found in initial response");
+          step.error("No tasks found in initial response");
           throw new Error("No tasks found in response.");
 
         case 11:
           taskId = initialResponse.tasks[0].id;
-          console.log("Initial task ID: ".concat(taskId));
-          console.log("Polling for initial results");
+          step.log("Initial task ID: ".concat(taskId));
+          step.log("Polling for initial results");
           _context8.next = 16;
           return regeneratorRuntime.awrap(pollYelpResults(taskId));
 
@@ -403,27 +403,27 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
             break;
           }
 
-          console.error("Initial polling failed: ".concat(initialResults.message));
+          step.error("Initial polling failed: ".concat(initialResults.message));
           throw new Error(initialResults.message);
 
         case 20:
           totalReviews = initialResults.totalReviews;
-          console.log("Total reviews found: ".concat(totalReviews));
+          step.log("Total reviews found: ".concat(totalReviews));
 
           if (!(totalReviews > 10)) {
             _context8.next = 38;
             break;
           }
 
-          console.log("Fetching all ".concat(totalReviews, " reviews"));
+          step.log("Fetching all ".concat(totalReviews, " reviews"));
           _context8.next = 26;
           return regeneratorRuntime.awrap(postYelpReviewTask(alias, totalReviews));
 
         case 26:
           fullResponse = _context8.sent;
           fullTaskId = fullResponse.tasks[0].id;
-          console.log("Full task ID: ".concat(fullTaskId));
-          console.log("Polling for all reviews");
+          step.log("Full task ID: ".concat(fullTaskId));
+          step.log("Polling for all reviews");
           _context8.next = 32;
           return regeneratorRuntime.awrap(pollYelpResults(fullTaskId));
 
@@ -435,11 +435,11 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
             break;
           }
 
-          console.error("Full polling failed: ".concat(allReviews.message));
+          step.error("Full polling failed: ".concat(allReviews.message));
           throw new Error(allReviews.message);
 
         case 36:
-          console.log("Successfully fetched all ".concat(allReviews.reviews.length, " reviews"));
+          step.log("Successfully fetched all ".concat(allReviews.reviews.length, " reviews"));
           return _context8.abrupt("return", {
             success: true,
             reviews: allReviews.reviews,
@@ -447,8 +447,8 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
           });
 
         case 38:
-          console.log("Returning initial ".concat(initialResults.reviews.length, " reviews"));
-          console.log("Actual reviews —> ", initialResults.reviews);
+          step.log("Returning initial ".concat(initialResults.reviews.length, " reviews"));
+          step.log("Actual reviews —> ", initialResults.reviews);
           return _context8.abrupt("return", {
             success: true,
             reviews: initialResults.reviews,
@@ -458,7 +458,7 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
         case 43:
           _context8.prev = 43;
           _context8.t0 = _context8["catch"](3);
-          console.error("Yelp fetching error: ".concat(_context8.t0.message));
+          step.error("Yelp fetching error: ".concat(_context8.t0.message));
           _context8.next = 48;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateIsFetching)(false, clerkId));
 
@@ -486,7 +486,7 @@ function pollYelpResults(taskId) {
     while (1) {
       switch (_context9.prev = _context9.next) {
         case 0:
-          console.log("Starting to poll Yelp results for task ID: ".concat(taskId));
+          step.log("Starting to poll Yelp results for task ID: ".concat(taskId));
           maxAttempts = 999;
           pollingInterval = 10000;
           attempt = 0;
@@ -498,7 +498,7 @@ function pollYelpResults(taskId) {
           }
 
           _context9.prev = 5;
-          console.log("Polling attempt ".concat(attempt + 1));
+          step.log("Polling attempt ".concat(attempt + 1));
           _context9.next = 9;
           return regeneratorRuntime.awrap((0, _axios["default"])({
             method: "get",
@@ -514,8 +514,8 @@ function pollYelpResults(taskId) {
 
         case 9:
           response = _context9.sent;
-          console.log("Polling attempt ".concat(attempt + 1, ", status code: ").concat(response.status));
-          console.log("Response status code —> ", response.data.tasks[0].status_code);
+          step.log("Polling attempt ".concat(attempt + 1, ", status code: ").concat(response.status));
+          step.log("Response status code —> ", response.data.tasks[0].status_code);
 
           if (!(response.data.tasks && response.data.tasks[0].status_code === 20000)) {
             _context9.next = 19;
@@ -529,14 +529,14 @@ function pollYelpResults(taskId) {
             break;
           }
 
-          console.error("No reviews found in response");
+          step.error("No reviews found in response");
           return _context9.abrupt("return", {
             success: false,
             message: "No reviews found in response"
           });
 
         case 17:
-          console.log("Successfully fetched ".concat(result.items.length, " reviews"));
+          step.log("Successfully fetched ".concat(result.items.length, " reviews"));
           return _context9.abrupt("return", {
             success: true,
             reviews: result.items,
@@ -549,14 +549,14 @@ function pollYelpResults(taskId) {
             break;
           }
 
-          console.error("Max polling attempts reached");
+          step.error("Max polling attempts reached");
           return _context9.abrupt("return", {
             success: false,
             message: "Max polling attempts reached"
           });
 
         case 22:
-          console.log("Waiting ".concat(pollingInterval, "ms before next attempt"));
+          step.log("Waiting ".concat(pollingInterval, "ms before next attempt"));
           _context9.next = 25;
           return regeneratorRuntime.awrap(new Promise(function (resolve) {
             return setTimeout(resolve, pollingInterval);
@@ -569,13 +569,13 @@ function pollYelpResults(taskId) {
         case 27:
           _context9.prev = 27;
           _context9.t0 = _context9["catch"](5);
-          console.error("Error polling Yelp results: ".concat(_context9.t0.message));
+          step.error("Error polling Yelp results: ".concat(_context9.t0.message));
 
           if (_context9.t0.response && _context9.t0.response.status === 500) {
             // Handle specific HTTP errors
-            console.error("Server error: ".concat(_context9.t0.response.status));
+            step.error("Server error: ".concat(_context9.t0.response.status));
           } else {
-            console.error("General error: ".concat(_context9.t0.message));
+            step.error("General error: ".concat(_context9.t0.message));
           }
 
           return _context9.abrupt("return", {
@@ -589,7 +589,7 @@ function pollYelpResults(taskId) {
           break;
 
         case 35:
-          console.error("Timeout while fetching Yelp reviews");
+          step.error("Timeout while fetching Yelp reviews");
           return _context9.abrupt("return", {
             success: false,
             message: "Timeout while fetching Yelp reviews"
@@ -609,7 +609,7 @@ function postYelpReviewTask(alias, depth) {
     while (1) {
       switch (_context10.prev = _context10.next) {
         case 0:
-          console.log("Posting Yelp review task for alias: ".concat(alias, ", depth: ").concat(depth));
+          step.log("Posting Yelp review task for alias: ".concat(alias, ", depth: ").concat(depth));
           _context10.prev = 1;
           _context10.next = 4;
           return regeneratorRuntime.awrap((0, _axios["default"])({
@@ -631,7 +631,7 @@ function postYelpReviewTask(alias, depth) {
 
         case 4:
           response = _context10.sent;
-          console.log("Task posted successfully:", response.data);
+          step.log("Task posted successfully:", response.data);
           return _context10.abrupt("return", response.data);
 
         case 9:
