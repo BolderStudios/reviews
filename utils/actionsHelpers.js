@@ -101,14 +101,7 @@ export async function generateResponse(
   return message;
 }
 
-export async function generateInsights(
-  organization_name,
-  contant_name,
-  contact_position,
-  rating,
-  customer_name,
-  review_text
-) {
+export async function generateInsights(review_text) {
   const message = await anthropic.messages.create({
     model: "claude-3-5-sonnet-20240620",
     max_tokens: 3003,
@@ -121,7 +114,7 @@ export async function generateInsights(
         content: [
           {
             type: "text",
-            text: `${contact_position}'s Name: ${contant_name}\nBusiness's Name: ${organization_name}\nRating: ${rating} star\nBackground Information: None\nCustomer's Name: ${customer_name}\nCustomer's Review: ${review_text}`,
+            text: `Customer's Review: ${review_text}`,
           },
         ],
       },

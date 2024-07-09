@@ -258,14 +258,7 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
           );
 
           const insights = await retryRequest(() =>
-            generateInsights(
-              organization_name,
-              name_of_contact,
-              position_of_contact,
-              rating,
-              customer_name,
-              review_text
-            )
+            generateInsights(review_text)
           );
 
           console.log("Generated Response —> ", response);
