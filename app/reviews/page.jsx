@@ -13,5 +13,5 @@ export default async function Page() {
     .eq("clerk_id", userId)
     .single();
 
-  return redirect(`/connections/${data.selected_location_id}`);
+  return redirect(`/reviews/${data.selected_location_id}`);
 }

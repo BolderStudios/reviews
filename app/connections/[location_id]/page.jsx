@@ -4,20 +4,20 @@ import React from "react";
 import Connections from "@/components/Connections";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
-import { notFound } from 'next/navigation';
+import { notFound } from "next/navigation";
 
 export default async function Page({ params }) {
-  const { id } = params;
+  const { location_id } = params;
   const { userId } = await auth();
 
   const { data: location, error } = await supabase
     .from("locations")
     .select("*")
-    .eq("id", id)
+    .eq("id", location_id)
     .single();
 
-    console.log("Location data: ", location);
-    console.log("Location error: ", error);
+  console.log("Location data: ", location);
+  console.log("Location error: ", error);
 
   if (error || !location) {
     notFound();

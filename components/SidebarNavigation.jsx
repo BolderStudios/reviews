@@ -149,26 +149,40 @@ export default function SidebarNavigation({
 
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              <Link prefetch={false} href="/dashboard" className={activeLinkClass("/dashboard")}>
+              <Link
+                prefetch={false}
+                href="/dashboard"
+                className={activeLinkClass("/dashboard")}
+              >
                 <Home className="h-4 w-4" />
                 Dashboard
               </Link>
-              <Link prefetch={false} href="/billing" className={activeLinkClass("/billing")}>
+              <Link
+                prefetch={false}
+                href="/billing"
+                className={activeLinkClass("/billing")}
+              >
                 <ShoppingCart className="h-4 w-4" />
                 Billing
               </Link>
-              <Link prefetch={false}
+              <Link
+                prefetch={false}
                 href="/file-uploader"
                 className={activeLinkClass("/file-uploader")}
               >
                 <FileUp className="h-4 w-4" />
                 File Uploader Example
               </Link>
-              <Link prefetch={false} href="/form" className={activeLinkClass("/form")}>
+              <Link
+                prefetch={false}
+                href="/form"
+                className={activeLinkClass("/form")}
+              >
                 <FormInput className="h-4 w-4" />
                 Form Example
               </Link>
-              <Link prefetch={false}
+              <Link
+                prefetch={false}
                 href={`/connections/${selectedLocation?.id || ""}`}
                 className={activeLinkClass("/connections")}
               >
