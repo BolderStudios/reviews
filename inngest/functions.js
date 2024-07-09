@@ -25,7 +25,10 @@ export const helloWorld = inngest.createFunction(
 );
 
 export const processYelpReviews = inngest.createFunction(
-  { id: "process-yelp-reviews" },
+  {
+    id: "process-yelp-reviews",
+    retries: 0,
+  },
   { event: "process/yelp.reviews" },
   async ({ event, step }) => {
     console.log("Starting processYelpReviews function");
@@ -41,7 +44,13 @@ export const processYelpReviews = inngest.createFunction(
     } catch (error) {
       console.error(`Error in processYelpReviews function: ${error.message}`);
       await updateFetchErrorMessage(error.message, clerkId);
-      return { success: false, error: error.message };
+      // Return a failure result instead of throwing an error
+      return {
+        success: false,
+        error: error.message,
+        processedCount: 0,
+        failedCount: reviews.length,
+      };
     }
   }
 );
@@ -49,6 +58,8 @@ export const processYelpReviews = inngest.createFunction(
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
+  const processedReviews = [];
+  const failedReviews = [];
   const limit = pLimit(1);
   const delay = 60000 / 60;
 
@@ -68,12 +79,12 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
       );
     }
 
-    const processedReviews = await Promise.all(
+    const reviewResults = await Promise.all(
       reviews.map((review, index) =>
         limit(async () => {
           await sleep(index * delay);
           try {
-            console.log("Generating insights for review...", review);
+            console.log("Generating insights for review...", review.review_id);
             const insights = await retryRequest(
               () => generateInsights(review.review_text),
               5,
@@ -86,26 +97,26 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
               !Array.isArray(insights.content) ||
               insights.content.length === 0
             ) {
-              console.error("Invalid insights structure:", insights);
               throw new Error("Invalid insights structure");
             }
 
             const parsedInsights = JSON.parse(insights.content[0].text);
-            console.log("Storing review...", review);
-            const storeResult = await storeReview(
-              review,
-              parsedInsights,
-              locationId,
-              clerkId
-            );
+            console.log("Storing review...", review.review_id);
+            await storeReview(review, parsedInsights, locationId, clerkId);
+
             console.log(`Successfully processed review ${review.review_id}`);
+            processedReviews.push(review.review_id);
             return { success: true, reviewId: review.review_id };
           } catch (error) {
-            console.log("Review itself: ", review);
             console.error(
               `Error processing review ${review.review_id}:`,
-              error
+              error.message
             );
+            failedReviews.push({
+              reviewId: review.review_id,
+              error: error.message,
+              review: review,
+            });
             return {
               success: false,
               reviewId: review.review_id,
@@ -117,25 +128,35 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
       )
     );
 
-    const successfulReviews = processedReviews.filter((r) => r.success);
-    const failedReviews = processedReviews.filter((r) => !r.success);
+    const successfulReviews = reviewResults.filter((r) => r.success);
+    const failedReviewResults = reviewResults.filter((r) => !r.success);
 
     console.log(
-      `Processed ${successfulReviews.length} reviews successfully, ${failedReviews.length} failed`
+      `Processed ${successfulReviews.length} reviews successfully, ${failedReviewResults.length} failed`
     );
 
     return {
-      processedCount: successfulReviews.length,
+      processedCount: processedReviews.length,
       failedCount: failedReviews.length,
-      failedReviews: failedReviews.map(({ reviewId, error, review }) => ({
-        reviewId,
-        error,
-        review,
-      })),
+      processedReviews: processedReviews,
+      failedReviews: failedReviews,
     };
   } catch (error) {
     console.error("Error in processYelpReviewsLogic:", error);
-    throw error;
+    return {
+      processedCount: processedReviews.length,
+      failedCount:
+        reviews.length - processedReviews.length + failedReviews.length,
+      processedReviews: processedReviews,
+      failedReviews: [
+        ...failedReviews,
+        {
+          reviewId: "unknown",
+          error: error.message,
+          review: "Error occurred during overall process",
+        },
+      ],
+    };
   }
 };
 

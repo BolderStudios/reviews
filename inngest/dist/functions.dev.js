@@ -54,7 +54,8 @@ var helloWorld = _client.inngest.createFunction({
 exports.helloWorld = helloWorld;
 
 var processYelpReviews = _client.inngest.createFunction({
-  id: "process-yelp-reviews"
+  id: "process-yelp-reviews",
+  retries: 0
 }, {
   event: "process/yelp.reviews"
 }, function _callee3(_ref2) {
@@ -105,7 +106,9 @@ var processYelpReviews = _client.inngest.createFunction({
         case 16:
           return _context3.abrupt("return", {
             success: false,
-            error: _context3.t0.message
+            error: _context3.t0.message,
+            processedCount: 0,
+            failedCount: reviews.length
           });
 
         case 17:
@@ -125,28 +128,30 @@ var sleep = function sleep(ms) {
 };
 
 var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, locationId, clerkId) {
-  var limit, delay, _ref3, locationData, name_of_contact, position_of_contact, organization_name, deleteResult, processedReviews, successfulReviews, failedReviews;
+  var processedReviews, failedReviews, limit, delay, _ref3, locationData, name_of_contact, position_of_contact, organization_name, deleteResult, reviewResults, successfulReviews, failedReviewResults;
 
   return regeneratorRuntime.async(function processYelpReviewsLogic$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
+          processedReviews = [];
+          failedReviews = [];
           limit = (0, _pLimit["default"])(1);
           delay = 60000 / 60;
-          _context5.prev = 2;
-          _context5.next = 5;
+          _context5.prev = 4;
+          _context5.next = 7;
           return regeneratorRuntime.awrap((0, _actionsHelpers.getLocationInfo)(locationId));
 
-        case 5:
+        case 7:
           _ref3 = _context5.sent;
           locationData = _ref3.data;
           console.log("Location Data fetched —> ", locationData);
           name_of_contact = locationData.name_of_contact, position_of_contact = locationData.position_of_contact, organization_name = locationData.organization_name;
           console.log("Processing reviews, count: ", reviews.length);
-          _context5.next = 12;
+          _context5.next = 14;
           return regeneratorRuntime.awrap((0, _actionsHelpers.deleteReviewsForLocation)(locationId));
 
-        case 12:
+        case 14:
           deleteResult = _context5.sent;
 
           if (!deleteResult.success) {
@@ -155,10 +160,10 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
             console.log("Deleted ".concat(deleteResult.deletedCount, " existing reviews for location ").concat(locationId));
           }
 
-          _context5.next = 16;
+          _context5.next = 18;
           return regeneratorRuntime.awrap(Promise.all(reviews.map(function (review, index) {
             return limit(function _callee4() {
-              var insights, parsedInsights, storeResult;
+              var insights, parsedInsights;
               return regeneratorRuntime.async(function _callee4$(_context4) {
                 while (1) {
                   switch (_context4.prev = _context4.next) {
@@ -168,7 +173,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
 
                     case 2:
                       _context4.prev = 2;
-                      console.log("Generating insights for review...", review);
+                      console.log("Generating insights for review...", review.review_id);
                       _context4.next = 6;
                       return regeneratorRuntime.awrap(retryRequest(function () {
                         return (0, _actionsHelpers.generateInsights)(review.review_text);
@@ -178,32 +183,35 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                       insights = _context4.sent;
 
                       if (!(!insights || !insights.content || !Array.isArray(insights.content) || insights.content.length === 0)) {
-                        _context4.next = 10;
+                        _context4.next = 9;
                         break;
                       }
 
-                      console.error("Invalid insights structure:", insights);
                       throw new Error("Invalid insights structure");
 
-                    case 10:
+                    case 9:
                       parsedInsights = JSON.parse(insights.content[0].text);
-                      console.log("Storing review...", review);
-                      _context4.next = 14;
+                      console.log("Storing review...", review.review_id);
+                      _context4.next = 13;
                       return regeneratorRuntime.awrap((0, _actionsHelpers.storeReview)(review, parsedInsights, locationId, clerkId));
 
-                    case 14:
-                      storeResult = _context4.sent;
+                    case 13:
                       console.log("Successfully processed review ".concat(review.review_id));
+                      processedReviews.push(review.review_id);
                       return _context4.abrupt("return", {
                         success: true,
                         reviewId: review.review_id
                       });
 
-                    case 19:
-                      _context4.prev = 19;
+                    case 18:
+                      _context4.prev = 18;
                       _context4.t0 = _context4["catch"](2);
-                      console.log("Review itself: ", review);
-                      console.error("Error processing review ".concat(review.review_id, ":"), _context4.t0);
+                      console.error("Error processing review ".concat(review.review_id, ":"), _context4.t0.message);
+                      failedReviews.push({
+                        reviewId: review.review_id,
+                        error: _context4.t0.message,
+                        review: review
+                      });
                       return _context4.abrupt("return", {
                         success: false,
                         reviewId: review.review_id,
@@ -211,65 +219,66 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                         review: review
                       });
 
-                    case 24:
+                    case 23:
                     case "end":
                       return _context4.stop();
                   }
                 }
-              }, null, null, [[2, 19]]);
+              }, null, null, [[2, 18]]);
             });
           })));
 
-        case 16:
-          processedReviews = _context5.sent;
-          successfulReviews = processedReviews.filter(function (r) {
+        case 18:
+          reviewResults = _context5.sent;
+          successfulReviews = reviewResults.filter(function (r) {
             return r.success;
           });
-          failedReviews = processedReviews.filter(function (r) {
+          failedReviewResults = reviewResults.filter(function (r) {
             return !r.success;
           });
-          console.log("Processed ".concat(successfulReviews.length, " reviews successfully, ").concat(failedReviews.length, " failed"));
+          console.log("Processed ".concat(successfulReviews.length, " reviews successfully, ").concat(failedReviewResults.length, " failed"));
           return _context5.abrupt("return", {
-            processedCount: successfulReviews.length,
+            processedCount: processedReviews.length,
             failedCount: failedReviews.length,
-            failedReviews: failedReviews.map(function (_ref4) {
-              var reviewId = _ref4.reviewId,
-                  error = _ref4.error,
-                  review = _ref4.review;
-              return {
-                reviewId: reviewId,
-                error: error,
-                review: review
-              };
-            })
+            processedReviews: processedReviews,
+            failedReviews: failedReviews
           });
 
-        case 23:
-          _context5.prev = 23;
-          _context5.t0 = _context5["catch"](2);
+        case 25:
+          _context5.prev = 25;
+          _context5.t0 = _context5["catch"](4);
           console.error("Error in processYelpReviewsLogic:", _context5.t0);
-          throw _context5.t0;
+          return _context5.abrupt("return", {
+            processedCount: processedReviews.length,
+            failedCount: reviews.length - processedReviews.length + failedReviews.length,
+            processedReviews: processedReviews,
+            failedReviews: [].concat(failedReviews, [{
+              reviewId: "unknown",
+              error: _context5.t0.message,
+              review: "Error occurred during overall process"
+            }])
+          });
 
-        case 27:
+        case 29:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[2, 23]]);
+  }, null, null, [[4, 25]]);
 };
 
 var fetchYelpReviews = _client.inngest.createFunction({
   id: "fetch-yelp-reviews"
 }, {
   event: "fetch/yelp.reviews"
-}, function _callee6(_ref5) {
+}, function _callee6(_ref4) {
   var event, step, _event$data2, yelpBusinessLink, locationId, clerkId, result, reviews;
 
   return regeneratorRuntime.async(function _callee6$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
-          event = _ref5.event, step = _ref5.step;
+          event = _ref4.event, step = _ref4.step;
           console.log("Starting fetchYelpReviews function");
           _event$data2 = event.data, yelpBusinessLink = _event$data2.yelpBusinessLink, locationId = _event$data2.locationId, clerkId = _event$data2.clerkId;
           console.log("Received data: yelpBusinessLink=".concat(yelpBusinessLink, ", locationId=").concat(locationId, ", clerkId=").concat(clerkId));
