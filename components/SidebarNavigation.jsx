@@ -13,6 +13,7 @@ import {
   ChevronsUpDown,
   Star,
   ContainerIcon,
+  BookOpenText,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -188,6 +189,14 @@ export default function SidebarNavigation({
               >
                 <ContainerIcon className="h-4 w-4" />
                 Connections
+              </Link>
+              <Link
+                prefetch={false}
+                href={`/reviews/${selectedLocation?.id || ""}`}
+                className={activeLinkClass("/reviews")}
+              >
+                <BookOpenText className="h-4 w-4" />
+                Reviews
               </Link>
             </nav>
           </div>

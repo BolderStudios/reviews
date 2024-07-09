@@ -1,7 +1,7 @@
 // "@/app/connections/[id]/page.jsx"
 
 import React from "react";
-import Connections from "@/components/Connections";
+import Reviews from "@/components/ui/Reviews";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
@@ -16,9 +16,6 @@ export default async function Page({ params }) {
     .eq("id", location_id)
     .single();
 
-  console.log("Location data: ", location);
-  console.log("Location error: ", error);
-
   if (error || !location) {
     notFound();
   }
@@ -29,10 +26,13 @@ export default async function Page({ params }) {
     .eq("clerk_id", userId)
     .single();
 
+  const { data: reviews, error: reviewsError } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("location_id", location_id)
+    .order("created_at", { ascending: false });
+
   return (
-    <Connections
-      selectedLocation={location}
-      isFetching={userData?.is_fetching}
-    />
+    <Reviews selectedLocation={location} isFetching={userData?.is_fetching} reviews={reviews} />
   );
 }

@@ -16,9 +16,6 @@ export default async function Page({ params }) {
     .eq("id", location_id)
     .single();
 
-  console.log("Location data: ", location);
-  console.log("Location error: ", error);
-
   if (error || !location) {
     notFound();
   }

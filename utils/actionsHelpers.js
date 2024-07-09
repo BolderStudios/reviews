@@ -138,7 +138,7 @@ export async function storeReview(
         .insert([
           {
             location_id: locationId,
-            yelp_review_id: review.review_id,
+            source_review_id: review.review_id,
             timestamp: review.timestamp,
             rating: review.rating.value,
             review_text: review.review_text,

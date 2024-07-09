@@ -28,7 +28,7 @@ export default async function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <main className="h-screen flex flex-col relative">
+          <main className="h-screen flex flex-col relative overflow-y-hidden">
             <SignedIn>
               <SignedInPages>{children}</SignedInPages>
             </SignedIn>
