@@ -124,14 +124,9 @@ export async function generateInsights(review_text) {
   return message;
 }
 
-export async function storeReview(
-  review,
-  response,
-  insights,
-  locationId,
-  clerkId
-) {
+export async function storeReview(review, insights, locationId, clerkId) {
   try {
+    console.log("Storing review -> ", review);
     const { data: inserted_review, error: inserted_review_error } =
       await supabase
         .from("reviews")
@@ -147,7 +142,6 @@ export async function storeReview(
             customer_image_url: review.user_profile.image_url,
             has_responded_to: review.responses === null ? false : true,
             source: "yelp",
-            generated_response: response.content[0].text,
             sentiment: insights.sentimentLabel,
             summary: insights.summary,
             return_likelihood:
@@ -156,9 +150,12 @@ export async function storeReview(
         ])
         .select("*");
 
-    if (inserted_review_error) throw inserted_review_error;
-
-    console.log("Inserted Review -> ", inserted_review);
+    if (inserted_review_error) {
+      console.log("Error inserting review -> ", inserted_review_error);
+      throw inserted_review_error;
+    } else {
+      console.log("Inserted Review -> ", inserted_review);
+    }
 
     // Process businessSpecificCategories
     if (

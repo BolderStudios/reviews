@@ -32,6 +32,7 @@ export const processYelpReviews = inngest.createFunction(
     const { reviews, locationId, clerkId } = event.data;
 
     try {
+      console.log("Log from processYelpReviews, reviews: ", reviews.length);
       const result = await step.run("Process Fetch Reviews", async () => {
         return await processYelpReviewsLogic(reviews, locationId, clerkId);
       });
@@ -48,8 +49,8 @@ export const processYelpReviews = inngest.createFunction(
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
-  const limit = pLimit(1); 
-  const delay = 60000 / 80; 
+  const limit = pLimit(1);
+  const delay = 60000 / 60;
 
   try {
     const { data: locationData } = await getLocationInfo(locationId);
@@ -73,31 +74,43 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
         limit(async () => {
           await sleep(index * delay);
           try {
-            const response = await retryRequest(
-              () =>
-                generateResponse(
-                  organization_name,
-                  name_of_contact,
-                  position_of_contact,
-                  review.rating.value,
-                  review.user_profile.name,
-                  review.review_text
-                ),
-              5,
-              60000
-            );
+            // const response = await retryRequest(
+            //   () =>
+            //     generateResponse(
+            //       organization_name,
+            //       name_of_contact,
+            //       position_of_contact,
+            //       review.rating.value,
+            //       review.user_profile.name,
+            //       review.review_text
+            //     ),
+            //   5,
+            //   30000
+            // );
+
+            console.log("Generating insights for review...", review);
 
             const insights = await retryRequest(
               () => generateInsights(review.review_text),
               5,
-              60000
+              10000
             );
+
+            if (
+              !insights ||
+              !insights.content ||
+              !Array.isArray(insights.content) ||
+              insights.content.length === 0
+            ) {
+              console.error("Invalid insights structure:", insights);
+              throw new Error("Invalid insights structure");
+            }
 
             const parsedInsights = JSON.parse(insights.content[0].text);
 
+            console.log("Storing review...", review);
             const storeResult = await storeReview(
               review,
-              response,
               parsedInsights,
               locationId,
               clerkId
@@ -106,6 +119,7 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
             console.log(`Successfully processed review ${review.review_id}`);
             return { success: true, reviewId: review.review_id };
           } catch (error) {
+            console.log("Review itself: ", review);
             console.error(
               `Error processing review ${review.review_id}:`,
               error
@@ -159,6 +173,11 @@ export const fetchYelpReviews = inngest.createFunction(
       });
 
       const { reviews } = result;
+
+      console.log(
+        "Sending reviews to process/yelp.reviews function",
+        reviews.length
+      );
 
       await inngest.send({
         name: "process/yelp.reviews",
@@ -275,7 +294,10 @@ async function pollYelpResults(taskId) {
         `Polling attempt ${attempt + 1}, status code: ${response.status}`
       );
 
-      console.log("Response status code —> ", response.data.tasks[0].status_code);
+      console.log(
+        "Response status code —> ",
+        response.data.tasks[0].status_code
+      );
 
       if (response.data.tasks && response.data.tasks[0].status_code === 20000) {
         const result = response.data.tasks[0].result[0];
@@ -344,7 +366,7 @@ async function postYelpReviewTask(alias, depth) {
     return response.data;
   } catch (error) {
     console.error(`HTTP error posting task: ${error.message}`);
-    throw new Error(`HTTP error! Status: ${error.response?.status}`);
+    throw new Error(`HTTP error! Status: ${error.status}`);
   }
 }
 
