@@ -16,7 +16,7 @@ export default function Connections({ selectedLocation, isFetching }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Router triggered!");
+    // console.log("Router triggered!");
     setIsPageLoading(true);
 
     setTimeout(() => {
@@ -25,6 +25,7 @@ export default function Connections({ selectedLocation, isFetching }) {
 
     clearTimeout();
   }, [router]);
+  
   return (
     <div className="px-8 py-6">
       <h2 className="font-bold text-2xl mb-6">Review Platforms</h2>
