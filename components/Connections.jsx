@@ -21,7 +21,7 @@ export default function Connections({ selectedLocation, isFetching }) {
 
     setTimeout(() => {
       setIsPageLoading(false);
-    }, 1000);
+    }, 500);
 
     clearTimeout();
   }, [router]);

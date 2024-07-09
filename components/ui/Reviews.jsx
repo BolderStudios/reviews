@@ -148,7 +148,7 @@ const columns = [
 
       return (
         <div className="w-full">
-          <div className={isExpanded ? "" : "line-clamp-3"}>
+          <div className={isExpanded ? "" : "line-clamp-2"}>
             <HighlightedText text={value} highlight={filterValue} />
           </div>
           <div className="flex items-center justify-end mt-2">
