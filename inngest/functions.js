@@ -304,7 +304,7 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
 async function pollYelpResults(taskId) {
   console.log(`Starting to poll Yelp results for task ID: ${taskId}`);
   const maxAttempts = 999;
-  const pollingInterval = 30000;
+  const pollingInterval = 10000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {
@@ -348,6 +348,13 @@ async function pollYelpResults(taskId) {
       await new Promise((resolve) => setTimeout(resolve, pollingInterval));
     } catch (error) {
       console.error(`Error polling Yelp results: ${error.message}`);
+      if (error.response && error.response.status === 500) {
+        // Handle specific HTTP errors
+        console.error(`Server error: ${error.response.status}`);
+      } else {
+        console.error(`General error: ${error.message}`);
+      }
+
       return {
         success: false,
         message: `Error polling Yelp results: ${error.message}`,
