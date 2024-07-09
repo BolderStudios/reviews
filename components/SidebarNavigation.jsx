@@ -102,33 +102,41 @@ export default function SidebarNavigation({
                           Locations ({locations.length})
                         </span>
                       </div>
-                      {locations.map((location) => (
-                        <CommandItem
-                          className="w-full p-2"
-                          key={`location-${location.id}`}
-                          value={location.organization_name}
-                          onSelect={() => {
-                            setSelectedLocation(location);
-                            setOpen(false);
-                          }}
-                        >
-                          <div className="flex items-center w-full">
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                selectedLocation?.organization_name ===
-                                  location.organization_name
-                                  ? "opacity-100"
-                                  : "opacity-0"
+                      {locations
+                        .sort((a, b) => {
+                          if (a.is_primary && !b.is_primary) return -1;
+                          if (!a.is_primary && b.is_primary) return 1;
+                          return a.organization_name.localeCompare(
+                            b.organization_name
+                          );
+                        })
+                        .map((location) => (
+                          <CommandItem
+                            className="w-full p-2"
+                            key={`location-${location.id}`}
+                            value={location.organization_name}
+                            onSelect={() => {
+                              setSelectedLocation(location);
+                              setOpen(false);
+                            }}
+                          >
+                            <div className="flex items-center w-full">
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  selectedLocation?.organization_name ===
+                                    location.organization_name
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {location.organization_name}
+                              {location.is_primary && (
+                                <Star className="ml-2 h-4 w-4 text-yellow-500" />
                               )}
-                            />
-                            {location.organization_name}
-                            {location.is_primary && (
-                              <Star className="ml-2 h-4 w-4 text-yellow-500" />
-                            )}
-                          </div>
-                        </CommandItem>
-                      ))}
+                            </div>
+                          </CommandItem>
+                        ))}
                       <div className="p-1 mt-1" key="add-location-wrapper">
                         <AddLocation />
                       </div>
@@ -141,32 +149,32 @@ export default function SidebarNavigation({
 
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              <Link href="/dashboard" className={activeLinkClass("/dashboard")}>
+              <a href="/dashboard" className={activeLinkClass("/dashboard")}>
                 <Home className="h-4 w-4" />
                 Dashboard
-              </Link>
-              <Link href="/billing" className={activeLinkClass("/billing")}>
+              </a>
+              <a href="/billing" className={activeLinkClass("/billing")}>
                 <ShoppingCart className="h-4 w-4" />
                 Billing
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/file-uploader"
                 className={activeLinkClass("/file-uploader")}
               >
                 <FileUp className="h-4 w-4" />
                 File Uploader Example
-              </Link>
-              <Link href="/form" className={activeLinkClass("/form")}>
+              </a>
+              <a href="/form" className={activeLinkClass("/form")}>
                 <FormInput className="h-4 w-4" />
                 Form Example
-              </Link>
-              <Link
+              </a>
+              <a
                 href={`/connections/${selectedLocation?.id || ""}`}
                 className={activeLinkClass("/connections")}
               >
                 <ContainerIcon className="h-4 w-4" />
                 Connections
-              </Link>
+              </a>
             </nav>
           </div>
 
