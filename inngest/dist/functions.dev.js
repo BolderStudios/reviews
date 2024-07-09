@@ -59,7 +59,7 @@ var processYelpReviews = _client.inngest.createFunction({
 }, {
   event: "process/yelp.reviews"
 }, function _callee3(_ref2) {
-  var event, step, _event$data, reviews, locationId, clerkId, result;
+  var event, step, _event$data, reviews, locationId, clerkId, uniqueReviews, result;
 
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
@@ -67,17 +67,22 @@ var processYelpReviews = _client.inngest.createFunction({
         case 0:
           event = _ref2.event, step = _ref2.step;
           console.log("Starting processYelpReviews function");
-          _event$data = event.data, reviews = _event$data.reviews, locationId = _event$data.locationId, clerkId = _event$data.clerkId;
-          _context3.prev = 3;
-          console.log("Log from processYelpReviews, reviews: ", reviews.length);
-          _context3.next = 7;
+          _event$data = event.data, reviews = _event$data.reviews, locationId = _event$data.locationId, clerkId = _event$data.clerkId; // De-duplicate reviews here
+
+          uniqueReviews = Array.from(new Map(reviews.map(function (review) {
+            return [review.review_id, review];
+          })).values());
+          console.log("Original review count: ".concat(reviews.length, ", Unique review count: ").concat(uniqueReviews.length));
+          _context3.prev = 5;
+          console.log("Log from processYelpReviews, unique reviews: ", uniqueReviews.length);
+          _context3.next = 9;
           return regeneratorRuntime.awrap(step.run("Process Fetch Reviews", function _callee2() {
             return regeneratorRuntime.async(function _callee2$(_context2) {
               while (1) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
                     _context2.next = 2;
-                    return regeneratorRuntime.awrap(processYelpReviewsLogic(reviews, locationId, clerkId));
+                    return regeneratorRuntime.awrap(processYelpReviewsLogic(uniqueReviews, locationId, clerkId));
 
                   case 2:
                     return _context2.abrupt("return", _context2.sent);
@@ -90,33 +95,33 @@ var processYelpReviews = _client.inngest.createFunction({
             });
           }));
 
-        case 7:
+        case 9:
           result = _context3.sent;
           return _context3.abrupt("return", _objectSpread({
             success: true
           }, result));
 
-        case 11:
-          _context3.prev = 11;
-          _context3.t0 = _context3["catch"](3);
+        case 13:
+          _context3.prev = 13;
+          _context3.t0 = _context3["catch"](5);
           console.error("Error in processYelpReviews function: ".concat(_context3.t0.message));
-          _context3.next = 16;
+          _context3.next = 18;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateFetchErrorMessage)(_context3.t0.message, clerkId));
 
-        case 16:
+        case 18:
           return _context3.abrupt("return", {
             success: false,
             error: _context3.t0.message,
             processedCount: 0,
-            failedCount: reviews.length
+            failedCount: uniqueReviews.length
           });
 
-        case 17:
+        case 19:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[3, 11]]);
+  }, null, null, [[5, 13]]);
 });
 
 exports.processYelpReviews = processYelpReviews;
@@ -128,13 +133,13 @@ var sleep = function sleep(ms) {
 };
 
 var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, locationId, clerkId) {
-  var processedReviews, failedReviews, limit, delay, _ref3, locationData, name_of_contact, position_of_contact, organization_name, deleteResult, reviewResults, successfulReviews, failedReviewResults;
+  var processedReviews, failedReviews, limit, delay, _ref3, locationData, name_of_contact, position_of_contact, organization_name, deleteResult, reviewResults;
 
   return regeneratorRuntime.async(function processYelpReviewsLogic$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
-          processedReviews = [];
+          processedReviews = new Set();
           failedReviews = [];
           limit = (0, _pLimit["default"])(1);
           delay = 60000 / 60;
@@ -197,21 +202,15 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
 
                     case 13:
                       console.log("Successfully processed review ".concat(review.review_id));
-                      processedReviews.push(review.review_id);
                       return _context4.abrupt("return", {
                         success: true,
                         reviewId: review.review_id
                       });
 
-                    case 18:
-                      _context4.prev = 18;
+                    case 17:
+                      _context4.prev = 17;
                       _context4.t0 = _context4["catch"](2);
                       console.error("Error processing review ".concat(review.review_id, ":"), _context4.t0.message);
-                      failedReviews.push({
-                        reviewId: review.review_id,
-                        error: _context4.t0.message,
-                        review: review
-                      });
                       return _context4.abrupt("return", {
                         success: false,
                         reviewId: review.review_id,
@@ -219,39 +218,44 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                         review: review
                       });
 
-                    case 23:
+                    case 21:
                     case "end":
                       return _context4.stop();
                   }
                 }
-              }, null, null, [[2, 18]]);
+              }, null, null, [[2, 17]]);
             });
           })));
 
         case 18:
           reviewResults = _context5.sent;
-          successfulReviews = reviewResults.filter(function (r) {
-            return r.success;
+          reviewResults.forEach(function (result) {
+            if (result.success) {
+              processedReviews.add(result.reviewId);
+            } else {
+              failedReviews.push({
+                reviewId: result.reviewId,
+                error: result.error,
+                review: result.review
+              });
+            }
           });
-          failedReviewResults = reviewResults.filter(function (r) {
-            return !r.success;
-          });
-          console.log("Processed ".concat(successfulReviews.length, " reviews successfully, ").concat(failedReviewResults.length, " failed"));
+          console.log("Processed ".concat(processedReviews.size, " reviews successfully, ").concat(failedReviews.length, " failed"));
           return _context5.abrupt("return", {
-            processedCount: processedReviews.length,
+            processedCount: processedReviews.size,
             failedCount: failedReviews.length,
-            processedReviews: processedReviews,
+            processedReviews: Array.from(processedReviews),
             failedReviews: failedReviews
           });
 
-        case 25:
-          _context5.prev = 25;
+        case 24:
+          _context5.prev = 24;
           _context5.t0 = _context5["catch"](4);
           console.error("Error in processYelpReviewsLogic:", _context5.t0);
           return _context5.abrupt("return", {
-            processedCount: processedReviews.length,
-            failedCount: reviews.length - processedReviews.length + failedReviews.length,
-            processedReviews: processedReviews,
+            processedCount: processedReviews.size,
+            failedCount: reviews.length - processedReviews.size,
+            processedReviews: Array.from(processedReviews),
             failedReviews: [].concat(failedReviews, [{
               reviewId: "unknown",
               error: _context5.t0.message,
@@ -259,12 +263,12 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
             }])
           });
 
-        case 29:
+        case 28:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[4, 25]]);
+  }, null, null, [[4, 24]]);
 };
 
 var fetchYelpReviews = _client.inngest.createFunction({
@@ -371,7 +375,7 @@ var fetchYelpReviews = _client.inngest.createFunction({
 exports.fetchYelpReviews = fetchYelpReviews;
 
 function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
-  var alias, initialResponse, taskId, initialResults, totalReviews, fullResponse, fullTaskId, allReviews;
+  var alias, initialResponse, taskId, initialResults, totalReviews, fullResponse, fullTaskId, allReviews, uniqueReviews, uniqueInitialReviews;
   return regeneratorRuntime.async(function fetchYelpReviewsLogic$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
@@ -418,7 +422,7 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
           console.log("Total reviews found: ".concat(totalReviews));
 
           if (!(totalReviews > 10)) {
-            _context8.next = 38;
+            _context8.next = 39;
             break;
           }
 
@@ -446,45 +450,53 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
           throw new Error(allReviews.message);
 
         case 36:
-          console.log("Successfully fetched all ".concat(allReviews.reviews.length, " reviews"));
+          // De-duplicate reviews here
+          uniqueReviews = Array.from(new Map(allReviews.reviews.map(function (review) {
+            return [review.review_id, review];
+          })).values());
+          console.log("Successfully fetched ".concat(allReviews.reviews.length, " reviews, Unique reviews: ").concat(uniqueReviews.length));
           return _context8.abrupt("return", {
             success: true,
-            reviews: allReviews.reviews,
-            totalReviews: allReviews.totalReviews
+            reviews: uniqueReviews,
+            totalReviews: uniqueReviews.length
           });
 
-        case 38:
-          console.log("Returning initial ".concat(initialResults.reviews.length, " reviews"));
-          console.log("Actual reviews —> ", initialResults.reviews);
+        case 39:
+          console.log("Returning initial ".concat(initialResults.reviews.length, " reviews")); // De-duplicate initial reviews as well
+
+          uniqueInitialReviews = Array.from(new Map(initialResults.reviews.map(function (review) {
+            return [review.review_id, review];
+          })).values());
+          console.log("Initial reviews: ".concat(initialResults.reviews.length, ", Unique initial reviews: ").concat(uniqueInitialReviews.length));
           return _context8.abrupt("return", {
             success: true,
-            reviews: initialResults.reviews,
-            totalReviews: initialResults.totalReviews
+            reviews: uniqueInitialReviews,
+            totalReviews: uniqueInitialReviews.length
           });
 
-        case 43:
-          _context8.prev = 43;
+        case 45:
+          _context8.prev = 45;
           _context8.t0 = _context8["catch"](3);
           console.error("Yelp fetching error: ".concat(_context8.t0.message));
-          _context8.next = 48;
+          _context8.next = 50;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateIsFetching)(false, clerkId));
 
-        case 48:
-          _context8.next = 50;
+        case 50:
+          _context8.next = 52;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateFetchErrorMessage)(_context8.t0.message, clerkId));
 
-        case 50:
+        case 52:
           return _context8.abrupt("return", {
             success: false,
             message: "Failed to fetch Yelp reviews: ".concat(_context8.t0.message)
           });
 
-        case 51:
+        case 53:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[3, 43]]);
+  }, null, null, [[3, 45]]);
 }
 
 function pollYelpResults(taskId) {
@@ -657,7 +669,7 @@ function postYelpReviewTask(alias, depth) {
 
 var _default = (0, _next.serve)({
   client: _client.inngest,
-  functions: [fetchYelpReviews],
+  functions: [fetchYelpReviews, processYelpReviews],
   streaming: "allow"
 });
 

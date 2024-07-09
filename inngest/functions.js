@@ -34,22 +34,36 @@ export const processYelpReviews = inngest.createFunction(
     console.log("Starting processYelpReviews function");
     const { reviews, locationId, clerkId } = event.data;
 
+    // De-duplicate reviews here
+    const uniqueReviews = Array.from(
+      new Map(reviews.map((review) => [review.review_id, review])).values()
+    );
+    console.log(
+      `Original review count: ${reviews.length}, Unique review count: ${uniqueReviews.length}`
+    );
+
     try {
-      console.log("Log from processYelpReviews, reviews: ", reviews.length);
+      console.log(
+        "Log from processYelpReviews, unique reviews: ",
+        uniqueReviews.length
+      );
       const result = await step.run("Process Fetch Reviews", async () => {
-        return await processYelpReviewsLogic(reviews, locationId, clerkId);
+        return await processYelpReviewsLogic(
+          uniqueReviews,
+          locationId,
+          clerkId
+        );
       });
 
       return { success: true, ...result };
     } catch (error) {
       console.error(`Error in processYelpReviews function: ${error.message}`);
       await updateFetchErrorMessage(error.message, clerkId);
-      // Return a failure result instead of throwing an error
       return {
         success: false,
         error: error.message,
         processedCount: 0,
-        failedCount: reviews.length,
+        failedCount: uniqueReviews.length,
       };
     }
   }
@@ -58,7 +72,7 @@ export const processYelpReviews = inngest.createFunction(
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
-  const processedReviews = [];
+  const processedReviews = new Set();
   const failedReviews = [];
   const limit = pLimit(1);
   const delay = 60000 / 60;
@@ -105,18 +119,12 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
             await storeReview(review, parsedInsights, locationId, clerkId);
 
             console.log(`Successfully processed review ${review.review_id}`);
-            processedReviews.push(review.review_id);
             return { success: true, reviewId: review.review_id };
           } catch (error) {
             console.error(
               `Error processing review ${review.review_id}:`,
               error.message
             );
-            failedReviews.push({
-              reviewId: review.review_id,
-              error: error.message,
-              review: review,
-            });
             return {
               success: false,
               reviewId: review.review_id,
@@ -128,26 +136,34 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
       )
     );
 
-    const successfulReviews = reviewResults.filter((r) => r.success);
-    const failedReviewResults = reviewResults.filter((r) => !r.success);
+    reviewResults.forEach((result) => {
+      if (result.success) {
+        processedReviews.add(result.reviewId);
+      } else {
+        failedReviews.push({
+          reviewId: result.reviewId,
+          error: result.error,
+          review: result.review,
+        });
+      }
+    });
 
     console.log(
-      `Processed ${successfulReviews.length} reviews successfully, ${failedReviewResults.length} failed`
+      `Processed ${processedReviews.size} reviews successfully, ${failedReviews.length} failed`
     );
 
     return {
-      processedCount: processedReviews.length,
+      processedCount: processedReviews.size,
       failedCount: failedReviews.length,
-      processedReviews: processedReviews,
+      processedReviews: Array.from(processedReviews),
       failedReviews: failedReviews,
     };
   } catch (error) {
     console.error("Error in processYelpReviewsLogic:", error);
     return {
-      processedCount: processedReviews.length,
-      failedCount:
-        reviews.length - processedReviews.length + failedReviews.length,
-      processedReviews: processedReviews,
+      processedCount: processedReviews.size,
+      failedCount: reviews.length - processedReviews.size,
+      processedReviews: Array.from(processedReviews),
       failedReviews: [
         ...failedReviews,
         {
@@ -255,23 +271,38 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
         throw new Error(allReviews.message);
       }
 
+      // De-duplicate reviews here
+      const uniqueReviews = Array.from(
+        new Map(
+          allReviews.reviews.map((review) => [review.review_id, review])
+        ).values()
+      );
+
       console.log(
-        `Successfully fetched all ${allReviews.reviews.length} reviews`
+        `Successfully fetched ${allReviews.reviews.length} reviews, Unique reviews: ${uniqueReviews.length}`
       );
       return {
         success: true,
-        reviews: allReviews.reviews,
-        totalReviews: allReviews.totalReviews,
+        reviews: uniqueReviews,
+        totalReviews: uniqueReviews.length,
       };
     }
 
     console.log(`Returning initial ${initialResults.reviews.length} reviews`);
-    console.log("Actual reviews —> ", initialResults.reviews);
+    // De-duplicate initial reviews as well
+    const uniqueInitialReviews = Array.from(
+      new Map(
+        initialResults.reviews.map((review) => [review.review_id, review])
+      ).values()
+    );
+    console.log(
+      `Initial reviews: ${initialResults.reviews.length}, Unique initial reviews: ${uniqueInitialReviews.length}`
+    );
 
     return {
       success: true,
-      reviews: initialResults.reviews,
-      totalReviews: initialResults.totalReviews,
+      reviews: uniqueInitialReviews,
+      totalReviews: uniqueInitialReviews.length,
     };
   } catch (error) {
     console.error(`Yelp fetching error: ${error.message}`);
@@ -384,7 +415,7 @@ async function postYelpReviewTask(alias, depth) {
 
 export default serve({
   client: inngest,
-  functions: [fetchYelpReviews],
+  functions: [fetchYelpReviews, processYelpReviews],
   streaming: "allow",
 });
 
