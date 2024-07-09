@@ -34,9 +34,6 @@ export function AddYelpConnection({
   is_yelp_configured,
   yelp_profile_url,
 }) {
-  console.log("is_fetching", is_fetching);
-  console.log("is_yelp_configured", is_yelp_configured);
-  console.log("yelp_profile_url", yelp_profile_url);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(is_fetching || false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
