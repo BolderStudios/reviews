@@ -12,10 +12,12 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star, MousePointerClick } from "lucide-react";
 import { getAllReviewData } from "@/utils/reviews";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function CustomerView({ review }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [reviewData, setReviewData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const date = new Date(review.timestamp);
   const formattedDate = date.toLocaleDateString();
@@ -29,7 +31,10 @@ export function CustomerView({ review }) {
       const fetchData = async () => {
         const result = await getAllReviewData(review.id);
         setReviewData(result.data);
-        console.log(result.data);
+
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
       };
       fetchData();
     }
@@ -92,24 +97,35 @@ export function CustomerView({ review }) {
           <SheetTitle>Detailed information about the customer</SheetTitle>
         </SheetHeader>
 
-        <div className="mt-6 space-y-6">
-          <CustomerInfoSection review={review} formattedDate={formattedDate} />
-          <KeywordsAndSentimentSection
-            reviewData={reviewData}
-            review={review}
-          />
-          <ReviewTextSection
-            review={review}
-            reviewData={reviewData}
-            highlightText={highlightText}
-          />
-          <DetailedAspectsTable aspects={reviewData?.detailed_aspects} />
-          <div className="pt-4">
-            <ProductServiceFeedbackTable
-              feedback={reviewData?.product_service_feedback}
-            />
+        {isLoading ? (
+          <div className="mt-6 space-y-6">
+            <Skeleton className="h-[200px] w-full" />
+            <Skeleton className="h-[100px] w-full" />
+            <Skeleton className="h-[300px] w-full" />
           </div>
-        </div>
+        ) : (
+          <div className="mt-6 space-y-6">
+            <CustomerInfoSection
+              review={review}
+              formattedDate={formattedDate}
+            />
+            <KeywordsAndSentimentSection
+              reviewData={reviewData}
+              review={review}
+            />
+            <ReviewTextSection
+              review={review}
+              reviewData={reviewData}
+              highlightText={highlightText}
+            />
+            <DetailedAspectsTable aspects={reviewData?.detailed_aspects} />
+            <div className="pt-4">
+              <ProductServiceFeedbackTable
+                feedback={reviewData?.product_service_feedback}
+              />
+            </div>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );
