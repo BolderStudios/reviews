@@ -317,8 +317,8 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
 
 async function pollYelpResults(taskId) {
   console.log(`Starting to poll Yelp results for task ID: ${taskId}`);
-  const maxAttempts = 5;
-  const pollingInterval = 10000;
+  const maxAttempts = 10;
+  const pollingInterval = 60000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     try {

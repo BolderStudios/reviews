@@ -506,8 +506,8 @@ function pollYelpResults(taskId) {
       switch (_context9.prev = _context9.next) {
         case 0:
           console.log("Starting to poll Yelp results for task ID: ".concat(taskId));
-          maxAttempts = 5;
-          pollingInterval = 10000;
+          maxAttempts = 10;
+          pollingInterval = 60000;
           attempt = 0;
 
         case 4:
