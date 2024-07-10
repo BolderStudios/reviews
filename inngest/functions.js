@@ -126,7 +126,7 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
         console.error(`Error processing review ${review.review_id}:`, error);
         failedReviews.push({
           reviewId: review.review_id,
-          error: error,
+          error: error.message,
           review: review,
         });
       }

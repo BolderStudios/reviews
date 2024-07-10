@@ -223,7 +223,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                     console.error("Error processing review ".concat(review.review_id, ":"), _context5.t0);
                     failedReviews.push({
                       reviewId: review.review_id,
-                      error: _context5.t0,
+                      error: _context5.t0.message,
                       review: review
                     });
 
