@@ -182,7 +182,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
                       _context4.next = 6;
                       return regeneratorRuntime.awrap(retryRequest(function () {
                         return (0, _actionsHelpers.generateInsights)(review.review_text);
-                      }, 5, 10000));
+                      }, 10, 5000));
 
                     case 6:
                       insights = _context4.sent;
@@ -258,7 +258,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
             processedReviews: Array.from(processedReviews),
             failedReviews: [].concat(failedReviews, [{
               reviewId: "unknown",
-              error: _context5.t0.message,
+              error: _context5.t0,
               review: "Error occurred during overall process"
             }])
           });

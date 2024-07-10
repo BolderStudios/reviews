@@ -101,8 +101,8 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
             console.log("Generating insights for review...", review.review_id);
             const insights = await retryRequest(
               () => generateInsights(review.review_text),
-              5,
-              10000
+              10,
+              5000
             );
 
             if (
@@ -168,7 +168,7 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
         ...failedReviews,
         {
           reviewId: "unknown",
-          error: error.message,
+          error: error,
           review: "Error occurred during overall process",
         },
       ],
