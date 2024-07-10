@@ -80,9 +80,10 @@ export const processYelpReviews = inngest.createFunction(
     console.log(`Unique review count: ${uniqueReviews.length}`);
 
     try {
-      // Create a job for each review
-      const jobPromises = uniqueReviews.map((review, index) =>
-        inngest.send({
+      // Create a job for each review with a delay
+      const jobPromises = uniqueReviews.map(async (review, index) => {
+        await sleep(1000); // 1-second delay
+        return inngest.send({
           name: "process/single.yelp.review",
           data: {
             review,
@@ -91,8 +92,8 @@ export const processYelpReviews = inngest.createFunction(
             index,
             total: uniqueReviews.length,
           },
-        })
-      );
+        });
+      });
 
       await Promise.all(jobPromises);
 
