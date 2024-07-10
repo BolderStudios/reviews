@@ -77,39 +77,27 @@ export const processYelpReviews = inngest.createFunction(
     );
     console.log(`Unique review count: ${uniqueReviews.length}`);
 
-    const maxRetries = 3;
-    const baseDelay = 5000; // 5 seconds
-    const maxDelay = 60000; // 1 minute
+    const limit = pLimit(20);
+    const baseDelay = 5000;
 
-    const sendJobWithRetry = async (review, index, retryCount = 0) => {
-      try {
-        await sleep(baseDelay);
-        return await inngest.send({
-          name: "process/single.yelp.review",
-          data: {
-            review,
-            locationId,
-            clerkId,
-            index,
-            total: uniqueReviews.length,
-          },
-        });
-      } catch (error) {
-        if (error.message.includes("rate limit") && retryCount < maxRetries) {
-          const delay = Math.min(baseDelay * Math.pow(2, retryCount), maxDelay);
-          console.log(`Rate limit hit. Retrying in ${delay / 1000} seconds...`);
-          await sleep(delay);
-          return sendJobWithRetry(review, index, retryCount + 1);
-        } else {
-          throw error;
-        }
-      }
+    const sendJob = async (review, index) => {
+      await new Promise((resolve) => setTimeout(resolve, baseDelay));
+      return inngest.send({
+        name: "process/single.yelp.review",
+        data: {
+          review,
+          locationId,
+          clerkId,
+          index,
+          total: uniqueReviews.length,
+        },
+      });
     };
 
     try {
-      // Create a job for each review with retry logic
+      // Create a job for each review with concurrency limit
       const jobPromises = uniqueReviews.map((review, index) =>
-        sendJobWithRetry(review, index)
+        limit(() => sendJob(review, index))
       );
 
       await Promise.all(jobPromises);
