@@ -53,10 +53,10 @@ export function ReviewsTable({ columns, data }) {
     <div>
       <div className="flex flex-wrap gap-2 items-center py-4">
         <Input
-          placeholder="Search reviews..."
-          value={table.getColumn("review_text")?.getFilterValue() ?? ""}
+          placeholder="Search summaries..."
+          value={table.getColumn("summary")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("review_text")?.setFilterValue(event.target.value)
+            table.getColumn("summary")?.setFilterValue(event.target.value)
           }
           className="max-w-48"
         />

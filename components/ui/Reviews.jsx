@@ -140,16 +140,15 @@ const columns = [
     },
   },
   {
-    accessorKey: "review_text",
-    header: "Review",
+    accessorKey: "summary",
+    header: "Summary",
     filterFn: (row, id, value) => {
       return row.getValue(id).toLowerCase().includes(value.toLowerCase());
     },
     cell: ({ row, table }) => {
-      const value = row.getValue("review_text");
+      const value = row.getValue("summary");
       const [isExpanded, setIsExpanded] = useState(false);
-      const filterValue =
-        table.getColumn("review_text")?.getFilterValue() || "";
+      const filterValue = table.getColumn("summary")?.getFilterValue() || "";
 
       return (
         <div className="w-full">
