@@ -158,30 +158,22 @@ export default function SidebarNavigation({
                 <Home className="h-4 w-4" />
                 Dashboard
               </Link>
-              <Link
-                prefetch={false}
-                href="/billing"
-                className={activeLinkClass("/billing")}
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Billing
-              </Link>
-              <Link
+              {/* <Link
                 prefetch={false}
                 href="/file-uploader"
                 className={activeLinkClass("/file-uploader")}
               >
                 <FileUp className="h-4 w-4" />
                 File Uploader Example
-              </Link>
-              <Link
+              </Link> */}
+              {/* <Link
                 prefetch={false}
                 href="/form"
                 className={activeLinkClass("/form")}
               >
                 <FormInput className="h-4 w-4" />
                 Form Example
-              </Link>
+              </Link> */}
               <Link
                 prefetch={false}
                 href={`/connections/${selectedLocation?.id || ""}`}
@@ -198,10 +190,18 @@ export default function SidebarNavigation({
                 <BookOpenText className="h-4 w-4" />
                 Reviews
               </Link>
+              <Link
+                prefetch={false}
+                href="/billing"
+                className={activeLinkClass("/billing")}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Billing
+              </Link>
             </nav>
           </div>
 
-          <div className="mt-auto p-4">
+          {/* <div className="mt-auto p-4">
             <Card>
               <CardHeader className="p-2 pt-0 md:p-4">
                 <CardTitle>Upgrade to Pro</CardTitle>
@@ -216,7 +216,7 @@ export default function SidebarNavigation({
                 </Button>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
         </div>
       </aside>
 
