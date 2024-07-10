@@ -50,7 +50,6 @@ export default function SidebarNavigation({
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
-  console.log("Current pathname: ", currentPathname);
 
   useEffect(() => {
     updateSelectedLocation(selectedLocation, currentPathname);

@@ -10,21 +10,13 @@ import {
   Star,
   CheckCircle,
   XCircle,
-  MousePointerClick,
   ArrowUpDown,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { CustomerView } from "./CustomerView";
 
 const HighlightedText = ({ text, highlight }) => {
   if (!highlight.trim()) {
@@ -48,6 +40,18 @@ const HighlightedText = ({ text, highlight }) => {
 };
 
 const columns = [
+  {
+    accessorKey: "actions",
+    header: () => <div className="text-center">Actions</div>,
+    cell: ({ row }) => {
+      const review = row.original;
+      return (
+        <div className="flex flex-col items-center justify-center">
+          <CustomerView review={review} />
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "source",
     header: () => <div className="text-center">Platform</div>,
@@ -144,7 +148,8 @@ const columns = [
     cell: ({ row, table }) => {
       const value = row.getValue("review_text");
       const [isExpanded, setIsExpanded] = useState(false);
-      const filterValue = table.getColumn("review_text")?.getFilterValue() || "";
+      const filterValue =
+        table.getColumn("review_text")?.getFilterValue() || "";
 
       return (
         <div className="w-full">
@@ -191,43 +196,9 @@ const columns = [
       return value === row.getValue(id).toString();
     },
   },
-  {
-    accessorKey: "actions",
-    header: () => <div className="text-center">Actions</div>,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <div className="flex flex-col items-center justify-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MousePointerClick className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
-    },
-  },
 ];
 
 export default function Reviews({ selectedLocation, isFetching, reviews }) {
-  console.log("Selected location: ", selectedLocation);
-  console.log("Is fetching: ", isFetching);
-  console.log("Reviews: ", reviews);
   const router = useRouter();
   const [isPageLoading, setIsPageLoading] = useState(false);
 

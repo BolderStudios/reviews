@@ -58,7 +58,7 @@ export function ReviewsTable({ columns, data }) {
           onChange={(event) =>
             table.getColumn("review_text")?.setFilterValue(event.target.value)
           }
-          className="max-w-xs"
+          className="max-w-48"
         />
         <Select
           value={table.getColumn("rating")?.getFilterValue() ?? ""}
