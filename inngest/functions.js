@@ -74,80 +74,72 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
   const processedReviews = new Set();
   const failedReviews = [];
-  const limit = pLimit(10);
-  const delay = 60000 / 60;
+  const limit = pLimit(12);
+  const delay = 1000;
+
+  console.log(
+    `Starting to process ${
+      reviews.length
+    } reviews at ${new Date().toISOString()}`
+  );
 
   try {
     const { data: locationData } = await getLocationInfo(locationId);
     console.log("Location Data fetched —> ", locationData);
-    const { name_of_contact, position_of_contact, organization_name } =
-      locationData;
-    console.log("Processing reviews, count: ", reviews.length);
 
     const deleteResult = await deleteReviewsForLocation(locationId);
-    if (!deleteResult.success) {
-      console.error(`Failed to delete existing reviews: ${deleteResult.error}`);
-    } else {
+    console.log(`Delete result: ${JSON.stringify(deleteResult)}`);
+
+    for (let index = 0; index < reviews.length; index++) {
+      const review = reviews[index];
       console.log(
-        `Deleted ${deleteResult.deletedCount} existing reviews for location ${locationId}`
+        `Processing review ${index + 1}/${reviews.length}: ${review.review_id}`
       );
-    }
 
-    const reviewResults = await Promise.all(
-      reviews.map((review, index) =>
-        limit(async () => {
-          await sleep(index * delay);
-          try {
-            console.log("Generating insights for review...", review.review_id);
-            const insights = await retryRequest(
-              () => generateInsights(review.review_text),
-              10,
-              5000
-            );
+      try {
+        await limit(async () => {
+          await sleep(delay);
 
-            if (
-              !insights ||
-              !insights.content ||
-              !Array.isArray(insights.content) ||
-              insights.content.length === 0
-            ) {
-              throw new Error("Invalid insights structure");
-            }
+          console.log(`Generating insights for review ${review.review_id}`);
+          const insights = await generateInsights(review.review_text);
+          console.log(`Insights generated for review ${review.review_id}`);
 
-            const parsedInsights = JSON.parse(insights.content[0].text);
-            console.log("Storing review...", review.review_id);
-            await storeReview(review, parsedInsights, locationId, clerkId);
-
-            console.log(`Successfully processed review ${review.review_id}`);
-            return { success: true, reviewId: review.review_id };
-          } catch (error) {
-            console.error(
-              `Error processing review ${review.review_id}:`,
-              error.message
-            );
-            return {
-              success: false,
-              reviewId: review.review_id,
-              error: error.message,
-              review: review,
-            };
+          if (
+            !insights ||
+            !insights.content ||
+            !Array.isArray(insights.content) ||
+            insights.content.length === 0
+          ) {
+            throw new Error("Invalid insights structure");
           }
-        })
-      )
-    );
 
-    reviewResults.forEach((result) => {
-      if (result.success) {
-        processedReviews.add(result.reviewId);
-      } else {
+          const parsedInsights = JSON.parse(insights.content[0].text);
+
+          console.log(`Storing review ${review.review_id}`);
+          await storeReview(review, parsedInsights, locationId, clerkId);
+          console.log(`Review ${review.review_id} stored successfully`);
+
+          processedReviews.add(review.review_id);
+          console.log(`Successfully processed review ${review.review_id}`);
+        });
+      } catch (error) {
+        console.error(`Error processing review ${review.review_id}:`, error);
         failedReviews.push({
-          reviewId: result.reviewId,
-          error: result.error,
-          review: result.review,
+          reviewId: review.review_id,
+          error: error,
+          review: review,
         });
       }
-    });
 
+      // Log progress every 10 reviews
+      if ((index + 1) % 10 === 0) {
+        console.log(
+          `Progress: ${index + 1}/${reviews.length} reviews processed`
+        );
+      }
+    }
+
+    console.log(`Finished processing reviews at ${new Date().toISOString()}`);
     console.log(
       `Processed ${processedReviews.size} reviews successfully, ${failedReviews.length} failed`
     );
@@ -168,7 +160,7 @@ const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
         ...failedReviews,
         {
           reviewId: "unknown",
-          error: error,
+          error: error.message,
           review: "Error occurred during overall process",
         },
       ],
