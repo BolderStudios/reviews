@@ -24,6 +24,43 @@ export const helloWorld = inngest.createFunction(
   }
 );
 
+export const processSingleYelpReview = inngest.createFunction(
+  { id: "process-single-yelp-review" },
+  { event: "process/single.yelp.review" },
+  async ({ event, step }) => {
+    const { review, locationId, clerkId, index, total } = event.data;
+
+    console.log(`Processing review ${index + 1}/${total}: ${review.review_id}`);
+
+    try {
+      const insights = await generateInsights(review.review_text);
+
+      if (
+        !insights ||
+        !insights.content ||
+        !Array.isArray(insights.content) ||
+        insights.content.length === 0
+      ) {
+        throw new Error("Invalid insights structure");
+      }
+
+      const parsedInsights = JSON.parse(insights.content[0].text);
+
+      await storeReview(review, parsedInsights, locationId, clerkId);
+
+      console.log(`Successfully processed review ${review.review_id}`);
+      return { success: true, reviewId: review.review_id };
+    } catch (error) {
+      console.error(`Error processing review ${review.review_id}:`, error);
+      return {
+        success: false,
+        reviewId: review.review_id,
+        error: error.message,
+      };
+    }
+  }
+);
+
 export const processYelpReviews = inngest.createFunction(
   {
     id: "process-yelp-reviews",
@@ -34,139 +71,138 @@ export const processYelpReviews = inngest.createFunction(
     console.log("Starting processYelpReviews function");
     const { reviews, locationId, clerkId } = event.data;
 
-    // De-duplicate reviews here
     const uniqueReviews = Array.from(
       new Map(reviews.map((review) => [review.review_id, review])).values()
     );
-    console.log(
-      `Original review count: ${reviews.length}, Unique review count: ${uniqueReviews.length}`
-    );
+    console.log(`Unique review count: ${uniqueReviews.length}`);
 
     try {
-      console.log(
-        "Log from processYelpReviews, unique reviews: ",
-        uniqueReviews.length
+      // Create a job for each review
+      const jobPromises = uniqueReviews.map((review, index) =>
+        inngest.send({
+          name: "process/single.yelp.review",
+          data: {
+            review,
+            locationId,
+            clerkId,
+            index,
+            total: uniqueReviews.length,
+          },
+        })
       );
-      const result = await step.run("Process Fetch Reviews", async () => {
-        return await processYelpReviewsLogic(
-          uniqueReviews,
-          locationId,
-          clerkId
-        );
-      });
 
-      return { success: true, ...result };
+      await Promise.all(jobPromises);
+
+      console.log(
+        `Created ${uniqueReviews.length} individual review processing jobs`
+      );
+      return { success: true, reviewCount: uniqueReviews.length };
     } catch (error) {
       console.error(`Error in processYelpReviews function: ${error.message}`);
       await updateFetchErrorMessage(error.message, clerkId);
-      return {
-        success: false,
-        error: error.message,
-        processedCount: 0,
-        failedCount: uniqueReviews.length,
-      };
+      return { success: false, error: error.message };
     }
   }
 );
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
-  const processedReviews = new Set();
-  const failedReviews = [];
-  const limit = pLimit(25);
-  const delay = 1000;
+// const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
+//   const processedReviews = new Set();
+//   const failedReviews = [];
+//   const limit = pLimit(25);
+//   const delay = 1000;
 
-  console.log(
-    `Starting to process ${
-      reviews.length
-    } reviews at ${new Date().toISOString()}`
-  );
+//   console.log(
+//     `Starting to process ${
+//       reviews.length
+//     } reviews at ${new Date().toISOString()}`
+//   );
 
-  try {
-    const { data: locationData } = await getLocationInfo(locationId);
-    console.log("Location Data fetched —> ", locationData);
+//   try {
+//     const { data: locationData } = await getLocationInfo(locationId);
+//     console.log("Location Data fetched —> ", locationData);
 
-    const deleteResult = await deleteReviewsForLocation(locationId);
-    console.log(`Delete result: ${JSON.stringify(deleteResult)}`);
+//     const deleteResult = await deleteReviewsForLocation(locationId);
+//     console.log(`Delete result: ${JSON.stringify(deleteResult)}`);
 
-    for (let index = 0; index < reviews.length; index++) {
-      const review = reviews[index];
-      console.log(
-        `Processing review ${index + 1}/${reviews.length}: ${review.review_id}`
-      );
+//     for (let index = 0; index < reviews.length; index++) {
+//       const review = reviews[index];
+//       console.log(
+//         `Processing review ${index + 1}/${reviews.length}: ${review.review_id}`
+//       );
 
-      try {
-        await limit(async () => {
-          await sleep(delay);
+//       try {
+//         await limit(async () => {
+//           await sleep(delay);
 
-          console.log(`Generating insights for review ${review.review_id}`);
-          const insights = await generateInsights(review.review_text);
-          console.log(`Insights generated for review ${review.review_id}`);
+//           console.log(`Generating insights for review ${review.review_id}`);
+//           const insights = await generateInsights(review.review_text);
+//           console.log(`Insights generated for review ${review.review_id}`);
 
-          if (
-            !insights ||
-            !insights.content ||
-            !Array.isArray(insights.content) ||
-            insights.content.length === 0
-          ) {
-            throw new Error("Invalid insights structure");
-          }
+//           if (
+//             !insights ||
+//             !insights.content ||
+//             !Array.isArray(insights.content) ||
+//             insights.content.length === 0
+//           ) {
+//             throw new Error("Invalid insights structure");
+//           }
 
-          const parsedInsights = JSON.parse(insights.content[0].text);
+//           const parsedInsights = JSON.parse(insights.content[0].text);
 
-          console.log(`Storing review ${review.review_id}`);
-          await storeReview(review, parsedInsights, locationId, clerkId);
-          console.log(`Review ${review.review_id} stored successfully`);
+//           console.log(`Storing review ${review.review_id}`);
+//           await storeReview(review, parsedInsights, locationId, clerkId);
+//           console.log(`Review ${review.review_id} stored successfully`);
 
-          processedReviews.add(review.review_id);
-          console.log(`Successfully processed review ${review.review_id}`);
-        });
-      } catch (error) {
-        console.error(`Error processing review ${review.review_id}:`, error);
-        failedReviews.push({
-          reviewId: review.review_id,
-          error: error.message,
-          review: review,
-        });
-      }
+//           processedReviews.add(review.review_id);
+//           console.log(`Successfully processed review ${review.review_id}`);
+//         });
+//       } catch (error) {
+//         console.error(`Error processing review ${review.review_id}:`, error);
+//         failedReviews.push({
+//           reviewId: review.review_id,
+//           error: error.message,
+//           review: review,
+//         });
+//       }
 
-      // Log progress every 10 reviews
-      if ((index + 1) % 10 === 0) {
-        console.log(
-          `Progress: ${index + 1}/${reviews.length} reviews processed`
-        );
-      }
-    }
+//       // Log progress every 10 reviews
+//       if ((index + 1) % 10 === 0) {
+//         console.log(
+//           `Progress: ${index + 1}/${reviews.length} reviews processed`
+//         );
+//       }
+//     }
 
-    console.log(`Finished processing reviews at ${new Date().toISOString()}`);
-    console.log(
-      `Processed ${processedReviews.size} reviews successfully, ${failedReviews.length} failed`
-    );
+//     console.log(`Finished processing reviews at ${new Date().toISOString()}`);
+//     console.log(
+//       `Processed ${processedReviews.size} reviews successfully, ${failedReviews.length} failed`
+//     );
 
-    return {
-      processedCount: processedReviews.size,
-      failedCount: failedReviews.length,
-      processedReviews: Array.from(processedReviews),
-      failedReviews: failedReviews,
-    };
-  } catch (error) {
-    console.error("Error in processYelpReviewsLogic:", error);
-    return {
-      processedCount: processedReviews.size,
-      failedCount: reviews.length - processedReviews.size,
-      processedReviews: Array.from(processedReviews),
-      failedReviews: [
-        ...failedReviews,
-        {
-          reviewId: "unknown",
-          error: error.message,
-          review: "Error occurred during overall process",
-        },
-      ],
-    };
-  }
-};
+//     return {
+//       processedCount: processedReviews.size,
+//       failedCount: failedReviews.length,
+//       processedReviews: Array.from(processedReviews),
+//       failedReviews: failedReviews,
+//     };
+//   } catch (error) {
+//     console.error("Error in processYelpReviewsLogic:", error);
+//     return {
+//       processedCount: processedReviews.size,
+//       failedCount: reviews.length - processedReviews.size,
+//       processedReviews: Array.from(processedReviews),
+//       failedReviews: [
+//         ...failedReviews,
+//         {
+//           reviewId: "unknown",
+//           error: error.message,
+//           review: "Error occurred during overall process",
+//         },
+//       ],
+//     };
+//   }
+// };
 
 export const fetchYelpReviews = inngest.createFunction(
   { id: "fetch-yelp-reviews" },
@@ -407,6 +443,6 @@ async function postYelpReviewTask(alias, depth) {
 
 export default serve({
   client: inngest,
-  functions: [fetchYelpReviews, processYelpReviews],
+  functions: [fetchYelpReviews, processYelpReviews, processSingleYelpReview],
   streaming: "allow",
 });

@@ -5,6 +5,7 @@ import {
   helloWorld,
   fetchYelpReviews,
   processYelpReviews,
+  processSingleYelpReview,
 } from "@/inngest/functions";
 
 // Enable Edge Runtime
@@ -13,6 +14,11 @@ export const runtime = "edge";
 // Create an API that serves your functions with streaming enabled
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [helloWorld, fetchYelpReviews, processYelpReviews],
+  functions: [
+    helloWorld,
+    fetchYelpReviews,
+    processYelpReviews,
+    processSingleYelpReview,
+  ],
   streaming: "allow",
 });

@@ -19,7 +19,7 @@ exports.runtime = runtime;
 
 var _serve = (0, _next.serve)({
   client: _client.inngest,
-  functions: [_functions.helloWorld, _functions.fetchYelpReviews, _functions.processYelpReviews],
+  functions: [_functions.helloWorld, _functions.fetchYelpReviews, _functions.processYelpReviews, _functions.processSingleYelpReview],
   streaming: "allow"
 }),
     GET = _serve.GET,
