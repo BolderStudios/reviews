@@ -74,7 +74,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
   const processedReviews = new Set();
   const failedReviews = [];
-  const limit = pLimit(1);
+  const limit = pLimit(10);
   const delay = 60000 / 60;
 
   try {

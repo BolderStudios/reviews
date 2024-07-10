@@ -141,7 +141,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
         case 0:
           processedReviews = new Set();
           failedReviews = [];
-          limit = (0, _pLimit["default"])(1);
+          limit = (0, _pLimit["default"])(10);
           delay = 60000 / 60;
           _context5.prev = 4;
           _context5.next = 7;
