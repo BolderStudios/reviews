@@ -138,8 +138,8 @@ var processYelpReviews = _client.inngest.createFunction({
             return [review.review_id, review];
           })).values());
           console.log("Unique review count: ".concat(uniqueReviews.length));
-          limit = (0, _pLimit["default"])(10);
-          baseDelay = 10000;
+          limit = (0, _pLimit["default"])(5);
+          baseDelay = 15000;
 
           sendJob = function sendJob(review, index) {
             return regeneratorRuntime.async(function sendJob$(_context3) {

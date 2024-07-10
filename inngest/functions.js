@@ -77,8 +77,8 @@ export const processYelpReviews = inngest.createFunction(
     );
     console.log(`Unique review count: ${uniqueReviews.length}`);
 
-    const limit = pLimit(10);
-    const baseDelay = 10000;
+    const limit = pLimit(5);
+    const baseDelay = 15000;
 
     const sendJob = async (review, index) => {
       await new Promise((resolve) => setTimeout(resolve, baseDelay));
