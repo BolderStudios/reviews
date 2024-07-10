@@ -89,11 +89,7 @@ export function CustomerView({ review }) {
       </SheetTrigger>
       <SheetContent className="overflow-y-auto w-[95vw] max-w-[800px]">
         <SheetHeader>
-          <SheetTitle>Customer Detailed Profile</SheetTitle>
-          <SheetDescription>
-            Detailed information about the customer gathered from analyzing
-            their review.
-          </SheetDescription>
+          <SheetTitle>Detailed information about the customer</SheetTitle>
         </SheetHeader>
 
         <div className="mt-6 space-y-6">
@@ -108,9 +104,11 @@ export function CustomerView({ review }) {
             highlightText={highlightText}
           />
           <DetailedAspectsTable aspects={reviewData?.detailed_aspects} />
-          <ProductServiceFeedbackTable
-            feedback={reviewData?.product_service_feedback}
-          />
+          <div className="pt-4">
+            <ProductServiceFeedbackTable
+              feedback={reviewData?.product_service_feedback}
+            />
+          </div>
         </div>
       </SheetContent>
     </Sheet>
@@ -161,7 +159,7 @@ function StarRating({ rating }) {
 function KeywordsAndSentimentSection({ reviewData, review }) {
   return (
     <div>
-      <h4 className="mb-2 font-semibold">Keywords and Sentiment</h4>
+      <h4 className="mb-2 font-semibold">Keywords</h4>
       <div className="flex flex-wrap gap-2">
         {reviewData?.keywords.map((keyword, index) => (
           <Badge
