@@ -317,7 +317,7 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
 
 async function pollYelpResults(taskId) {
   console.log(`Starting to poll Yelp results for task ID: ${taskId}`);
-  const maxAttempts = 999;
+  const maxAttempts = 5;
   const pollingInterval = 10000;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -419,7 +419,7 @@ export default serve({
   streaming: "allow",
 });
 
-async function retryRequest(fn, maxRetries = 5, retryDelay = 20000) {
+async function retryRequest(fn, maxRetries = 5, retryDelay = 5000) {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();

@@ -506,7 +506,7 @@ function pollYelpResults(taskId) {
       switch (_context9.prev = _context9.next) {
         case 0:
           console.log("Starting to poll Yelp results for task ID: ".concat(taskId));
-          maxAttempts = 999;
+          maxAttempts = 5;
           pollingInterval = 10000;
           attempt = 0;
 
@@ -685,7 +685,7 @@ function retryRequest(fn) {
       switch (_context11.prev = _context11.next) {
         case 0:
           maxRetries = _args11.length > 1 && _args11[1] !== undefined ? _args11[1] : 5;
-          retryDelay = _args11.length > 2 && _args11[2] !== undefined ? _args11[2] : 20000;
+          retryDelay = _args11.length > 2 && _args11[2] !== undefined ? _args11[2] : 5000;
           i = 0;
 
         case 3:
