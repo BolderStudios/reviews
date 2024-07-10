@@ -118,10 +118,10 @@ var processYelpReviews = _client.inngest.createFunction({
   retries: 0
 }, {
   event: "process/yelp.reviews"
-}, function _callee4(_ref3) {
-  var event, step, _event$data2, reviews, locationId, clerkId, deleteResult, uniqueReviews, jobPromises;
+}, function _callee3(_ref3) {
+  var event, step, _event$data2, reviews, locationId, clerkId, deleteResult, uniqueReviews, maxRetries, baseDelay, maxDelay, sendJobWithRetry, jobPromises;
 
-  return regeneratorRuntime.async(function _callee4$(_context4) {
+  return regeneratorRuntime.async(function _callee3$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
@@ -138,18 +138,27 @@ var processYelpReviews = _client.inngest.createFunction({
             return [review.review_id, review];
           })).values());
           console.log("Unique review count: ".concat(uniqueReviews.length));
-          _context4.prev = 9;
-          // Create a job for each review with a delay
-          jobPromises = uniqueReviews.map(function _callee3(review, index) {
-            return regeneratorRuntime.async(function _callee3$(_context3) {
+          maxRetries = 3;
+          baseDelay = 5000; // 5 seconds
+
+          maxDelay = 60000; // 1 minute
+
+          sendJobWithRetry = function sendJobWithRetry(review, index) {
+            var retryCount,
+                delay,
+                _args3 = arguments;
+            return regeneratorRuntime.async(function sendJobWithRetry$(_context3) {
               while (1) {
                 switch (_context3.prev = _context3.next) {
                   case 0:
-                    _context3.next = 2;
-                    return regeneratorRuntime.awrap(sleep(5000));
+                    retryCount = _args3.length > 2 && _args3[2] !== undefined ? _args3[2] : 0;
+                    _context3.prev = 1;
+                    _context3.next = 4;
+                    return regeneratorRuntime.awrap(sleep(baseDelay));
 
-                  case 2:
-                    return _context3.abrupt("return", _client.inngest.send({
+                  case 4:
+                    _context3.next = 6;
+                    return regeneratorRuntime.awrap(_client.inngest.send({
                       name: "process/single.yelp.review",
                       data: {
                         review: review,
@@ -160,42 +169,71 @@ var processYelpReviews = _client.inngest.createFunction({
                       }
                     }));
 
-                  case 3:
+                  case 6:
+                    return _context3.abrupt("return", _context3.sent);
+
+                  case 9:
+                    _context3.prev = 9;
+                    _context3.t0 = _context3["catch"](1);
+
+                    if (!(_context3.t0.message.includes("rate limit") && retryCount < maxRetries)) {
+                      _context3.next = 19;
+                      break;
+                    }
+
+                    delay = Math.min(baseDelay * Math.pow(2, retryCount), maxDelay);
+                    console.log("Rate limit hit. Retrying in ".concat(delay / 1000, " seconds..."));
+                    _context3.next = 16;
+                    return regeneratorRuntime.awrap(sleep(delay));
+
+                  case 16:
+                    return _context3.abrupt("return", sendJobWithRetry(review, index, retryCount + 1));
+
+                  case 19:
+                    throw _context3.t0;
+
+                  case 20:
                   case "end":
                     return _context3.stop();
                 }
               }
-            });
+            }, null, null, [[1, 9]]);
+          };
+
+          _context4.prev = 13;
+          // Create a job for each review with retry logic
+          jobPromises = uniqueReviews.map(function (review, index) {
+            return sendJobWithRetry(review, index);
           });
-          _context4.next = 13;
+          _context4.next = 17;
           return regeneratorRuntime.awrap(Promise.all(jobPromises));
 
-        case 13:
+        case 17:
           console.log("Created ".concat(uniqueReviews.length, " individual review processing jobs"));
           return _context4.abrupt("return", {
             success: true,
             reviewCount: uniqueReviews.length
           });
 
-        case 17:
-          _context4.prev = 17;
-          _context4.t0 = _context4["catch"](9);
+        case 21:
+          _context4.prev = 21;
+          _context4.t0 = _context4["catch"](13);
           console.error("Error in processYelpReviews function: ".concat(_context4.t0.message));
-          _context4.next = 22;
+          _context4.next = 26;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateFetchErrorMessage)(_context4.t0.message, clerkId));
 
-        case 22:
+        case 26:
           return _context4.abrupt("return", {
             success: false,
             error: _context4.t0.message
           });
 
-        case 23:
+        case 27:
         case "end":
           return _context4.stop();
       }
     }
-  }, null, null, [[9, 17]]);
+  }, null, null, [[13, 21]]);
 });
 
 exports.processYelpReviews = processYelpReviews;
@@ -293,10 +331,10 @@ var fetchYelpReviews = _client.inngest.createFunction({
   id: "fetch-yelp-reviews"
 }, {
   event: "fetch/yelp.reviews"
-}, function _callee6(_ref4) {
+}, function _callee5(_ref4) {
   var event, step, _event$data3, yelpBusinessLink, locationId, clerkId, result, reviews;
 
-  return regeneratorRuntime.async(function _callee6$(_context6) {
+  return regeneratorRuntime.async(function _callee5$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
         case 0:
@@ -316,8 +354,8 @@ var fetchYelpReviews = _client.inngest.createFunction({
         case 10:
           console.log("Starting Fetch Yelp Reviews logic");
           _context6.next = 13;
-          return regeneratorRuntime.awrap(step.run("Fetch Yelp Reviews", function _callee5() {
-            return regeneratorRuntime.async(function _callee5$(_context5) {
+          return regeneratorRuntime.awrap(step.run("Fetch Yelp Reviews", function _callee4() {
+            return regeneratorRuntime.async(function _callee4$(_context5) {
               while (1) {
                 switch (_context5.prev = _context5.next) {
                   case 0:
@@ -393,7 +431,8 @@ var fetchYelpReviews = _client.inngest.createFunction({
 exports.fetchYelpReviews = fetchYelpReviews;
 
 function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
-  var alias, initialResponse, taskId, initialResults, totalReviews, fullResponse, fullTaskId, allReviews, uniqueReviews, uniqueInitialReviews;
+  var alias, initialResponse, taskId, initialResults, totalReviews, fullResponse, fullTaskId, allReviews, _uniqueReviews, uniqueInitialReviews;
+
   return regeneratorRuntime.async(function fetchYelpReviewsLogic$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
@@ -469,14 +508,14 @@ function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
 
         case 36:
           // De-duplicate reviews here
-          uniqueReviews = Array.from(new Map(allReviews.reviews.map(function (review) {
+          _uniqueReviews = Array.from(new Map(allReviews.reviews.map(function (review) {
             return [review.review_id, review];
           })).values());
-          console.log("Successfully fetched ".concat(allReviews.reviews.length, " reviews, Unique reviews: ").concat(uniqueReviews.length));
+          console.log("Successfully fetched ".concat(allReviews.reviews.length, " reviews, Unique reviews: ").concat(_uniqueReviews.length));
           return _context7.abrupt("return", {
             success: true,
-            reviews: uniqueReviews,
-            totalReviews: uniqueReviews.length
+            reviews: _uniqueReviews,
+            totalReviews: _uniqueReviews.length
           });
 
         case 39:
