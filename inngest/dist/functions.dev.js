@@ -119,7 +119,7 @@ var processYelpReviews = _client.inngest.createFunction({
 }, {
   event: "process/yelp.reviews"
 }, function _callee3(_ref3) {
-  var event, step, _event$data2, reviews, locationId, clerkId, uniqueReviews, jobPromises;
+  var event, step, _event$data2, reviews, locationId, clerkId, deleteResult, uniqueReviews, jobPromises;
 
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
@@ -128,11 +128,17 @@ var processYelpReviews = _client.inngest.createFunction({
           event = _ref3.event, step = _ref3.step;
           console.log("Starting processYelpReviews function");
           _event$data2 = event.data, reviews = _event$data2.reviews, locationId = _event$data2.locationId, clerkId = _event$data2.clerkId;
+          _context3.next = 5;
+          return regeneratorRuntime.awrap((0, _actionsHelpers.deleteReviewsForLocation)(locationId));
+
+        case 5:
+          deleteResult = _context3.sent;
+          console.log("Delete result: ".concat(JSON.stringify(deleteResult)));
           uniqueReviews = Array.from(new Map(reviews.map(function (review) {
             return [review.review_id, review];
           })).values());
           console.log("Unique review count: ".concat(uniqueReviews.length));
-          _context3.prev = 5;
+          _context3.prev = 9;
           // Create a job for each review
           jobPromises = uniqueReviews.map(function (review, index) {
             return _client.inngest.send({
@@ -146,35 +152,35 @@ var processYelpReviews = _client.inngest.createFunction({
               }
             });
           });
-          _context3.next = 9;
+          _context3.next = 13;
           return regeneratorRuntime.awrap(Promise.all(jobPromises));
 
-        case 9:
+        case 13:
           console.log("Created ".concat(uniqueReviews.length, " individual review processing jobs"));
           return _context3.abrupt("return", {
             success: true,
             reviewCount: uniqueReviews.length
           });
 
-        case 13:
-          _context3.prev = 13;
-          _context3.t0 = _context3["catch"](5);
+        case 17:
+          _context3.prev = 17;
+          _context3.t0 = _context3["catch"](9);
           console.error("Error in processYelpReviews function: ".concat(_context3.t0.message));
-          _context3.next = 18;
+          _context3.next = 22;
           return regeneratorRuntime.awrap((0, _actionsHelpers.updateFetchErrorMessage)(_context3.t0.message, clerkId));
 
-        case 18:
+        case 22:
           return _context3.abrupt("return", {
             success: false,
             error: _context3.t0.message
           });
 
-        case 19:
+        case 23:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[5, 13]]);
+  }, null, null, [[9, 17]]);
 });
 
 exports.processYelpReviews = processYelpReviews;

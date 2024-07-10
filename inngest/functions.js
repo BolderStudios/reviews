@@ -71,6 +71,9 @@ export const processYelpReviews = inngest.createFunction(
     console.log("Starting processYelpReviews function");
     const { reviews, locationId, clerkId } = event.data;
 
+    const deleteResult = await deleteReviewsForLocation(locationId);
+    console.log(`Delete result: ${JSON.stringify(deleteResult)}`);
+
     const uniqueReviews = Array.from(
       new Map(reviews.map((review) => [review.review_id, review])).values()
     );
