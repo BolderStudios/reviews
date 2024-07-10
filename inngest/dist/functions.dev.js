@@ -141,7 +141,7 @@ var processYelpReviewsLogic = function processYelpReviewsLogic(reviews, location
         case 0:
           processedReviews = new Set();
           failedReviews = [];
-          limit = (0, _pLimit["default"])(12);
+          limit = (0, _pLimit["default"])(25);
           delay = 1000;
           console.log("Starting to process ".concat(reviews.length, " reviews at ").concat(new Date().toISOString()));
           _context6.prev = 5;
@@ -693,75 +693,3 @@ var _default = (0, _next.serve)({
 });
 
 exports["default"] = _default;
-
-function retryRequest(fn) {
-  var maxRetries,
-      retryDelay,
-      i,
-      _args12 = arguments;
-  return regeneratorRuntime.async(function retryRequest$(_context12) {
-    while (1) {
-      switch (_context12.prev = _context12.next) {
-        case 0:
-          maxRetries = _args12.length > 1 && _args12[1] !== undefined ? _args12[1] : 5;
-          retryDelay = _args12.length > 2 && _args12[2] !== undefined ? _args12[2] : 5000;
-          i = 0;
-
-        case 3:
-          if (!(i < maxRetries)) {
-            _context12.next = 28;
-            break;
-          }
-
-          _context12.prev = 4;
-          _context12.next = 7;
-          return regeneratorRuntime.awrap(fn());
-
-        case 7:
-          return _context12.abrupt("return", _context12.sent);
-
-        case 10:
-          _context12.prev = 10;
-          _context12.t0 = _context12["catch"](4);
-
-          if (!(_context12.t0.status === 429 || _context12.t0.error && _context12.t0.error.type === "rate_limit_error")) {
-            _context12.next = 18;
-            break;
-          }
-
-          console.log("Rate limit hit, waiting ".concat(retryDelay / 1000, " seconds before retry ").concat(i + 1));
-          _context12.next = 16;
-          return regeneratorRuntime.awrap(sleep(retryDelay));
-
-        case 16:
-          _context12.next = 25;
-          break;
-
-        case 18:
-          if (!(i === maxRetries - 1)) {
-            _context12.next = 22;
-            break;
-          }
-
-          throw _context12.t0;
-
-        case 22:
-          console.log("Error occurred, retrying in ".concat(retryDelay / 1000, " seconds. Attempt ").concat(i + 1));
-          _context12.next = 25;
-          return regeneratorRuntime.awrap(sleep(retryDelay));
-
-        case 25:
-          i++;
-          _context12.next = 3;
-          break;
-
-        case 28:
-          throw new Error("Failed after ".concat(maxRetries, " retries"));
-
-        case 29:
-        case "end":
-          return _context12.stop();
-      }
-    }
-  }, null, null, [[4, 10]]);
-}

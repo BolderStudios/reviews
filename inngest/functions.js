@@ -74,7 +74,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const processYelpReviewsLogic = async (reviews, locationId, clerkId) => {
   const processedReviews = new Set();
   const failedReviews = [];
-  const limit = pLimit(12);
+  const limit = pLimit(25);
   const delay = 1000;
 
   console.log(
@@ -410,33 +410,3 @@ export default serve({
   functions: [fetchYelpReviews, processYelpReviews],
   streaming: "allow",
 });
-
-async function retryRequest(fn, maxRetries = 5, retryDelay = 5000) {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (
-        error.status === 429 ||
-        (error.error && error.error.type === "rate_limit_error")
-      ) {
-        console.log(
-          `Rate limit hit, waiting ${retryDelay / 1000} seconds before retry ${
-            i + 1
-          }`
-        );
-        await sleep(retryDelay);
-      } else if (i === maxRetries - 1) {
-        throw error;
-      } else {
-        console.log(
-          `Error occurred, retrying in ${retryDelay / 1000} seconds. Attempt ${
-            i + 1
-          }`
-        );
-        await sleep(retryDelay);
-      }
-    }
-  }
-  throw new Error(`Failed after ${maxRetries} retries`);
-}
