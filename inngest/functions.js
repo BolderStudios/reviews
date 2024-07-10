@@ -82,7 +82,7 @@ export const processYelpReviews = inngest.createFunction(
     try {
       // Create a job for each review with a delay
       const jobPromises = uniqueReviews.map(async (review, index) => {
-        await sleep(1000); // 1-second delay
+        await sleep(5000); // 5-second delay
         return inngest.send({
           name: "process/single.yelp.review",
           data: {

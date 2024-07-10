@@ -146,7 +146,7 @@ var processYelpReviews = _client.inngest.createFunction({
                 switch (_context3.prev = _context3.next) {
                   case 0:
                     _context3.next = 2;
-                    return regeneratorRuntime.awrap(sleep(1000));
+                    return regeneratorRuntime.awrap(sleep(5000));
 
                   case 2:
                     return _context3.abrupt("return", _client.inngest.send({
