@@ -35,7 +35,24 @@ export const processSingleYelpReview = inngest.createFunction(
     try {
       const insights = await generateInsights(review.review_text);
 
+      const { data: locationData } = await getLocationInfo(locationId);
+
+      console.log("Location Data fetched —> ", locationData);
+      const { name_of_contact, position_of_contact, organization_name } =
+        locationData;
+
+      const generatedResponse = await generateResponse(
+        organization_name,
+        name_of_contact,
+        position_of_contact,
+        review.rating,
+        review.customer_name,
+        review.review_text
+      );
+
       if (
+        !generatedResponse ||
+        !generatedResponse.content ||
         !insights ||
         !insights.content ||
         !Array.isArray(insights.content) ||
@@ -44,9 +61,16 @@ export const processSingleYelpReview = inngest.createFunction(
         throw new Error("Invalid insights structure");
       }
 
+      const response_text = generatedResponse.content[0].text;
       const parsedInsights = JSON.parse(insights.content[0].text);
 
-      await storeReview(review, parsedInsights, locationId, clerkId);
+      await storeReview(
+        review,
+        parsedInsights,
+        locationId,
+        clerkId,
+        response_text
+      );
 
       console.log(`Successfully processed review ${review.review_id}`);
       return { success: true, reviewId: review.review_id };
@@ -78,7 +102,7 @@ export const processYelpReviews = inngest.createFunction(
     console.log(`Unique review count: ${uniqueReviews.length}`);
 
     const limit = pLimit(5);
-    const baseDelay = 15000;
+    const baseDelay = 20000;
 
     const sendJob = async (review, index) => {
       await new Promise((resolve) => setTimeout(resolve, baseDelay));

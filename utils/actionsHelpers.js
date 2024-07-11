@@ -124,7 +124,13 @@ export async function generateInsights(review_text) {
   return message;
 }
 
-export async function storeReview(review, insights, locationId, clerkId) {
+export async function storeReview(
+  review,
+  insights,
+  locationId,
+  clerkId,
+  response_text
+) {
   try {
     console.log("Storing review -> ", review);
     const { data: inserted_review, error: inserted_review_error } =
@@ -144,12 +150,15 @@ export async function storeReview(review, insights, locationId, clerkId) {
             source: "yelp",
             sentiment: insights.sentimentLabel,
             summary: insights.summary,
+            generated_response: response_text,
             return_likelihood:
               insights.businessInsights?.returnLikelihood?.indication || null,
             response_text:
               review.responses === null ? null : review.responses[0].text,
             response_timestamp:
-              review.responses === null ? null : review.responses[0].timestamp.split(" ")[0],
+              review.responses === null
+                ? null
+                : review.responses[0].timestamp.split(" ")[0],
             response_title:
               review.responses === null ? null : review.responses[0].title,
           },

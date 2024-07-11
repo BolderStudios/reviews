@@ -29,7 +29,7 @@ export function CustomerView({ review }) {
     if (isSheetOpen) {
       const fetchData = async () => {
         const result = await getAllReviewData(review.id);
-        console.log("Review data", JSON.stringify(result.data, null, 2))
+        console.log("Review data", JSON.stringify(result.data, null, 2));
         setReviewData(result.data);
 
         setTimeout(() => {
@@ -92,7 +92,7 @@ export function CustomerView({ review }) {
           <MousePointerClick className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="overflow-y-auto w-[95vw] max-w-[800px]">
+      <SheetContent className="overflow-y-auto w-[95vw] max-w-[1000px]">
         <SheetHeader>
           <SheetTitle>Detailed information about the customer</SheetTitle>
         </SheetHeader>
