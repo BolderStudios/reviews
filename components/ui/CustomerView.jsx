@@ -332,7 +332,7 @@ function GeneratedResponseSection({
     generatedResponse && (
       <div>
         <div className="flex justify-between items-center mb-2">
-          <h4 className="font-semibold">Generated Review</h4>
+          <h4 className="font-semibold">Generated Response</h4>
           <Button onClick={copyGeneratedResponse} variant="outline" size="sm">
             <Copy className="h-4 w-4 mr-2" />
             Copy
