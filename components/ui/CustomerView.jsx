@@ -35,11 +35,11 @@ export function CustomerView({ review }) {
         .then(() => {
           // Optionally, you can show a toast or some other feedback that the text was copied
           console.log("Response was copied to clipboard");
-          toast.success("Text copied to clipboard");
+          toast.success("Response was copied to clipboard");
         })
         .catch((err) => {
           toast.error("Failed to copy response");
-          console.error("Failed to copy text: ", err);
+          console.error("Failed to copy response: ", err);
         });
     }
   };

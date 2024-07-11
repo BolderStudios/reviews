@@ -83,7 +83,10 @@ const columns = [
     },
     cell: ({ row }) => {
       const value = row.getValue("timestamp");
-      return <div className="text-center">{value}</div>;
+      const year = value.split("-")[0];
+      const month = value.split("-")[1];
+      const day = value.split("-")[2].split("T")[0];
+      return <div className="text-center">{`${month}-${day}-${year}`}</div>;
     },
   },
   {
@@ -216,11 +219,7 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
       <h2 className="font-bold text-2xl mb-6">
         Customer Reviews ({reviews.length})
       </h2>
-      {isFetching ? (
-        <div className="text-center text-gray-500">
-          Fetching latest reviews...
-        </div>
-      ) : isPageLoading ? (
+      {isPageLoading ? (
         <SkeletonCard />
       ) : (
         <ReviewsTable columns={memoizedColumns} data={memoizedData} />
