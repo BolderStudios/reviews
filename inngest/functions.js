@@ -41,13 +41,17 @@ export const processSingleYelpReview = inngest.createFunction(
       const { name_of_contact, position_of_contact, organization_name } =
         locationData;
 
+      const customer_name = review.user_profile.name;
+      const rating = review.rating.value;
+      const review_text = review.review_text;
+
       const generatedResponse = await generateResponse(
         organization_name,
         name_of_contact,
         position_of_contact,
-        review.rating,
-        review.customer_name,
-        review.review_text
+        rating,
+        customer_name,
+        review_text
       );
 
       if (

@@ -156,6 +156,10 @@ export function CustomerView({ review }) {
 }
 
 function CustomerInfoSection({ review, date }) {
+  const year = date.split("-")[0];
+  const month = date.split("-")[1];
+  const day = date.split("-")[2].split("T")[0];
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
@@ -167,7 +171,7 @@ function CustomerInfoSection({ review, date }) {
 
         <div>
           <h3 className="font-semibold">{review.customer_name}</h3>
-          <p className="text-sm text-muted-foreground">{date}</p>
+          <p className="text-sm text-muted-foreground">{`${month}-${day}-${year}`}</p>
         </div>
       </div>
 
@@ -334,12 +338,14 @@ function GeneratedResponseSection({
             Copy
           </Button>
         </div>
-        <p
+
+        <pre
           ref={generatedResponseRef}
           className="p-4 mt-4 bg-gray-100 rounded-md"
+          style={{ whiteSpace: "pre-wrap" }}
         >
           {generatedResponse}
-        </p>
+        </pre>
       </div>
     )
   );
