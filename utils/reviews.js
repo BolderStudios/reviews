@@ -43,6 +43,7 @@ export async function getAllReviewData(reviewId) {
   return result;
 }
 
+// Could be removed
 async function calcReviewData(locationId, dateRange) {
   let startDate, endDate;
 
@@ -94,9 +95,10 @@ async function calcReviewData(locationId, dateRange) {
 
   // Calculate all-time metrics
   const allTimeMetrics = {
-    averageRating:
-    parseFloat(allReviews.reduce((sum, review) => sum + review.rating, 0) /
-      allReviews.length).toFixed(2),
+    averageRating: parseFloat(
+      allReviews.reduce((sum, review) => sum + review.rating, 0) /
+        allReviews.length
+    ).toFixed(2),
     totalReviews: allReviews.length,
     responsesCount: allReviews.filter((review) => review.has_responded_to)
       .length,

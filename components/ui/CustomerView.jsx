@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Sheet,
   SheetContent,
@@ -12,17 +12,36 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star, MousePointerClick } from "lucide-react";
 import { getAllReviewData } from "@/utils/reviews";
+import { Copy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 export function CustomerView({ review }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [reviewData, setReviewData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const generatedResponseRef = useRef(null);
 
   const date = review.timestamp;
 
   const handleTriggerClick = () => {
     setIsSheetOpen(true);
+  };
+
+  const copyGeneratedResponse = () => {
+    if (generatedResponseRef.current) {
+      navigator.clipboard
+        .writeText(generatedResponseRef.current.innerText)
+        .then(() => {
+          // Optionally, you can show a toast or some other feedback that the text was copied
+          console.log("Response was copied to clipboard");
+          toast.success("Text copied to clipboard");
+        })
+        .catch((err) => {
+          toast.error("Failed to copy response");
+          console.error("Failed to copy text: ", err);
+        });
+    }
   };
 
   useEffect(() => {
@@ -120,6 +139,14 @@ export function CustomerView({ review }) {
               <ProductServiceFeedbackTable
                 feedback={reviewData?.product_service_feedback}
               />
+
+              <div className="mt-6 space-y-6">
+                <GeneratedResponseSection
+                  generatedResponse={review?.generated_response}
+                  generatedResponseRef={generatedResponseRef}
+                  copyGeneratedResponse={copyGeneratedResponse}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -289,5 +316,31 @@ function ProductServiceFeedbackTable({ feedback }) {
         </table>
       </div>
     </div>
+  );
+}
+
+function GeneratedResponseSection({
+  generatedResponse,
+  generatedResponseRef,
+  copyGeneratedResponse,
+}) {
+  return (
+    generatedResponse && (
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="font-semibold">Generated Review</h4>
+          <Button onClick={copyGeneratedResponse} variant="outline" size="sm">
+            <Copy className="h-4 w-4 mr-2" />
+            Copy
+          </Button>
+        </div>
+        <p
+          ref={generatedResponseRef}
+          className="p-4 mt-4 bg-gray-100 rounded-md"
+        >
+          {generatedResponse}
+        </p>
+      </div>
+    )
   );
 }
