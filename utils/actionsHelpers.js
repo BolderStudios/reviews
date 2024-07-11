@@ -134,7 +134,7 @@ export async function storeReview(review, insights, locationId, clerkId) {
           {
             location_id: locationId,
             source_review_id: review.review_id,
-            timestamp: review.timestamp,
+            timestamp: review.timestamp.split("T")[0],
             rating: review.rating.value,
             review_text: review.review_text,
             customer_name: review.user_profile.name,
@@ -146,6 +146,12 @@ export async function storeReview(review, insights, locationId, clerkId) {
             summary: insights.summary,
             return_likelihood:
               insights.businessInsights?.returnLikelihood?.indication || null,
+            response_text:
+              review.responses === null ? null : review.responses[0].text,
+            response_timestamp:
+              review.responses === null ? null : review.responses[0].timestamp.split(" ")[0],
+            response_title:
+              review.responses === null ? null : review.responses[0].title,
           },
         ])
         .select("*");

@@ -19,8 +19,7 @@ export function CustomerView({ review }) {
   const [reviewData, setReviewData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const date = new Date(review.timestamp);
-  const formattedDate = date.toLocaleDateString();
+  const date = review.timestamp;
 
   const handleTriggerClick = () => {
     setIsSheetOpen(true);
@@ -30,6 +29,7 @@ export function CustomerView({ review }) {
     if (isSheetOpen) {
       const fetchData = async () => {
         const result = await getAllReviewData(review.id);
+        console.log("Review data", JSON.stringify(result.data, null, 2))
         setReviewData(result.data);
 
         setTimeout(() => {
@@ -105,10 +105,7 @@ export function CustomerView({ review }) {
           </div>
         ) : (
           <div className="mt-6 space-y-6">
-            <CustomerInfoSection
-              review={review}
-              formattedDate={formattedDate}
-            />
+            <CustomerInfoSection review={review} date={date} />
             <KeywordsAndSentimentSection
               reviewData={reviewData}
               review={review}
@@ -131,7 +128,7 @@ export function CustomerView({ review }) {
   );
 }
 
-function CustomerInfoSection({ review, formattedDate }) {
+function CustomerInfoSection({ review, date }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
@@ -143,7 +140,7 @@ function CustomerInfoSection({ review, formattedDate }) {
 
         <div>
           <h3 className="font-semibold">{review.customer_name}</h3>
-          <p className="text-sm text-muted-foreground">{formattedDate}</p>
+          <p className="text-sm text-muted-foreground">{date}</p>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-// "@/app/connections/[id]/page.jsx"
+// "@/app/reviews/[location_id]/page.jsx"
 
 import React from "react";
 import Reviews from "@/components/ui/Reviews";

@@ -151,7 +151,7 @@ export default function SidebarNavigation({
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               <Link
                 prefetch={false}
-                href="/dashboard"
+                href={`/dashboard/${selectedLocation?.id || ""}`}
                 className={activeLinkClass("/dashboard")}
               >
                 <Home className="h-4 w-4" />

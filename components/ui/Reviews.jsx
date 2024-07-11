@@ -83,8 +83,7 @@ const columns = [
     },
     cell: ({ row }) => {
       const value = row.getValue("timestamp");
-      const date = new Date(value);
-      return <div className="text-center">{date.toLocaleDateString()}</div>;
+      return <div className="text-center">{value}</div>;
     },
   },
   {

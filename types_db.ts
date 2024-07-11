@@ -54,7 +54,7 @@ export type Database = {
       business_category_mentions: {
         Row: {
           business_category_id: string | null
-          content: string | null
+          context: string | null
           created_at: string
           id: string
           review_id: string | null
@@ -62,7 +62,7 @@ export type Database = {
         }
         Insert: {
           business_category_id?: string | null
-          content?: string | null
+          context?: string | null
           created_at?: string
           id?: string
           review_id?: string | null
@@ -70,7 +70,7 @@ export type Database = {
         }
         Update: {
           business_category_id?: string | null
-          content?: string | null
+          context?: string | null
           created_at?: string
           id?: string
           review_id?: string | null
@@ -95,7 +95,7 @@ export type Database = {
       }
       detailed_aspects: {
         Row: {
-          aspec: string | null
+          aspect: string | null
           created_at: string
           detail: string | null
           id: string
@@ -104,7 +104,7 @@ export type Database = {
           sentiment: string | null
         }
         Insert: {
-          aspec?: string | null
+          aspect?: string | null
           created_at?: string
           detail?: string | null
           id?: string
@@ -113,7 +113,7 @@ export type Database = {
           sentiment?: string | null
         }
         Update: {
-          aspec?: string | null
+          aspect?: string | null
           created_at?: string
           detail?: string | null
           id?: string
@@ -274,86 +274,69 @@ export type Database = {
           },
         ]
       }
-      review_responses: {
-        Row: {
-          created_at: string
-          id: string
-          response_text: string | null
-          review_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          response_text?: string | null
-          review_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          response_text?: string | null
-          review_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_review_responses_review_id_fkey"
-            columns: ["review_id"]
-            isOneToOne: false
-            referencedRelation: "reviews"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       reviews: {
         Row: {
           created_at: string
           customer_image_url: string | null
           customer_name: string | null
           customer_profile_url: string | null
+          generated_response: string | null
           has_responded_to: boolean
           id: string
           location_id: string | null
           rating: number | null
+          response_text: string | null
+          response_timestamp: string | null
+          response_title: string | null
           return_likelihood: string | null
           review_text: string | null
           sentiment: string | null
           source: string | null
+          source_review_id: string | null
           summary: string | null
           timestamp: string | null
-          yelp_review_id: string
         }
         Insert: {
           created_at?: string
           customer_image_url?: string | null
           customer_name?: string | null
           customer_profile_url?: string | null
+          generated_response?: string | null
           has_responded_to?: boolean
           id?: string
           location_id?: string | null
           rating?: number | null
+          response_text?: string | null
+          response_timestamp?: string | null
+          response_title?: string | null
           return_likelihood?: string | null
           review_text?: string | null
           sentiment?: string | null
           source?: string | null
+          source_review_id?: string | null
           summary?: string | null
           timestamp?: string | null
-          yelp_review_id: string
         }
         Update: {
           created_at?: string
           customer_image_url?: string | null
           customer_name?: string | null
           customer_profile_url?: string | null
+          generated_response?: string | null
           has_responded_to?: boolean
           id?: string
           location_id?: string | null
           rating?: number | null
+          response_text?: string | null
+          response_timestamp?: string | null
+          response_title?: string | null
           return_likelihood?: string | null
           review_text?: string | null
           sentiment?: string | null
           source?: string | null
+          source_review_id?: string | null
           summary?: string | null
           timestamp?: string | null
-          yelp_review_id?: string
         }
         Relationships: [
           {
