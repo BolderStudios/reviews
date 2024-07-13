@@ -340,8 +340,8 @@ function GeneratedResponseSection({
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Copy what you like and leave what you don't. This is more so a guide
-            than a polished response.
+            Copy what you like and leave what you don't. This is a guide to help
+            you respond to the review.
           </p>
         </div>
 
