@@ -124,6 +124,8 @@ export async function calcReviewData(locationId) {
     if (businessCategoriesError)
       throw new Error(businessCategoriesError.message);
 
+    console.log("businessCategories", businessCategories);
+
     let allCategories = {};
 
     // Fetch keywords for each category
@@ -143,16 +145,12 @@ export async function calcReviewData(locationId) {
       const negativeKeywords = keywords.filter(
         (keyword) => keyword.sentiment === "Negative"
       );
-      const mixedKeywords = keywords.filter(
-        (keyword) => keyword.sentiment === "Mixed"
-      );
 
       // Add or update category data in allCategories
       if (!allCategories[category.name]) {
         allCategories[category.name] = {
           totalPositiveKeywords: 0,
           totalNegativeKeywords: 0,
-          totalMixedKeywords: 0,
           keywords: [],
         };
       }
@@ -161,7 +159,6 @@ export async function calcReviewData(locationId) {
         positiveKeywords.length;
       allCategories[category.name].totalNegativeKeywords +=
         negativeKeywords.length;
-      allCategories[category.name].totalMixedKeywords += mixedKeywords.length;
 
       // Add new keywords, avoiding duplicates
       keywords.forEach((keyword) => {
@@ -177,6 +174,8 @@ export async function calcReviewData(locationId) {
         }
       });
     }
+
+    console.log("Done processing categories", allCategories);
 
     return {
       success: true,
