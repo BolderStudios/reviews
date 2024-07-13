@@ -3,7 +3,13 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { calcReviewData } from "@/utils/reviews";
 import { KpiCard } from "@/components/ui/KpiCard";
-import { Star, BarChart, MessageSquareQuote, Smile } from "lucide-react";
+import {
+  Star,
+  BarChart,
+  MessageSquareQuote,
+  Smile,
+  AlertCircle,
+} from "lucide-react";
 
 export default function Dashboard({ selectedLocation }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -112,9 +118,73 @@ export default function Dashboard({ selectedLocation }) {
   const getFrequencyDescription = (frequency) => {
     if (frequency >= 1.25) return "Excellent: High review frequency";
     if (frequency >= 0.75) return "Average: Consistent review frequency";
-    
+
     return "Below Average: Need to encourage more reviews";
-  }
+  };
+
+  const renderKpiCards = () => (
+    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <KpiCard
+        title="Average Rating"
+        value={dashboardData?.avgRating || "N/A"}
+        icon={<Star className="w-6 h-6" />}
+        avg={true}
+        status={getAverageRatingStatus(
+          parseFloat(dashboardData?.avgRating || 0)
+        )}
+        description={getAverageRatingDescription(
+          parseFloat(dashboardData?.avgRating || 0)
+        )}
+      />
+      <KpiCard
+        title="Total Reviews"
+        value={dashboardData?.totalReviewsCount || 0}
+        icon={<BarChart className="h-4 w-4 text-muted-foreground" />}
+        status={getTotalReviewsStatus(dashboardData?.totalReviewsCount || 0)}
+        description={getTotalReviewsDescription(
+          dashboardData?.totalReviewsCount || 0
+        )}
+      />
+      <KpiCard
+        title="Response Rate"
+        value={`${(
+          (dashboardData?.responseCount / dashboardData?.totalReviewsCount) *
+            100 || 0
+        ).toFixed(0)}%`}
+        icon={<MessageSquareQuote className="h-4 w-4 text-muted-foreground" />}
+        status={getResponseRateStatus(
+          (dashboardData?.responseCount / dashboardData?.totalReviewsCount) *
+            100 || 0
+        )}
+        description={getResponseRateDescription(
+          (dashboardData?.responseCount / dashboardData?.totalReviewsCount) *
+            100 || 0
+        )}
+      />
+      <KpiCard
+        title="Frequency of Reviews"
+        value={`${dashboardData?.averageReviewsPerWeek || 0} per week`}
+        icon={<Smile className="h-4 w-4 text-muted-foreground" />}
+        status={getFrequencyStatus(dashboardData?.averageReviewsPerWeek || 0)}
+        description={getFrequencyDescription(
+          dashboardData?.averageReviewsPerWeek || 0
+        )}
+      />
+    </div>
+  );
+
+  const renderEmptyState = () => (
+    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner">
+      <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
+      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        No Data Available
+      </h3>
+      <p className="text-gray-500 text-center max-w-md">
+        We haven't received any reviews for this location yet. Start collecting
+        reviews to see your dashboard come to life!
+      </p>
+    </div>
+  );
 
   return (
     <div className="px-8 py-6">
@@ -127,65 +197,13 @@ export default function Dashboard({ selectedLocation }) {
           <Skeleton className="h-[100px] w-full" />
           <Skeleton className="h-[300px] w-full" />
         </div>
+      ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
+        renderKpiCards()
       ) : (
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <KpiCard
-            title="Average Rating"
-            value={dashboardData?.avgRating}
-            icon={<Star className="w-6 h-6" />}
-            avg={true}
-            status={getAverageRatingStatus(
-              parseFloat(dashboardData?.avgRating)
-            )}
-            description={getAverageRatingDescription(
-              parseFloat(dashboardData?.avgRating)
-            )}
-          />
-          <KpiCard
-            title="Total Reviews"
-            value={dashboardData?.totalReviewsCount}
-            icon={<BarChart className="h-4 w-4 text-muted-foreground" />}
-            status={getTotalReviewsStatus(dashboardData?.totalReviewsCount)}
-            description={getTotalReviewsDescription(
-              dashboardData?.totalReviewsCount
-            )}
-          />
-          <KpiCard
-            title="Response Rate"
-            value={`${(
-              (dashboardData?.responseCount /
-                dashboardData?.totalReviewsCount) *
-              100
-            ).toFixed(0)}%`}
-            icon={
-              <MessageSquareQuote className="h-4 w-4 text-muted-foreground" />
-            }
-            status={getResponseRateStatus(
-              (dashboardData?.responseCount /
-                dashboardData?.totalReviewsCount) *
-                100
-            )}
-            description={getResponseRateDescription(
-              (dashboardData?.responseCount /
-                dashboardData?.totalReviewsCount) *
-                100
-            )}
-          />
-          {/* <KpiCard
-            title="Satisfaction Score"
-            value={`${calculateCSAT()}`}
-            icon={<Smile className="h-4 w-4 text-muted-foreground" />}
-            status={getCSATStatus(calculateCSAT())}
-            description={getCSATDescription(calculateCSAT())}
-          /> */}
-          <KpiCard
-            title="Frequency of Reviews"
-            value={`${dashboardData?.averageReviewsPerWeek} per week`}
-            icon={<Smile className="h-4 w-4 text-muted-foreground" />}
-            status={getFrequencyStatus(dashboardData?.averageReviewsPerWeek)}
-            description={getFrequencyDescription(dashboardData?.averageReviewsPerWeek)}
-          />
-        </div>
+        <>
+          {renderEmptyState()}
+          <div className="mt-8 opacity-50">{renderKpiCards()}</div>
+        </>
       )}
     </div>
   );
