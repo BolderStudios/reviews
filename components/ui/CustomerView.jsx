@@ -34,12 +34,12 @@ export function CustomerView({ review }) {
         .writeText(generatedResponseRef.current.innerText)
         .then(() => {
           // Optionally, you can show a toast or some other feedback that the text was copied
-          console.log("Response was copied to clipboard");
+          // console.log("Response was copied to clipboard");
           toast.success("Response was copied to clipboard");
         })
         .catch((err) => {
           toast.error("Failed to copy response");
-          console.error("Failed to copy response: ", err);
+          // console.error("Failed to copy response: ", err);
         });
     }
   };
@@ -48,7 +48,7 @@ export function CustomerView({ review }) {
     if (isSheetOpen) {
       const fetchData = async () => {
         const result = await getAllReviewData(review.id);
-        console.log("Review data", JSON.stringify(result.data, null, 2));
+        // console.log("Review data", JSON.stringify(result.data, null, 2));
         setReviewData(result.data);
 
         setTimeout(() => {
@@ -331,17 +331,23 @@ function GeneratedResponseSection({
   return (
     generatedResponse && (
       <div>
-        <div className="flex justify-between items-center mb-2">
-          <h4 className="font-semibold">Generated Response</h4>
-          <Button onClick={copyGeneratedResponse} variant="outline" size="sm">
-            <Copy className="h-4 w-4 mr-2" />
-            Copy
-          </Button>
+        <div className="flex flex-col mb-2">
+          <div className="flex justify-between items-center">
+            <h4 className="font-semibold">Suggested Response</h4>
+            <Button onClick={copyGeneratedResponse} variant="outline" size="sm">
+              <Copy className="h-4 w-4 mr-2" />
+              Copy
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Copy what you like and leave what you don't. This is more so a guide
+            than a polished response.
+          </p>
         </div>
 
         <pre
           ref={generatedResponseRef}
-          className="p-4 mt-4 bg-gray-100 rounded-md"
+          className="p-4 mt-4 bg-gray-100 rounded-md text-sm"
           style={{ whiteSpace: "pre-wrap" }}
         >
           {generatedResponse}
