@@ -157,7 +157,7 @@ const columns = [
           <div className={isExpanded ? "" : "line-clamp-2"}>
             <HighlightedText text={value} highlight={filterValue} />
           </div>
-          <div className="flex items-center justify-end mt-2">
+          {/* <div className="flex items-center justify-end mt-2">
             <Button
               variant="ghost"
               size="sm"
@@ -173,7 +173,7 @@ const columns = [
                 </>
               )}
             </Button>
-          </div>
+          </div> */}
         </div>
       );
     },
