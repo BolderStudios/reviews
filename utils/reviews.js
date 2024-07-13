@@ -114,6 +114,70 @@ export async function calcReviewData(locationId) {
         ? (reviews.length / weeksSinceFirstReview).toFixed(2)
         : reviews.length;
 
+    // Get all business categories for the location
+    const { data: businessCategories, error: businessCategoriesError } =
+      await supabase
+        .from("business_categories")
+        .select("*")
+        .eq("location_id", locationId);
+
+    if (businessCategoriesError)
+      throw new Error(businessCategoriesError.message);
+
+    let allCategories = {};
+
+    // Fetch keywords for each category
+    for (const category of businessCategories) {
+      // Get keywords for this category
+      const { data: keywords, error: keywordsError } = await supabase
+        .from("keywords")
+        .select("*")
+        .eq("business_category_id", category.id);
+
+      if (keywordsError) throw new Error(keywordsError.message);
+
+      // Process keywords
+      const positiveKeywords = keywords.filter(
+        (keyword) => keyword.sentiment === "Positive"
+      );
+      const negativeKeywords = keywords.filter(
+        (keyword) => keyword.sentiment === "Negative"
+      );
+      const mixedKeywords = keywords.filter(
+        (keyword) => keyword.sentiment === "Mixed"
+      );
+
+      // Add or update category data in allCategories
+      if (!allCategories[category.name]) {
+        allCategories[category.name] = {
+          totalPositiveKeywords: 0,
+          totalNegativeKeywords: 0,
+          totalMixedKeywords: 0,
+          keywords: [],
+        };
+      }
+
+      allCategories[category.name].totalPositiveKeywords +=
+        positiveKeywords.length;
+      allCategories[category.name].totalNegativeKeywords +=
+        negativeKeywords.length;
+      allCategories[category.name].totalMixedKeywords += mixedKeywords.length;
+
+      // Add new keywords, avoiding duplicates
+      keywords.forEach((keyword) => {
+        if (
+          !allCategories[category.name].keywords.some(
+            (k) => k.keyword === keyword.name
+          )
+        ) {
+          allCategories[category.name].keywords.push({
+            keyword: keyword.name,
+            sentiment: keyword.sentiment,
+          });
+        }
+      });
+    }
+
     return {
       success: true,
       avgRating: avgRating.toFixed(1),
@@ -122,6 +186,7 @@ export async function calcReviewData(locationId) {
       responseCount,
       sentiments,
       averageReviewsPerWeek,
+      allCategories,
     };
   } catch (error) {
     console.error("Error calculating review data:", error);

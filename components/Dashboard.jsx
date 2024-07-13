@@ -10,6 +10,7 @@ import {
   Smile,
   AlertCircle,
 } from "lucide-react";
+import { CategoryTabs } from "@/components/ui/CategoryTabs";
 
 export default function Dashboard({ selectedLocation }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -19,8 +20,6 @@ export default function Dashboard({ selectedLocation }) {
     const fetchDashboardData = async () => {
       setIsPageLoading(true);
       const data = await calcReviewData(selectedLocation.id);
-      console.log("Average Reviews Per Week:");
-      console.log(data.averageReviewsPerWeek);
       setDashboardData(data);
       setIsPageLoading(false);
     };
@@ -174,7 +173,7 @@ export default function Dashboard({ selectedLocation }) {
   );
 
   const renderEmptyState = () => (
-    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner">
+    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
       <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
       <h3 className="text-xl font-semibold text-gray-700 mb-2">
         No Data Available
@@ -198,11 +197,18 @@ export default function Dashboard({ selectedLocation }) {
           <Skeleton className="h-[300px] w-full" />
         </div>
       ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
-        renderKpiCards()
+        <>
+          {renderKpiCards()}
+          <div>
+            <CategoryTabs categories={dashboardData.allCategories} />
+          </div>
+        </>
       ) : (
         <>
           {renderEmptyState()}
-          <div className="mt-8 opacity-50">{renderKpiCards()}</div>
+          <div className="mt-8 opacity-50 pointer-events-none">
+            {renderKpiCards()}
+          </div>
         </>
       )}
     </div>

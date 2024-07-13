@@ -13,6 +13,7 @@ import {
   ArrowUpDown,
   ChevronDown,
   ChevronUp,
+  AlertCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -214,6 +215,19 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
   const memoizedColumns = useMemo(() => columns, []);
   const memoizedData = useMemo(() => reviews, [reviews]);
 
+  const renderEmptyState = () => (
+    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
+      <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
+      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        No Reviews Yet
+      </h3>
+      <p className="text-gray-500 text-center max-w-md">
+        It looks like there aren't any reviews for this location yet. As reviews
+        come in, they'll appear here.
+      </p>
+    </div>
+  );
+
   return (
     <div className="px-8 py-6">
       <h2 className="font-bold text-2xl mb-6">
@@ -221,8 +235,15 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
       </h2>
       {isPageLoading ? (
         <SkeletonCard />
-      ) : (
+      ) : reviews.length > 0 ? (
         <ReviewsTable columns={memoizedColumns} data={memoizedData} />
+      ) : (
+        <>
+          {renderEmptyState()}
+          <div className="mt-8 opacity-50 pointer-events-none">
+            <ReviewsTable columns={memoizedColumns} data={[]} />
+          </div>
+        </>
       )}
     </div>
   );
