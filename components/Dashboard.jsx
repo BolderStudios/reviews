@@ -13,6 +13,8 @@ export default function Dashboard({ selectedLocation }) {
     const fetchDashboardData = async () => {
       setIsPageLoading(true);
       const data = await calcReviewData(selectedLocation.id);
+      console.log("Average Reviews Per Week:");
+      console.log(data.averageReviewsPerWeek);
       setDashboardData(data);
       setIsPageLoading(false);
     };
@@ -24,13 +26,13 @@ export default function Dashboard({ selectedLocation }) {
     if (!dashboardData) return 0;
     const { sentiments } = dashboardData;
     const totalSentiments =
-      sentiments.Positive + sentiments.Negative + sentiments.Mixed;
+      sentiments?.positive + sentiments?.negative + sentiments?.mixed;
     let css = 0;
     if (totalSentiments > 0) {
       css = (
-        (sentiments.Positive * 100 +
-          sentiments.Mixed * 75 +
-          sentiments.Negative * 50) /
+        (sentiments?.positive * 100 +
+          sentiments?.mixed * 75 +
+          sentiments?.negative * 50) /
         totalSentiments
       ).toFixed(0);
     }
@@ -55,8 +57,9 @@ export default function Dashboard({ selectedLocation }) {
   };
 
   const getCSATStatus = (score) => {
-    if (score === "A" || score === "B") return "positive";
-    if (score === "C") return "neutral";
+    if (score === "A") return "positive";
+    if (score === "B") return "neutral";
+    if (score === "C") return "mixed";
     return "negative";
   };
 
@@ -99,6 +102,19 @@ export default function Dashboard({ selectedLocation }) {
 
     return "negative";
   };
+
+  const getFrequencyStatus = (frequency) => {
+    if (frequency >= 1.25) return "positive";
+    if (frequency >= 0.75) return "mixed";
+    return "negative";
+  };
+
+  const getFrequencyDescription = (frequency) => {
+    if (frequency >= 1.25) return "Excellent: High review frequency";
+    if (frequency >= 0.75) return "Average: Consistent review frequency";
+    
+    return "Below Average: Need to encourage more reviews";
+  }
 
   return (
     <div className="px-8 py-6">
@@ -155,12 +171,19 @@ export default function Dashboard({ selectedLocation }) {
                 100
             )}
           />
-          <KpiCard
+          {/* <KpiCard
             title="Satisfaction Score"
             value={`${calculateCSAT()}`}
             icon={<Smile className="h-4 w-4 text-muted-foreground" />}
             status={getCSATStatus(calculateCSAT())}
             description={getCSATDescription(calculateCSAT())}
+          /> */}
+          <KpiCard
+            title="Frequency of Reviews"
+            value={`${dashboardData?.averageReviewsPerWeek} per week`}
+            icon={<Smile className="h-4 w-4 text-muted-foreground" />}
+            status={getFrequencyStatus(dashboardData?.averageReviewsPerWeek)}
+            description={getFrequencyDescription(dashboardData?.averageReviewsPerWeek)}
           />
         </div>
       )}

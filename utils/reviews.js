@@ -53,10 +53,17 @@ export async function calcReviewData(locationId) {
 
     if (reviewsError) throw new Error(reviewsError.message);
 
+    if (reviews.length === 0) {
+      return {
+        success: false,
+        error: "No reviews found for the given location",
+      };
+    }
+
     // Initialize counters
     let allRatings = 0;
     const distributedRatings = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    const sentiments = { Positive: 0, Negative: 0, Mixed: 0 };
+    const sentiments = { positive: 0, negative: 0, mixed: 0 };
     let responseCount = 0;
 
     // Process reviews
@@ -70,6 +77,43 @@ export async function calcReviewData(locationId) {
     // Calculate average rating
     const avgRating = reviews.length > 0 ? allRatings / reviews.length : 0;
 
+    // Need to calculate how many reviews are received on a weekly basis —> what the rate of receiving them is
+    // Calculate the number of weeks since the first review
+    // Calculate the number of reviews received each week
+
+    const { data: dates, error: datesError } = await supabase
+      .from("reviews")
+      .select("timestamp")
+      .eq("location_id", locationId)
+      .order("timestamp", { ascending: true });
+
+    if (datesError) throw new Error(datesError.message);
+    if (dates.length === 0) {
+      return {
+        success: false,
+        error: "No review dates found for the given location",
+      };
+    }
+
+    const firstReviewDate = new Date(dates[0].timestamp);
+    const today = new Date();
+    console.log("firstReviewDate", firstReviewDate);
+    console.log("today", today);
+
+    // Calculate the difference in milliseconds
+    const timeDifference = today.getTime() - firstReviewDate.getTime();
+
+    // Convert milliseconds to weeks
+    const weeksSinceFirstReview = Math.floor(
+      timeDifference / (7 * 24 * 60 * 60 * 1000)
+    );
+
+    // Calculate average reviews per week
+    const averageReviewsPerWeek =
+      weeksSinceFirstReview > 0
+        ? (reviews.length / weeksSinceFirstReview).toFixed(2)
+        : reviews.length;
+
     return {
       success: true,
       avgRating: avgRating.toFixed(1),
@@ -77,6 +121,7 @@ export async function calcReviewData(locationId) {
       distributedRatings,
       responseCount,
       sentiments,
+      averageReviewsPerWeek,
     };
   } catch (error) {
     console.error("Error calculating review data:", error);

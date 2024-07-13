@@ -8,12 +8,13 @@ export function KpiCard({
   avg = false,
   distributedRatings = null,
   status = "neutral",
-  description = ""
+  description = "",
 }) {
   const statusIcon = {
     positive: <ArrowUpCircle className="h-6 w-6 text-green-500" />,
     negative: <ArrowDownCircle className="h-6 w-6 text-red-500" />,
     neutral: <MinusCircle className="h-6 w-6 text-yellow-500" />,
+    mixed: <MinusCircle className="h-6 w-6 text-yellow-500" />,
   };
 
   return (
