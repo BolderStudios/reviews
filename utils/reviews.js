@@ -43,46 +43,43 @@ export async function getAllReviewData(reviewId) {
   return result;
 }
 
-// Could be removed
 export async function calcReviewData(locationId) {
-  // console.log("Calculating review data for location:", locationId);
+  try {
+    // Fetch reviews for the given location
+    const { data: reviews, error: reviewsError } = await supabase
+      .from("reviews")
+      .select("rating, sentiment, has_responded_to")
+      .eq("location_id", locationId);
 
-  // Find total reviews by location
-  const { data: totalReviews, error: totalReviewsError } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("location_id", locationId);
+    if (reviewsError) throw new Error(reviewsError.message);
 
-  if (totalReviewsError) {
-    return { success: false, error: totalReviewsError.message };
+    // Initialize counters
+    let allRatings = 0;
+    const distributedRatings = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const sentiments = { Positive: 0, Negative: 0, Mixed: 0 };
+    let responseCount = 0;
+
+    // Process reviews
+    reviews.forEach(({ rating, sentiment, has_responded_to }) => {
+      allRatings += rating;
+      distributedRatings[rating]++;
+      if (sentiment in sentiments) sentiments[sentiment]++;
+      if (has_responded_to) responseCount++;
+    });
+
+    // Calculate average rating
+    const avgRating = reviews.length > 0 ? allRatings / reviews.length : 0;
+
+    return {
+      success: true,
+      avgRating: avgRating.toFixed(1),
+      totalReviewsCount: reviews.length,
+      distributedRatings,
+      responseCount,
+      sentiments,
+    };
+  } catch (error) {
+    console.error("Error calculating review data:", error);
+    return { success: false, error: error.message };
   }
-
-  // Calculate average rating
-  let allRatings = 0;
-  let avgRating = 0;
-  totalReviews.forEach((review) => {
-    // console.log("Review:", review);
-
-    allRatings += review.rating;
-  });
-
-  avgRating = allRatings / totalReviews.length;
-
-  // Calculate response count
-  const { data: responseCount, error: responseCountError } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("location_id", locationId)
-    .eq("has_responded_to", true);
-
-  if (responseCountError) {
-    return { success: false, error: responseCountError.message };
-  }
-
-  return {
-    success: true,
-    avgRating: avgRating,
-    totalReviews: totalReviews.length,
-    responseCount: responseCount.length,
-  };
 }
