@@ -70,7 +70,7 @@ export function CategoryTabs({ categories }) {
             {keywords.map((keyword, index) => (
               <Badge
                 key={index}
-                className={`${getKeywordColor(keyword.sentiment)} px-3 py-1 rounded-full text-sm font-medium transition-colors cursor-default`}
+                className={`${getKeywordColor(keyword.sentiment)} px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-default`}
               >
                 {keyword.name}
               </Badge>
