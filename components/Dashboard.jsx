@@ -126,7 +126,7 @@ export default function Dashboard({ selectedLocation }) {
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <KpiCard
         title="Average Rating"
-        value={dashboardData?.avgRating || "N/A"}
+        value={dashboardData?.avgRating || "0"}
         icon={<Star className="w-6 h-6" />}
         avg={true}
         status={getAverageRatingStatus(

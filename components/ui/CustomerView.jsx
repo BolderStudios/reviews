@@ -175,10 +175,10 @@ function CustomerInfoSection({ review, date }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 items-center">
+      <div className="flex flex-col gap-2 items-end">
         <StarRating rating={review.rating} />
-        <Badge variant={getSentimentVariant(review.sentiment)}>
-          {review.sentiment}
+        <Badge variant={"neutral"}>
+          Will {review.return_likelihood.toLowerCase()} return
         </Badge>
       </div>
     </div>
