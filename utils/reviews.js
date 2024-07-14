@@ -192,3 +192,78 @@ export async function calcReviewData(locationId) {
     return { success: false, error: error.message };
   }
 }
+
+export async function getKeywords(locationId) {
+  try {
+    // Get all business categories for the location
+    const { data: businessCategories, error: businessCategoriesError } =
+      await supabase
+        .from("business_categories")
+        .select("*")
+        .eq("location_id", locationId);
+
+    if (businessCategoriesError)
+      throw new Error(businessCategoriesError.message);
+
+    console.log("businessCategories", businessCategories);
+
+    let allCategories = {};
+
+    // Fetch keywords for each category
+    for (const category of businessCategories) {
+      // Get keywords for this category
+      const { data: keywords, error: keywordsError } = await supabase
+        .from("keywords")
+        .select("*")
+        .eq("business_category_id", category.id);
+
+      if (keywordsError) throw new Error(keywordsError.message);
+
+      // Process keywords
+      const positiveKeywords = keywords.filter(
+        (keyword) => keyword.sentiment === "Positive"
+      );
+      const negativeKeywords = keywords.filter(
+        (keyword) => keyword.sentiment === "Negative"
+      );
+
+      // Add or update category data in allCategories
+      if (!allCategories[category.name]) {
+        allCategories[category.name] = {
+          totalPositiveKeywords: 0,
+          totalNegativeKeywords: 0,
+          keywords: [],
+        };
+      }
+
+      allCategories[category.name].totalPositiveKeywords +=
+        positiveKeywords.length;
+      allCategories[category.name].totalNegativeKeywords +=
+        negativeKeywords.length;
+
+      // Add new keywords, avoiding duplicates
+      keywords.forEach((keyword) => {
+        if (
+          !allCategories[category.name].keywords.some(
+            (k) => k.keyword === keyword.name
+          )
+        ) {
+          allCategories[category.name].keywords.push({
+            keyword: keyword.name,
+            sentiment: keyword.sentiment,
+          });
+        }
+      });
+    }
+
+    console.log("Done processing categories", allCategories);
+
+    return {
+      success: true,
+      allCategories,
+    };
+  } catch (error) {
+    console.error("Error calculating review data:", error);
+    return { success: false, error: error.message };
+  }
+}

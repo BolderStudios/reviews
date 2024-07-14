@@ -9,6 +9,7 @@ import {
   ShoppingCart,
   FileUp,
   FormInput,
+  Info,
   Check,
   ChevronsUpDown,
   Star,
@@ -183,12 +184,21 @@ export default function SidebarNavigation({
               </Link>
               <Link
                 prefetch={false}
+                href={`/keywords/${selectedLocation?.id || ""}`}
+                className={activeLinkClass("/keywords")}
+              >
+                <Info className="h-4 w-4" />
+                Keywords
+              </Link>
+              <Link
+                prefetch={false}
                 href={`/reviews/${selectedLocation?.id || ""}`}
                 className={activeLinkClass("/reviews")}
               >
                 <BookOpenText className="h-4 w-4" />
                 Reviews
               </Link>
+
               <Link
                 prefetch={false}
                 href="/billing"

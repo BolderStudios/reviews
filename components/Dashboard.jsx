@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { calcReviewData } from "@/utils/reviews";
@@ -197,12 +198,7 @@ export default function Dashboard({ selectedLocation }) {
           <Skeleton className="h-[300px] w-full" />
         </div>
       ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
-        <>
-          {renderKpiCards()}
-          <div>
-            <CategoryTabs categories={dashboardData.allCategories} />
-          </div>
-        </>
+        <>{renderKpiCards()}</>
       ) : (
         <>
           {renderEmptyState()}
