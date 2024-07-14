@@ -216,7 +216,7 @@ export async function updateSelectedLocation(locationObject, currentPathname) {
   if (!error) {
     console.log("Failed to update location ID");
     console.log("Current pathname from backend: ", currentPathname);
-    
+
     if (currentPathname === "connections") {
       redirect(`/connections/${locationObject.id}`);
     }
@@ -227,6 +227,10 @@ export async function updateSelectedLocation(locationObject, currentPathname) {
 
     if (currentPathname === "dashboard") {
       redirect(`/dashboard/${locationObject.id}`);
+    }
+
+    if (currentPathname === "keywords") {
+      redirect(`/keywords/${locationObject.id}`);
     }
 
     console.log("Selected location ID was updated successfully");
