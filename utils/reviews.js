@@ -1,15 +1,7 @@
 // ———————————————————————————————————————————————————————————————————————————
-// Helper functions for Reviews Table
+// Helper functions for Reviews Table, Dashboard, and Keywords
 // ———————————————————————————————————————————————————————————————————————————
 import supabase from "@/utils/supabaseClient";
-import {
-  eachDayOfInterval,
-  parseISO,
-  format,
-  addDays,
-  startOfDay,
-  endOfDay,
-} from "date-fns";
 
 export async function getAllReviewData(reviewId) {
   const result = {
@@ -141,7 +133,7 @@ export async function getKeywords(locationId) {
     if (businessCategoriesError)
       throw new Error(businessCategoriesError.message);
 
-    console.log("businessCategories", businessCategories);
+    // console.log("businessCategories", businessCategories);
 
     let allCategories = {};
 
@@ -192,7 +184,7 @@ export async function getKeywords(locationId) {
       });
     }
 
-    console.log("Done processing categories", allCategories);
+    // console.log("Done processing categories", allCategories);
 
     return {
       success: true,
@@ -200,6 +192,70 @@ export async function getKeywords(locationId) {
     };
   } catch (error) {
     console.error("Error calculating review data:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function extractKeywords(categoryName) {
+  try {
+    // Get all category ids for the given category name
+    const { data: categories, error: categoriesError } = await supabase
+      .from("business_categories")
+      .select("id")
+      .eq("name", categoryName);
+
+    if (categoriesError) throw new Error(categoriesError.message);
+
+    // Use Promise.all to fetch keywords for all categories concurrently
+    const keywordPromises = categories.map((category) =>
+      supabase
+        .from("keywords")
+        .select("*")
+        .eq("business_category_id", category.id)
+    );
+
+    const keywordResults = await Promise.all(keywordPromises);
+
+    // Flatten the results into a single array of keywords
+    let allKeywords = keywordResults.flatMap((result) => result.data || []);
+
+    allKeywords = allKeywords.map((keyword) => {
+      return {
+        name: keyword.name,
+        sentiment: keyword.sentiment,
+      };
+    });
+
+    return { success: true, keywords: allKeywords };
+  } catch (error) {
+    console.error("Error extracting keywords:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getCategories(locationId) {
+  try {
+    // Get all unique business categories for the location
+    const { data: businessCategories, error: businessCategoriesError } =
+      await supabase
+        .from("business_categories")
+        .select("name")
+        .eq("location_id", locationId);
+
+    if (businessCategoriesError)
+      throw new Error(businessCategoriesError.message);
+
+    // Extract unique category names
+    const uniqueCategories = [
+      ...new Set(businessCategories.map((cat) => cat.name)),
+    ];
+
+    return {
+      success: true,
+      categories: uniqueCategories,
+    };
+  } catch (error) {
+    console.error("Error fetching categories:", error);
     return { success: false, error: error.message };
   }
 }

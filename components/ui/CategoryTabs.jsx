@@ -1,62 +1,72 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { extractKeywords } from "@/utils/reviews";
+import { Badge } from "@/components/ui/badge"; // Assuming you have a Badge component
 
 export function CategoryTabs({ categories }) {
-  console.log(categories);
-  const defaultCategory = Object.keys(categories)[0];
+  const defaultCategory = categories[0];
+  const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
+  const [keywords, setKeywords] = useState([]);
 
-  const calculateSentimentPercentages = (categoryData) => {
-    const total =
-      categoryData.totalPositiveKeywords + categoryData.totalNegativeKeywords;
-
-    return {
-      positive: (categoryData.totalPositiveKeywords / total) * 100,
-      negative: (categoryData.totalNegativeKeywords / total) * 100,
+  useEffect(() => {
+    const callExtractKeywords = async () => {
+      const extractedKeywords = await extractKeywords(selectedCategory);
+      if (extractedKeywords.success) {
+        setKeywords(extractedKeywords.keywords);
+      } else {
+        console.error("Failed to extract keywords:", extractedKeywords.error);
+        setKeywords([]);
+      }
     };
+    callExtractKeywords();
+  }, [selectedCategory]);
+
+  const getKeywordColor = (sentiment) => {
+    switch (sentiment.toLowerCase()) {
+      case 'positive':
+        return 'bg-green-100 text-green-800';
+      case 'negative':
+        return 'bg-red-100 text-red-800';
+      case 'mixed':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
   return (
-    <Tabs defaultValue={defaultCategory} className="w-full mt-6">
-      <TabsList className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-12 gap-y-4">
-        {Object.entries(categories).map(([categoryName, categoryData]) => {
-          const percentages = calculateSentimentPercentages(categoryData);
-
-          return (
-            <TabsTrigger
-              key={categoryName}
-              value={categoryName}
-              className="relative overflow-hidden"
-            >
-              <div className="absolute top-0 left-0 h-[2px] w-full flex">
-                <span
-                  className="bg-emerald-300"
-                  style={{ width: `${percentages.positive}%` }}
-                />
-                <span
-                  className="bg-red-300"
-                  style={{ width: `${percentages.negative}%` }}
-                />
-              </div>
-              <div className="pt-[4px]">{categoryName}</div>
-            </TabsTrigger>
-          );
-        })}
+    <Tabs
+      value={selectedCategory}
+      onValueChange={setSelectedCategory}
+      className="w-full mt-6"
+    >
+      <TabsList className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        {categories.map((category) => (
+          <TabsTrigger
+            key={category}
+            value={category}
+            className="relative overflow-hidden py-4"
+          >
+            {category}
+          </TabsTrigger>
+        ))}
       </TabsList>
-      {Object.entries(categories).map(([categoryName, categoryData]) => (
-        <TabsContent key={categoryName} value={categoryName}>
-          <h3 className="text-lg font-semibold mb-2">{categoryName}</h3>
-          <p>Positive Keywords: {categoryData.totalPositiveKeywords}</p>
-          <p>Negative Keywords: {categoryData.totalNegativeKeywords}</p>
-          <h4 className="text-md font-semibold mt-4 mb-2">Keywords:</h4>
-          <ul>
-            {categoryData.keywords.map((keyword, index) => (
-              <li key={index}>
-                {keyword.keyword} - {keyword.sentiment}
-              </li>
-            ))}
-          </ul>
-        </TabsContent>
-      ))}
+      <TabsContent value={selectedCategory} className="mt-4">
+        <h4 className="text-lg font-semibold mb-3">Keywords for {selectedCategory}:</h4>
+        <div className="flex flex-wrap gap-2">
+          {keywords.map((keyword, index) => (
+            <Badge 
+              key={index}
+              className={`${getKeywordColor(keyword.sentiment)} px-3 py-1`}
+            >
+              {keyword.name}
+            </Badge>
+          ))}
+        </div>
+        {keywords.length === 0 && (
+          <p className="text-gray-500 italic">No keywords found for this category.</p>
+        )}
+      </TabsContent>
     </Tabs>
   );
 }
