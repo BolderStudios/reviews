@@ -97,11 +97,11 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
             if (isFutureDate) {
               bgColor = "bg-gray-100";
             } else if (dayData) {
-              // Determine color based on sentiment
-
+              // Determine color based on average rating
               if (dayData.avgRating > 4.5) bgColor = "bg-green-500";
               else if (dayData.avgRating > 3.5) bgColor = "bg-yellow-500";
               else if (dayData.avgRating < 2.5) bgColor = "bg-red-500";
+              else bgColor = "bg-gray-300";
             } else {
               bgColor = "bg-gray-200";
             }
@@ -111,7 +111,9 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
             <div
               key={`day-${year}-${month}-${i}`}
               className={`w-full aspect-square relative ${bgColor} border border-gray-100`}
-              onMouseEnter={() => isValidDay && setHoverDate(dayData)}
+              onMouseEnter={() =>
+                isValidDay && dayData && setHoverDate(dayData)
+              }
               onMouseLeave={() => setHoverDate(null)}
             >
               {isValidDay && isFutureDate && (
@@ -148,7 +150,6 @@ const renderYear = (year, calendarData, setHoverDate) => {
     </div>
   );
 };
-
 export function YearsCalendar({ selectedLocation }) {
   const [year, setYear] = useState(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(true);
@@ -159,16 +160,15 @@ export function YearsCalendar({ selectedLocation }) {
   useEffect(() => {
     const fetchCalendarData = async () => {
       setIsLoading(true);
-    //   const result = await getCalendarDataByDay(selectedLocation.id);
-    //   if (result.success) {
-    //     setCalendarData(result.data);
-    //     // console.log(result.data);
-    //     const firstYear = new Date(result.data[0].date).getFullYear();
-    //     setFirstReviewYear(firstYear);
-    //     setYear(Math.max(year, firstYear));
-    //   } else {
-    //     console.error(result.error);
-    //   }
+      const result = await getCalendarDataByDay(selectedLocation.id);
+      if (result.success) {
+        setCalendarData(result.data);
+        const firstYear = new Date(result.data[0].date).getFullYear();
+        setFirstReviewYear(firstYear);
+        setYear(Math.max(year, firstYear));
+      } else {
+        console.error(result.error);
+      }
       setIsLoading(false);
     };
 
@@ -202,22 +202,13 @@ export function YearsCalendar({ selectedLocation }) {
 
       {renderYear(year, calendarData, setHoverDate)}
 
-      {/* {hoverDate && (
+      {hoverDate && (
         <div className="mt-2 text-sm">
           <p>Date: {hoverDate.date}</p>
           <p>Total Reviews: {hoverDate.nCount}</p>
-          <p>
-            Positive: {hoverDate.nPositive} | Negative: {hoverDate.nNegative} |
-            Mixed: {hoverDate.nMixed}
-          </p>
           <p>Average Rating: {hoverDate.avgRating}</p>
-          <p>Response Rate: {hoverDate.responseRate}%</p>
-          <p>
-            Sources: Google - {hoverDate.sources.google}, Yelp -{" "}
-            {hoverDate.sources.yelp}
-          </p>
         </div>
-      )} */}
+      )}
     </div>
   );
 }

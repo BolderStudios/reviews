@@ -183,92 +183,37 @@ export async function getCategories(locationId) {
 
 export async function getCalendarDataByDay(locationId) {
   try {
-    let days = [];
-    const { data: dates, error: datesError } = await supabase
+    const { data: reviews, error: reviewsError } = await supabase
       .from("reviews")
-      .select("timestamp")
+      .select("timestamp, rating")
       .eq("location_id", locationId)
       .order("timestamp", { ascending: true });
 
-    if (datesError) throw new Error(datesError.message);
-    if (dates.length === 0) {
+    if (reviewsError) throw new Error(reviewsError.message);
+    if (reviews.length === 0) {
       return {
         success: false,
-        error: "No review dates found for the given location",
+        error: "No reviews found for the given location",
       };
     }
 
-    const firstReviewDate = new Date(dates[0].timestamp);
-    const today = new Date();
-
-    // Set the time to midnight for both dates to ensure we only compare dates, not times
-    firstReviewDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-
-    let currentDate = new Date(firstReviewDate);
-
-    while (currentDate <= today) {
-      const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
-      const { data: reviewData, error: reviewDataError } = await supabase
-        .from("reviews")
-        .select("*")
-        .eq("location_id", locationId)
-        .eq("timestamp", formattedDate);
-
-      if (reviewData !== null || reviewData.length > 0) {
-        let totalPositive = 0;
-        let totalNegative = 0;
-        let totalMixed = 0;
-        let totalRating = 0;
-        let avgRating = 0;
-        let totalGoogle = 0;
-        let totalYelp = 0;
-        let responseCount = 0;
-        let responseRate = 0;
-
-        for (const review of reviewData) {
-          totalRating += review.rating;
-          // if (review.sentiment === "Positive") {
-          //   totalPositive++;
-          // } else if (review.sentiment === "Negative") {
-          //   totalNegative++;
-          // } else {
-          //   totalMixed++;
-          // }
-
-          // if (review.source === "google") {
-          //   totalGoogle++;
-          // } else if (review.source === "yelp") {
-          //   totalYelp++;
-          // }
-
-          // if (review.has_responded_to === true) {
-          //   responseCount++;
-          // }
-        }
-
-        avgRating = totalRating / reviewData.length;
-        // responseRate = (responseCount / reviewData.length) * 100;
-
-        days.push({
-          date: formattedDate,
-          nCount: reviewData.length,
-          // nPositive: totalPositive,
-          // nNegative: totalNegative,
-          // nMixed: totalMixed,
-          avgRating: avgRating.toFixed(2),
-          // responseRate: responseRate.toFixed(2),
-          // sources: {
-          //   google: totalGoogle,
-          //   yelp: totalYelp,
-          // },
-        });
+    const days = {};
+    reviews.forEach(review => {
+      const formattedDate = new Date(review.timestamp).toISOString().split('T')[0];
+      if (!days[formattedDate]) {
+        days[formattedDate] = { totalRating: 0, count: 0 };
       }
+      days[formattedDate].totalRating += review.rating;
+      days[formattedDate].count += 1;
+    });
 
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+    const result = Object.entries(days).map(([date, data]) => ({
+      date,
+      avgRating: (data.totalRating / data.count).toFixed(2),
+      nCount: data.count
+    }));
 
-    return { success: true, data: days };
+    return { success: true, data: result };
   } catch (error) {
     console.error("Error fetching calendar data by day:", error);
     return { success: false, error: error.message };
