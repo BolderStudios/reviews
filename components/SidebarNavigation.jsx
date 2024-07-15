@@ -15,6 +15,7 @@ import {
   Star,
   ContainerIcon,
   BookOpenText,
+  Contact,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -189,6 +190,14 @@ export default function SidebarNavigation({
               >
                 <Info className="h-4 w-4" />
                 Keywords
+              </Link>
+              <Link
+                prefetch={false}
+                href={`/employee_mentions/${selectedLocation?.id || ""}`}
+                className={activeLinkClass("/employee_mentions")}
+              >
+                <Contact className="h-4 w-4" />
+                Employee Mentions
               </Link>
               <Link
                 prefetch={false}

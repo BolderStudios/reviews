@@ -233,6 +233,10 @@ export async function updateSelectedLocation(locationObject, currentPathname) {
       redirect(`/keywords/${locationObject.id}`);
     }
 
+    if (currentPathname === "employee_mentions") {
+      redirect(`/employee_mentions/${locationObject.id}`);
+    }
+
     console.log("Selected location ID was updated successfully");
     // return {
     //   message: "Selected location ID was updated successfully",

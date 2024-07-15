@@ -101,7 +101,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
               if (dayData.avgRating > 4.5) bgColor = "bg-green-500";
               else if (dayData.avgRating > 3.5) bgColor = "bg-yellow-500";
               else if (dayData.avgRating > 2.5) bgColor = "bg-orange-500";
-              else if (dayData.avgRating < 2.5) bgColor = "bg-red-500";
+              else if (dayData.avgRating <= 2.5) bgColor = "bg-red-500";
               else bgColor = "bg-gray-300";
             } else {
               bgColor = "bg-gray-200";
