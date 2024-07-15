@@ -159,16 +159,16 @@ export function YearsCalendar({ selectedLocation }) {
   useEffect(() => {
     const fetchCalendarData = async () => {
       setIsLoading(true);
-      const result = await getCalendarDataByDay(selectedLocation.id);
-      if (result.success) {
-        setCalendarData(result.data);
-        // console.log(result.data);
-        const firstYear = new Date(result.data[0].date).getFullYear();
-        setFirstReviewYear(firstYear);
-        setYear(Math.max(year, firstYear));
-      } else {
-        console.error(result.error);
-      }
+    //   const result = await getCalendarDataByDay(selectedLocation.id);
+    //   if (result.success) {
+    //     setCalendarData(result.data);
+    //     // console.log(result.data);
+    //     const firstYear = new Date(result.data[0].date).getFullYear();
+    //     setFirstReviewYear(firstYear);
+    //     setYear(Math.max(year, firstYear));
+    //   } else {
+    //     console.error(result.error);
+    //   }
       setIsLoading(false);
     };
 
@@ -202,22 +202,22 @@ export function YearsCalendar({ selectedLocation }) {
 
       {renderYear(year, calendarData, setHoverDate)}
 
-      {hoverDate && (
+      {/* {hoverDate && (
         <div className="mt-2 text-sm">
           <p>Date: {hoverDate.date}</p>
           <p>Total Reviews: {hoverDate.nCount}</p>
-          {/* <p>
+          <p>
             Positive: {hoverDate.nPositive} | Negative: {hoverDate.nNegative} |
             Mixed: {hoverDate.nMixed}
-          </p> */}
+          </p>
           <p>Average Rating: {hoverDate.avgRating}</p>
-          {/* <p>Response Rate: {hoverDate.responseRate}%</p>
+          <p>Response Rate: {hoverDate.responseRate}%</p>
           <p>
             Sources: Google - {hoverDate.sources.google}, Yelp -{" "}
             {hoverDate.sources.yelp}
-          </p> */}
+          </p>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
