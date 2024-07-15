@@ -207,6 +207,15 @@ export function YearsCalendar({ selectedLocation }) {
           <p>Date: {hoverDate.date}</p>
           <p>Total Reviews: {hoverDate.nCount}</p>
           <p>Average Rating: {hoverDate.avgRating}</p>
+          <p>
+            Positive: {hoverDate.nPositive} | Negative: {hoverDate.nNegative} |
+            Mixed: {hoverDate.nMixed}
+          </p>
+          <p>Response Rate: {hoverDate.responseRate}%</p>
+          <p>
+            Sources: Google - {hoverDate.sources.google}, Yelp -{" "}
+            {hoverDate.sources.yelp}
+          </p>
         </div>
       )}
     </div>

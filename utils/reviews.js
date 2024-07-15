@@ -185,7 +185,7 @@ export async function getCalendarDataByDay(locationId) {
   try {
     const { data: reviews, error: reviewsError } = await supabase
       .from("reviews")
-      .select("timestamp, rating")
+      .select("*")  // Select all fields
       .eq("location_id", locationId)
       .order("timestamp", { ascending: true });
 
@@ -201,16 +201,54 @@ export async function getCalendarDataByDay(locationId) {
     reviews.forEach(review => {
       const formattedDate = new Date(review.timestamp).toISOString().split('T')[0];
       if (!days[formattedDate]) {
-        days[formattedDate] = { totalRating: 0, count: 0 };
+        days[formattedDate] = {
+          totalRating: 0,
+          count: 0,
+          positive: 0,
+          negative: 0,
+          mixed: 0,
+          google: 0,
+          yelp: 0,
+          responseCount: 0
+        };
       }
       days[formattedDate].totalRating += review.rating;
       days[formattedDate].count += 1;
+
+      // Sentiment
+      if (review.sentiment === "Positive") {
+        days[formattedDate].positive += 1;
+      } else if (review.sentiment === "Negative") {
+        days[formattedDate].negative += 1;
+      } else {
+        days[formattedDate].mixed += 1;
+      }
+
+      // Source
+      if (review.source === "google") {
+        days[formattedDate].google += 1;
+      } else if (review.source === "yelp") {
+        days[formattedDate].yelp += 1;
+      }
+
+      // Response count
+      if (review.has_responded_to === true) {
+        days[formattedDate].responseCount += 1;
+      }
     });
 
     const result = Object.entries(days).map(([date, data]) => ({
       date,
+      nCount: data.count,
       avgRating: (data.totalRating / data.count).toFixed(2),
-      nCount: data.count
+      nPositive: data.positive,
+      nNegative: data.negative,
+      nMixed: data.mixed,
+      responseRate: ((data.responseCount / data.count) * 100).toFixed(2),
+      sources: {
+        google: data.google,
+        yelp: data.yelp
+      }
     }));
 
     return { success: true, data: result };
