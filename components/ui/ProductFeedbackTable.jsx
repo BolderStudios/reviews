@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { DataTablePagination } from "./DataTablePagination";
 
-export function EmployeeMentionsTable({ columns, data }) {
+export function ProductFeedbackTable({ columns, data }) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
 
@@ -53,10 +53,10 @@ export function EmployeeMentionsTable({ columns, data }) {
     <div>
       <div className="flex flex-wrap gap-2 items-center py-4">
         <Input
-          placeholder="Search employee names..."
-          value={table.getColumn("employee_name")?.getFilterValue() ?? ""}
+          placeholder="Search item names..."
+          value={table.getColumn("item")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("employee_name")?.setFilterValue(event.target.value)
+            table.getColumn("item")?.setFilterValue(event.target.value)
           }
           className="max-w-52"
         />
@@ -112,7 +112,11 @@ export function EmployeeMentionsTable({ columns, data }) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="h-12" style={{ width: cell.column.columnDef.width }}>
+                    <TableCell
+                      key={cell.id}
+                      className="h-12"
+                      style={{ width: cell.column.columnDef.width }}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

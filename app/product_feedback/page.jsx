@@ -1,4 +1,4 @@
-// "@/app/employee_mentions/page.jsx"
+// "@/app/product_feedback/page.jsx"
 
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
@@ -13,5 +13,5 @@ export default async function Page() {
     .eq("clerk_id", userId)
     .single();
 
-  return redirect(`/employee_mentions/${data.selected_location_id}`);
+  return redirect(`/product_feedback/${data.selected_location_id}`);
 }

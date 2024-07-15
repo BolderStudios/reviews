@@ -3,16 +3,16 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
-import { EmployeeMentionsTable } from "./EmployeeMentionsTable";
+import { ProductFeedbackTable } from "./ProductFeedbackTable";
 import { AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const columns = [
   {
-    accessorKey: "employee_name",
-    header: () => <div className="text-center">Name/Identifier</div>,
+    accessorKey: "item",
+    header: () => <div className="text-center">Item</div>,
     cell: ({ row }) => {
-      const value = row.getValue("employee_name");
+      const value = row.getValue("item");
       return <p className="text-center">{value}</p>;
     },
     filterFn: (row, id, value) => {
@@ -22,7 +22,6 @@ const columns = [
   },
   {
     accessorKey: "sentiment",
-
     header: () => <div className="text-center">Sentiment</div>,
     cell: ({ row }) => {
       const value = row.getValue("sentiment");
@@ -55,21 +54,21 @@ const columns = [
     width: 120,
   },
   {
-    accessorKey: "context",
-    header: "Context",
+    accessorKey: "feedback",
+    header: "Feedback",
 
     cell: ({ row }) => {
-      const value = row.getValue("context");
+      const value = row.getValue("feedback");
 
       return <p>{value}</p>;
     },
   },
 ];
 
-export default function EmployeeMentions({
+export default function ProductFeedback({
   selectedLocation,
   isFetching,
-  staffMentions,
+  productFeedbackList,
 }) {
   const router = useRouter();
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -83,7 +82,10 @@ export default function EmployeeMentions({
   }, [router]);
 
   const memoizedColumns = useMemo(() => columns, []);
-  const memoizedData = useMemo(() => staffMentions, [staffMentions]);
+  const memoizedData = useMemo(
+    () => productFeedbackList,
+    [productFeedbackList]
+  );
 
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
@@ -101,17 +103,17 @@ export default function EmployeeMentions({
   return (
     <div className="px-8 py-6">
       <h2 className="font-bold text-2xl mb-6">
-        Mentioned Employees ({staffMentions.length})
+        Product Feedback ({productFeedbackList.length})
       </h2>
       {isPageLoading ? (
         <SkeletonCard />
-      ) : staffMentions.length > 0 ? (
-        <EmployeeMentionsTable columns={memoizedColumns} data={memoizedData} />
+      ) : productFeedbackList.length > 0 ? (
+        <ProductFeedbackTable columns={memoizedColumns} data={memoizedData} />
       ) : (
         <>
           {renderEmptyState()}
           <div className="mt-8 opacity-50 pointer-events-none">
-            <EmployeeMentionsTable columns={memoizedColumns} data={[]} />
+            <ProductFeedbackTable columns={memoizedColumns} data={[]} />
           </div>
         </>
       )}

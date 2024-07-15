@@ -16,6 +16,7 @@ import {
   ContainerIcon,
   BookOpenText,
   Contact,
+  ShoppingBasket,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -197,7 +198,15 @@ export default function SidebarNavigation({
                 className={activeLinkClass("/employee_mentions")}
               >
                 <Contact className="h-4 w-4" />
-                Employee Mentions
+                Mentioned Employees
+              </Link>
+              <Link
+                prefetch={false}
+                href={`/product_feedback/${selectedLocation?.id || ""}`}
+                className={activeLinkClass("/product_feedback")}
+              >
+                <ShoppingBasket className="h-4 w-4" />
+                Product Feedback
               </Link>
               <Link
                 prefetch={false}
