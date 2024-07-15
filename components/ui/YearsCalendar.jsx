@@ -100,6 +100,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
               // Determine color based on average rating
               if (dayData.avgRating > 4.5) bgColor = "bg-green-500";
               else if (dayData.avgRating > 3.5) bgColor = "bg-yellow-500";
+              else if (dayData.avgRating > 2.5) bgColor = "bg-orange-500";
               else if (dayData.avgRating < 2.5) bgColor = "bg-red-500";
               else bgColor = "bg-gray-300";
             } else {
@@ -150,6 +151,7 @@ const renderYear = (year, calendarData, setHoverDate) => {
     </div>
   );
 };
+
 export function YearsCalendar({ selectedLocation }) {
   const [year, setYear] = useState(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(true);
