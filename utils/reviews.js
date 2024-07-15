@@ -228,40 +228,40 @@ export async function getCalendarDataByDay(locationId) {
 
         for (const review of reviewData) {
           totalRating += review.rating;
-          if (review.sentiment === "Positive") {
-            totalPositive++;
-          } else if (review.sentiment === "Negative") {
-            totalNegative++;
-          } else {
-            totalMixed++;
-          }
+          // if (review.sentiment === "Positive") {
+          //   totalPositive++;
+          // } else if (review.sentiment === "Negative") {
+          //   totalNegative++;
+          // } else {
+          //   totalMixed++;
+          // }
 
-          if (review.source === "google") {
-            totalGoogle++;
-          } else if (review.source === "yelp") {
-            totalYelp++;
-          }
+          // if (review.source === "google") {
+          //   totalGoogle++;
+          // } else if (review.source === "yelp") {
+          //   totalYelp++;
+          // }
 
-          if (review.has_responded_to === true) {
-            responseCount++;
-          }
+          // if (review.has_responded_to === true) {
+          //   responseCount++;
+          // }
         }
 
         avgRating = totalRating / reviewData.length;
-        responseRate = (responseCount / reviewData.length) * 100;
+        // responseRate = (responseCount / reviewData.length) * 100;
 
         days.push({
           date: formattedDate,
           nCount: reviewData.length,
-          nPositive: totalPositive,
-          nNegative: totalNegative,
-          nMixed: totalMixed,
+          // nPositive: totalPositive,
+          // nNegative: totalNegative,
+          // nMixed: totalMixed,
           avgRating: avgRating.toFixed(2),
-          responseRate: responseRate.toFixed(2),
-          sources: {
-            google: totalGoogle,
-            yelp: totalYelp,
-          },
+          // responseRate: responseRate.toFixed(2),
+          // sources: {
+          //   google: totalGoogle,
+          //   yelp: totalYelp,
+          // },
         });
       }
 

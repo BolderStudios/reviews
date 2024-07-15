@@ -206,16 +206,16 @@ export function YearsCalendar({ selectedLocation }) {
         <div className="mt-2 text-sm">
           <p>Date: {hoverDate.date}</p>
           <p>Total Reviews: {hoverDate.nCount}</p>
-          <p>
+          {/* <p>
             Positive: {hoverDate.nPositive} | Negative: {hoverDate.nNegative} |
             Mixed: {hoverDate.nMixed}
-          </p>
+          </p> */}
           <p>Average Rating: {hoverDate.avgRating}</p>
-          <p>Response Rate: {hoverDate.responseRate}%</p>
+          {/* <p>Response Rate: {hoverDate.responseRate}%</p>
           <p>
             Sources: Google - {hoverDate.sources.google}, Yelp -{" "}
             {hoverDate.sources.yelp}
-          </p>
+          </p> */}
         </div>
       )}
     </div>
