@@ -69,10 +69,6 @@ export async function calcReviewData(locationId) {
     // Calculate average rating
     const avgRating = reviews.length > 0 ? allRatings / reviews.length : 0;
 
-    // Need to calculate how many reviews are received on a weekly basis —> what the rate of receiving them is
-    // Calculate the number of weeks since the first review
-    // Calculate the number of reviews received each week
-
     const { data: dates, error: datesError } = await supabase
       .from("reviews")
       .select("timestamp")
@@ -89,8 +85,8 @@ export async function calcReviewData(locationId) {
 
     const firstReviewDate = new Date(dates[0].timestamp);
     const today = new Date();
-    console.log("firstReviewDate", firstReviewDate);
-    console.log("today", today);
+    // console.log("firstReviewDate", firstReviewDate);
+    // console.log("today", today);
 
     // Calculate the difference in milliseconds
     const timeDifference = today.getTime() - firstReviewDate.getTime();
@@ -114,81 +110,6 @@ export async function calcReviewData(locationId) {
       responseCount,
       sentiments,
       averageReviewsPerWeek,
-    };
-  } catch (error) {
-    console.error("Error calculating review data:", error);
-    return { success: false, error: error.message };
-  }
-}
-
-export async function getKeywords(locationId) {
-  try {
-    // Get all business categories for the location
-    const { data: businessCategories, error: businessCategoriesError } =
-      await supabase
-        .from("business_categories")
-        .select("*")
-        .eq("location_id", locationId);
-
-    if (businessCategoriesError)
-      throw new Error(businessCategoriesError.message);
-
-    // console.log("businessCategories", businessCategories);
-
-    let allCategories = {};
-
-    // Fetch keywords for each category
-    for (const category of businessCategories) {
-      // Get keywords for this category
-      const { data: keywords, error: keywordsError } = await supabase
-        .from("keywords")
-        .select("*")
-        .eq("business_category_id", category.id);
-
-      if (keywordsError) throw new Error(keywordsError.message);
-
-      // Process keywords
-      const positiveKeywords = keywords.filter(
-        (keyword) => keyword.sentiment === "Positive"
-      );
-      const negativeKeywords = keywords.filter(
-        (keyword) => keyword.sentiment === "Negative"
-      );
-
-      // Add or update category data in allCategories
-      if (!allCategories[category.name]) {
-        allCategories[category.name] = {
-          totalPositiveKeywords: 0,
-          totalNegativeKeywords: 0,
-          keywords: [],
-        };
-      }
-
-      allCategories[category.name].totalPositiveKeywords +=
-        positiveKeywords.length;
-      allCategories[category.name].totalNegativeKeywords +=
-        negativeKeywords.length;
-
-      // Add new keywords, avoiding duplicates
-      keywords.forEach((keyword) => {
-        if (
-          !allCategories[category.name].keywords.some(
-            (k) => k.keyword === keyword.name
-          )
-        ) {
-          allCategories[category.name].keywords.push({
-            keyword: keyword.name,
-            sentiment: keyword.sentiment,
-          });
-        }
-      });
-    }
-
-    // console.log("Done processing categories", allCategories);
-
-    return {
-      success: true,
-      allCategories,
     };
   } catch (error) {
     console.error("Error calculating review data:", error);
@@ -256,6 +177,100 @@ export async function getCategories(locationId) {
     };
   } catch (error) {
     console.error("Error fetching categories:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getCalendarDataByDay(locationId) {
+  try {
+    let days = [];
+    const { data: dates, error: datesError } = await supabase
+      .from("reviews")
+      .select("timestamp")
+      .eq("location_id", locationId)
+      .order("timestamp", { ascending: true });
+
+    if (datesError) throw new Error(datesError.message);
+    if (dates.length === 0) {
+      return {
+        success: false,
+        error: "No review dates found for the given location",
+      };
+    }
+
+    const firstReviewDate = new Date(dates[0].timestamp);
+    const today = new Date();
+
+    // Set the time to midnight for both dates to ensure we only compare dates, not times
+    firstReviewDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    let currentDate = new Date(firstReviewDate);
+
+    while (currentDate <= today) {
+      const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+      const { data: reviewData, error: reviewDataError } = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("location_id", locationId)
+        .eq("timestamp", formattedDate);
+
+      if (reviewData !== null || reviewData.length > 0) {
+        let totalPositive = 0;
+        let totalNegative = 0;
+        let totalMixed = 0;
+        let totalRating = 0;
+        let avgRating = 0;
+        let totalGoogle = 0;
+        let totalYelp = 0;
+        let responseCount = 0;
+        let responseRate = 0;
+
+        for (const review of reviewData) {
+          totalRating += review.rating;
+          if (review.sentiment === "Positive") {
+            totalPositive++;
+          } else if (review.sentiment === "Negative") {
+            totalNegative++;
+          } else {
+            totalMixed++;
+          }
+
+          if (review.source === "google") {
+            totalGoogle++;
+          } else if (review.source === "yelp") {
+            totalYelp++;
+          }
+
+          if (review.has_responded_to === true) {
+            responseCount++;
+          }
+        }
+
+        avgRating = totalRating / reviewData.length;
+        responseRate = (responseCount / reviewData.length) * 100;
+
+        days.push({
+          date: formattedDate,
+          nCount: reviewData.length,
+          nPositive: totalPositive,
+          nNegative: totalNegative,
+          nMixed: totalMixed,
+          avgRating: avgRating.toFixed(2),
+          responseRate: responseRate.toFixed(2),
+          sources: {
+            google: totalGoogle,
+            yelp: totalYelp,
+          },
+        });
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return { success: true, data: days };
+  } catch (error) {
+    console.error("Error fetching calendar data by day:", error);
     return { success: false, error: error.message };
   }
 }

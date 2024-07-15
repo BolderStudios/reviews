@@ -11,7 +11,7 @@ import {
   Smile,
   AlertCircle,
 } from "lucide-react";
-import { CategoryTabs } from "@/components/ui/CategoryTabs";
+import { YearsCalendar } from "./ui/YearsCalendar";
 
 export default function Dashboard({ selectedLocation }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -24,6 +24,7 @@ export default function Dashboard({ selectedLocation }) {
       setDashboardData(data);
       setIsPageLoading(false);
     };
+
     fetchDashboardData();
   }, [selectedLocation]);
 
@@ -198,12 +199,15 @@ export default function Dashboard({ selectedLocation }) {
           <Skeleton className="h-[300px] w-full" />
         </div>
       ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
-        <>{renderKpiCards()}</>
+        <div className="flex flex-col gap-4">
+          {renderKpiCards()} <YearsCalendar selectedLocation={selectedLocation} />
+        </div>
       ) : (
         <>
           {renderEmptyState()}
-          <div className="mt-8 opacity-50 pointer-events-none">
+          <div className="mt-8 opacity-50 pointer-events-none flex flex-col">
             {renderKpiCards()}
+            <YearsCalendar selectedLocation={selectedLocation} />
           </div>
         </>
       )}
