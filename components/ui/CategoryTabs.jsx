@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { extractKeywords } from "@/utils/reviews";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton"; // Assuming you have a Skeleton component
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function CategoryTabs({ categories }) {
   const defaultCategory = categories[0];
@@ -70,7 +70,9 @@ export function CategoryTabs({ categories }) {
             {keywords.map((keyword, index) => (
               <Badge
                 key={index}
-                className={`${getKeywordColor(keyword.sentiment)} px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-default`}
+                className={`${getKeywordColor(
+                  keyword.sentiment
+                )} px-3 py-1 rounded-full text-xs font-medium transition-colors cursor-default`}
               >
                 {keyword.name}
               </Badge>
