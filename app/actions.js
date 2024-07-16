@@ -204,6 +204,52 @@ export async function addLocationFunc(formData) {
 export async function updateSelectedLocation(locationObject, currentPathname) {
   const { userId } = await auth();
 
+  // const { data, error } = await supabase
+  //   .from("users")
+  //   .update([
+  //     {
+  //       selected_location_id: locationObject.id,
+  //     },
+  //   ])
+  //   .eq("clerk_id", userId);
+
+  // if (!error) {
+  console.log("Failed to update location ID");
+  console.log("Current pathname from backend: ", currentPathname);
+
+  if (currentPathname === "connections") {
+    redirect(`/connections/${locationObject.id}`);
+  }
+
+  if (currentPathname === "reviews") {
+    redirect(`/reviews/${locationObject.id}`);
+  }
+
+  if (currentPathname === "dashboard") {
+    redirect(`/dashboard/${locationObject.id}`);
+  }
+
+  if (currentPathname === "keywords") {
+    redirect(`/keywords/${locationObject.id}`);
+  }
+
+  if (currentPathname === "employee_mentions") {
+    redirect(`/employee_mentions/${locationObject.id}`);
+  }
+
+  if (currentPathname === "product_feedback") {
+    redirect(`/product_feedback/${locationObject.id}`);
+  }
+
+  console.log("Selected location ID was updated successfully");
+  // return {
+  //   message: "Selected location ID was updated successfully",
+  //   success: true,
+  // };
+  // } else {
+  //   return { message: "Failed to update location ID", success: false };
+  // }
+
   const { data, error } = await supabase
     .from("users")
     .update([
@@ -212,43 +258,6 @@ export async function updateSelectedLocation(locationObject, currentPathname) {
       },
     ])
     .eq("clerk_id", userId);
-
-  if (!error) {
-    console.log("Failed to update location ID");
-    console.log("Current pathname from backend: ", currentPathname);
-
-    if (currentPathname === "connections") {
-      redirect(`/connections/${locationObject.id}`);
-    }
-
-    if (currentPathname === "reviews") {
-      redirect(`/reviews/${locationObject.id}`);
-    }
-
-    if (currentPathname === "dashboard") {
-      redirect(`/dashboard/${locationObject.id}`);
-    }
-
-    if (currentPathname === "keywords") {
-      redirect(`/keywords/${locationObject.id}`);
-    }
-
-    if (currentPathname === "employee_mentions") {
-      redirect(`/employee_mentions/${locationObject.id}`);
-    }
-
-    if (currentPathname === "product_feedback") {
-      redirect(`/product_feedback/${locationObject.id}`);
-    }
-
-    console.log("Selected location ID was updated successfully");
-    // return {
-    //   message: "Selected location ID was updated successfully",
-    //   success: true,
-    // };
-  } else {
-    return { message: "Failed to update location ID", success: false };
-  }
 }
 
 export async function initiateYelpFetch(formData) {
