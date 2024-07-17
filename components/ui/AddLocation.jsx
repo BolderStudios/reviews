@@ -56,7 +56,7 @@ const formSchema = z.object({
   positionOfContact: z.string().min(1, "Please select a position"),
 });
 
-export function AddLocation() {
+export function AddLocation({ updateLocations }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
@@ -83,7 +83,9 @@ export function AddLocation() {
           nameOfContact: "",
           positionOfContact: "",
         });
-        window.location.reload();
+        // After successfully adding the location
+        await updateLocations();
+        // window.location.reload();
       } else {
         toast.error("Failed to add location. Please try again.");
       }

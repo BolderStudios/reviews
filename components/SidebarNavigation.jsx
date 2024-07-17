@@ -1,7 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Home,
@@ -36,8 +37,13 @@ import { toast } from "sonner";
 export default function SidebarNavigation() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [locations, setLocations] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const locationRef = useRef(null);
+  const [locations, setLocations] = useLocalStorage("locations", []);
+  const [selectedLocation, setSelectedLocation] = useLocalStorage(
+    "selectedLocation",
+    null
+  );
+  const [lastFetchTime, setLastFetchTime] = useLocalStorage("lastFetchTime", 0);
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
@@ -47,7 +53,7 @@ export default function SidebarNavigation() {
     setOpen(false);
 
     if (currentPathname !== "billing") {
-      console.log("Updating location...", location, currentPathname);
+      // console.log("Updating location...", location, currentPathname);
       try {
         const data = await updateSelectedLocation(location, currentPathname);
         if (data.success) {
@@ -63,21 +69,36 @@ export default function SidebarNavigation() {
     }
   };
 
-  useEffect(() => {
-    const getAllLocations = async () => {
-      try {
-        const data = await getLocations();
-        if (data.success) {
-          setSelectedLocation(data.userSelectedLocation);
-          setLocations(data.locations);
-        }
-      } catch (error) {
-        console.error("Error fetching locations:", error);
-      }
-    };
+  const fetchLocations = useCallback(async () => {
+    try {
+      const data = await getLocations();
 
-    getAllLocations();
-  }, []);
+      if (data.success) {
+        setLocations(data.locations);
+
+        if (!selectedLocation) {
+          setSelectedLocation(data.userSelectedLocation);
+        }
+
+        setLastFetchTime(Date.now());
+      }
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  }, [setLocations, setSelectedLocation, setLastFetchTime, selectedLocation]);
+
+  useEffect(() => {
+    const timeSinceLastFetch = Date.now() - lastFetchTime;
+    const fiveMinutes = 5 * 60 * 1000;
+
+    if (locations.length === 0 || timeSinceLastFetch > fiveMinutes) {
+      fetchLocations();
+    }
+  }, [locations, lastFetchTime, fetchLocations]);
+
+  const updateLocations = async () => {
+    await fetchLocations();
+  };
 
   const activeLinkClass = (href) =>
     `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
@@ -98,6 +119,7 @@ export default function SidebarNavigation() {
                   role="combobox"
                   aria-expanded={open}
                   className="w-full justify-between"
+                  ref={locationRef}
                 >
                   {selectedLocation ? (
                     <span className="flex items-center">
@@ -158,7 +180,7 @@ export default function SidebarNavigation() {
                           </CommandItem>
                         ))}
                       <div className="p-1 mt-1" key="add-location-wrapper">
-                        <AddLocation />
+                        <AddLocation updateLocations={updateLocations} />
                       </div>
                     </CommandGroup>
                   </CommandList>
