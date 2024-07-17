@@ -7,7 +7,7 @@ import supabase from "@/utils/supabaseClient";
 
 export default async function Page() {
   const { userId } = await auth();
-  
+
   const { data, error } = await supabase
     .from("users")
     .select()
@@ -16,12 +16,9 @@ export default async function Page() {
 
   const onboardingComplete = data?.is_onboarding_complete;
 
-  console.log("Onboarding page —> onboardingComplete:", onboardingComplete);
-
   if (onboardingComplete === true) {
     redirect("/dashboard");
   }
 
-  return <></>
-  // return <Onboarding />;
+  return <Onboarding />;
 }

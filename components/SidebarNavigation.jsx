@@ -33,14 +33,16 @@ import {
 import { AddLocation } from "@/components/ui/AddLocation";
 import { updateSelectedLocation, getLocations } from "@/app/actions";
 import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
 
 export default function SidebarNavigation() {
+  const user = useUser();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const locationRef = useRef(null);
-  const [locations, setLocations] = useLocalStorage("locations", []);
+  const [locations, setLocations] = useLocalStorage(`locations_${user?.user?.id}`, []);
   const [selectedLocation, setSelectedLocation] = useLocalStorage(
-    "selectedLocation",
+    `selectedLocation_${user?.user?.id}`,
     null
   );
   const [lastFetchTime, setLastFetchTime] = useLocalStorage("lastFetchTime", 0);

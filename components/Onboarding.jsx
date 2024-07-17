@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Check, ChevronsUpDown } from "lucide-react";
 
@@ -75,6 +76,8 @@ const formSchema = z.object({
 });
 
 export default function OnboardingComponent() {
+  const user = useUser();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [openIndustry, setOpenIndustry] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
@@ -107,7 +110,9 @@ export default function OnboardingComponent() {
 
     try {
       await completeOnboarding(formData);
+      // localStorage.setItem(`onboarding_complete_${user?.user?.id}`, "true");
       toast.success("Onboarding complete 🎉");
+      router.push("/dashboard");
 
       form.reset({
         organizationName: "",

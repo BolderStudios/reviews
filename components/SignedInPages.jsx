@@ -20,8 +20,6 @@ async function SignedInPages({ children }) {
     .single();
 
   const onboardingComplete = data?.is_onboarding_complete;
-  // console.log("SignedInPages —> onboardingComplete:", onboardingComplete);
-  // console.log("SignedInPages —> data:", data);
 
   let locations = [];
   let userSelectedLocation;
