@@ -5,12 +5,16 @@ import supabase from "@/utils/supabaseClient";
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/billing",
-  "/onboarding",
   "/file-uploader",
   "/form",
   "/onboarding(.*)",
-  "/connections",
+  "/connections(.*)",
   "/reviews(.*)",
+  "/keywords(.*)",
+  "/employee_mentions(.*)",
+  "/product_feedback(.*)",
+  "/review_us_page(.*)",
+  "/templates(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -23,6 +27,7 @@ export default clerkMiddleware(async (auth, req) => {
       if (!userId) {
         console.log("No user ID, redirecting to sign-in");
         const signInUrl = new URL("/sign-in", req.url);
+        signInUrl.searchParams.set("redirect_url", url.pathname);
         return NextResponse.redirect(signInUrl);
       }
 
@@ -34,14 +39,13 @@ export default clerkMiddleware(async (auth, req) => {
 
       const onboardingComplete = data?.is_onboarding_complete;
 
-      if (
-        !onboardingComplete &&
-        !req.nextUrl.pathname.startsWith("/onboarding")
-      ) {
+      if (!onboardingComplete && !url.pathname.startsWith("/onboarding")) {
+        console.log("Redirecting to onboarding");
         return NextResponse.redirect(new URL("/onboarding", req.url));
       }
 
-      if (onboardingComplete && req.nextUrl.pathname === "/onboarding") {
+      if (onboardingComplete && url.pathname === "/onboarding") {
+        console.log("Redirecting to dashboard");
         return NextResponse.redirect(new URL("/dashboard", req.url));
       }
     } else {
@@ -58,11 +62,3 @@ export default clerkMiddleware(async (auth, req) => {
 export const config = {
   matcher: ["/((?!.*\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
-
-// export const config = {
-//   matcher: [
-//     "/((?!api/webhooks/clerk|.*\\..*|_next).*)",
-//     "/",
-//     "/((?!api/webhooks/clerk)api|trpc)(.*)",
-//   ],
-// };

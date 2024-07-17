@@ -5,6 +5,7 @@
 import { Button } from "./ui/button";
 import ButtonCustomerPortal from "./ui/ButtonCustomerPortal";
 import { loadStripe } from "@stripe/stripe-js";
+import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 const monthlyPlans = [
   {
@@ -58,27 +59,24 @@ const stripePromise = loadStripe(
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const Billing = ({ emailAddress, currentPriceId }) => {
-  console.log("currentPriceId", currentPriceId);
-  console.log("emailAddress", emailAddress);
+  // console.log("currentPriceId", currentPriceId);
+  // console.log("emailAddress", emailAddress);
 
   const handleSubscribe = async (priceID) => {
     console.log("priceId inside handleSubscribe", priceID);
     console.log("emailAddress inside handleSubscribe", emailAddress);
 
     try {
-      const response = await fetch(
-        `${siteUrl}/api/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            priceId: priceID,
-            email: emailAddress,
-          }),
-        }
-      );
+      const response = await fetch(`${siteUrl}/api/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          priceId: priceID,
+          email: emailAddress,
+        }),
+      });
 
       const { sessionId } = await response.json();
       const stripe = await stripePromise;
@@ -96,46 +94,20 @@ const Billing = ({ emailAddress, currentPriceId }) => {
   };
 
   return (
-    <div className="px-8 py-4">
-      <div>
-        <div className="flex items-center justify-between">
-          <p className="font-bold text-2xl">Billing</p>
+    <SignedInLayout>
+      <div className="px-8 py-4">
+        <div>
+          <div className="flex items-center justify-between">
+            <p className="font-bold text-2xl">Billing</p>
+          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-3 py-4 gap-8">
-        {currentPriceId === null ||
-        currentPriceId === "" ||
-        currentPriceId === undefined ||
-        currentPriceId === "null"
-          ? monthlyPlans.map((plan, index) => (
-              <div
-                key={index}
-                className="p-6 bg-stone-50 flex flex-col gap-6 border rounded"
-              >
-                <div>
-                  <p className="font-medium text-xl">{plan.name}</p>
-                  <p className="leading-normal mt-1">{plan.description}</p>
-                </div>
-
-                <div>
-                  <span className="font-bold text-4xl">${plan.price}</span>
-                  <span className="font-medium">{plan.duration}</span>
-                </div>
-
-                <div>
-                  <Button
-                    className="w-full"
-                    onClick={() => handleSubscribe(plan.priceId)}
-                  >
-                    Subscribe
-                  </Button>
-                </div>
-              </div>
-            ))
-          : monthlyPlans
-              .filter((plan) => plan.priceId === currentPriceId)
-              .map((plan, index) => (
+        <div className="grid grid-cols-3 py-4 gap-8">
+          {currentPriceId === null ||
+          currentPriceId === "" ||
+          currentPriceId === undefined ||
+          currentPriceId === "null"
+            ? monthlyPlans.map((plan, index) => (
                 <div
                   key={index}
                   className="p-6 bg-stone-50 flex flex-col gap-6 border rounded"
@@ -151,12 +123,40 @@ const Billing = ({ emailAddress, currentPriceId }) => {
                   </div>
 
                   <div>
-                    <ButtonCustomerPortal emailAddress={emailAddress} />
+                    <Button
+                      className="w-full"
+                      onClick={() => handleSubscribe(plan.priceId)}
+                    >
+                      Subscribe
+                    </Button>
                   </div>
                 </div>
-              ))}
+              ))
+            : monthlyPlans
+                .filter((plan) => plan.priceId === currentPriceId)
+                .map((plan, index) => (
+                  <div
+                    key={index}
+                    className="p-6 bg-stone-50 flex flex-col gap-6 border rounded"
+                  >
+                    <div>
+                      <p className="font-medium text-xl">{plan.name}</p>
+                      <p className="leading-normal mt-1">{plan.description}</p>
+                    </div>
+
+                    <div>
+                      <span className="font-bold text-4xl">${plan.price}</span>
+                      <span className="font-medium">{plan.duration}</span>
+                    </div>
+
+                    <div>
+                      <ButtonCustomerPortal emailAddress={emailAddress} />
+                    </div>
+                  </div>
+                ))}
+        </div>
       </div>
-    </div>
+    </SignedInLayout>
   );
 };
 

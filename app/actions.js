@@ -202,52 +202,48 @@ export async function addLocationFunc(formData) {
 }
 
 export async function updateSelectedLocation(locationObject, currentPathname) {
-  const { userId } = await auth();
+  try {
+    const { userId } = await auth();
 
-  const { data, error } = await supabase
-    .from("users")
-    .update([
-      {
-        selected_location_id: locationObject.id,
-      },
-    ])
-    .eq("clerk_id", userId);
+    const { data, error } = await supabase
+      .from("users")
+      .update({ selected_location_id: locationObject.id })
+      .eq("clerk_id", userId);
 
-  if (!error) {
-    console.log("Failed to update location ID");
-    console.log("Current pathname from backend: ", currentPathname);
-
-    if (currentPathname === "connections") {
-      redirect(`/connections/${locationObject.id}`);
-    }
-
-    if (currentPathname === "reviews") {
-      redirect(`/reviews/${locationObject.id}`);
-    }
-
-    if (currentPathname === "dashboard") {
-      redirect(`/dashboard/${locationObject.id}`);
-    }
-
-    if (currentPathname === "keywords") {
-      redirect(`/keywords/${locationObject.id}`);
-    }
-
-    if (currentPathname === "employee_mentions") {
-      redirect(`/employee_mentions/${locationObject.id}`);
-    }
-
-    if (currentPathname === "product_feedback") {
-      redirect(`/product_feedback/${locationObject.id}`);
+    if (error) {
+      throw error;
     }
 
     console.log("Selected location ID was updated successfully");
-    // return {
-    //   message: "Selected location ID was updated successfully",
-    //   success: true,
-    // };
-  } else {
-    return { message: "Failed to update location ID", success: false };
+    console.log("Current pathname from backend: ", currentPathname);
+
+    // Instead of redirecting, return the new path
+    let newPath = "/";
+    switch (currentPathname) {
+      case "connections":
+      case "reviews":
+      case "dashboard":
+      case "keywords":
+      case "employee_mentions":
+      case "product_feedback":
+      case "review_us_page":
+        newPath = `/${currentPathname}/${locationObject.id}`;
+        break;
+    }
+
+    console.log("New path: ", newPath);
+
+    return {
+      message: "Selected location ID was updated successfully",
+      success: true,
+      newPath,
+    };
+  } catch (error) {
+    console.error("Error updating selected location:", error);
+    return {
+      message: error.message || "Failed to update location ID",
+      success: false,
+    };
   }
 }
 
@@ -313,4 +309,63 @@ export async function getLocationInfo(location_id) {
   const is_fetching = data.is_fetching;
 
   return { success: true, selectedLocation, is_fetching };
+}
+
+export async function getLocationData(location_id) {
+  const { data: selectedLocation, error: selectedLocationError } =
+    await supabase.from("locations").select("*").eq("id", location_id).single();
+
+  return { success: true, selectedLocation };
+}
+
+export async function isOnboardingCompleteFunc() {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      throw new Error("No authenticated user");
+    }
+
+    const { data, error } = await supabase
+      .from("users")
+      .select()
+      .eq("clerk_id", userId)
+      .single();
+
+    if (error) throw error;
+
+    const onboardingComplete = data?.is_onboarding_complete;
+    let locations = [];
+    let userSelectedLocation;
+
+    if (data !== null) {
+      const { data: userLocations, error: locationsError } = await supabase
+        .from("locations")
+        .select()
+        .eq("user_id", data?.id);
+
+      if (locationsError) throw locationsError;
+
+      const { data: selectedLocation, error: selectedLocationError } =
+        await supabase
+          .from("locations")
+          .select("*")
+          .eq("id", data?.selected_location_id)
+          .single();
+
+      if (selectedLocationError) throw selectedLocationError;
+
+      locations = userLocations;
+      userSelectedLocation = selectedLocation;
+    }
+
+    return {
+      success: true,
+      onboardingComplete,
+      locations,
+      userSelectedLocation,
+    };
+  } catch (error) {
+    console.error("Error fetching onboarding status:", error);
+    return { success: false, error: error.message };
+  }
 }

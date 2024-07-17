@@ -30,7 +30,8 @@ export default async function RootLayout({ children }) {
         >
           <main className="h-screen flex flex-col relative overflow-y-hidden">
             <SignedIn>
-              <SignedInPages>{children}</SignedInPages>
+              {children}
+              {/* <SignedInPages>{children}</SignedInPages> */}
             </SignedIn>
 
             <SignedOut>

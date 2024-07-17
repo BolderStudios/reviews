@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/popover";
 import { AddLocation } from "@/components/ui/AddLocation";
 import { updateSelectedLocation } from "@/app/actions";
+import { toast } from "sonner";
 
 export default function SidebarNavigation({
   locations = [],
@@ -54,9 +55,26 @@ export default function SidebarNavigation({
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
+  // console.log("currentPathname", currentPathname);
+  // console.log("selectedLocation", selectedLocation);
+
   useEffect(() => {
-    updateSelectedLocation(selectedLocation, currentPathname);
-    router.refresh();
+    const updateLocation = async () => {
+      const data = await updateSelectedLocation(
+        selectedLocation,
+        currentPathname
+      );
+      // console.log("DATA FROM updateLocation:", data);
+
+      if (data.success) {
+        // toast.success(data.message);
+
+        router.push(data.newPath);
+        router.refresh();
+      }
+    };
+
+    updateLocation();
   }, [selectedLocation]);
 
   const activeLinkClass = (href) =>
@@ -207,6 +225,14 @@ export default function SidebarNavigation({
               >
                 <ShoppingBasket className="h-4 w-4" />
                 Product Feedback
+              </Link>
+              <Link
+                prefetch={false}
+                href={`/review_us_page/${selectedLocation?.id || ""}`}
+                className={activeLinkClass("/review_us_page")}
+              >
+                <Star className="h-4 w-4" />
+                Review Us Page
               </Link>
               <Link
                 prefetch={false}

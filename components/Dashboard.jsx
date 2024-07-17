@@ -12,6 +12,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { YearsCalendar } from "./ui/YearsCalendar";
+import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 export default function Dashboard({ selectedLocation }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -188,29 +189,32 @@ export default function Dashboard({ selectedLocation }) {
   );
 
   return (
-    <div className="px-8 py-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-bold text-2xl">Location Overview</h2>
-      </div>
-      {isPageLoading ? (
-        <div className="mt-6 space-y-6">
-          <Skeleton className="h-[200px] w-full" />
-          <Skeleton className="h-[100px] w-full" />
-          <Skeleton className="h-[300px] w-full" />
+    <SignedInLayout>
+      <div className="px-8 py-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-bold text-2xl">Location Overview</h2>
         </div>
-      ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
-        <div className="flex flex-col gap-4">
-          {renderKpiCards()} <YearsCalendar selectedLocation={selectedLocation} />
-        </div>
-      ) : (
-        <>
-          {renderEmptyState()}
-          <div className="mt-8 opacity-50 pointer-events-none flex flex-col">
-            {renderKpiCards()}
+        {isPageLoading ? (
+          <div className="mt-6 space-y-6">
+            <Skeleton className="h-[200px] w-full" />
+            <Skeleton className="h-[100px] w-full" />
+            <Skeleton className="h-[300px] w-full" />
+          </div>
+        ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
+          <div className="flex flex-col gap-4">
+            {renderKpiCards()}{" "}
             <YearsCalendar selectedLocation={selectedLocation} />
           </div>
-        </>
-      )}
-    </div>
+        ) : (
+          <>
+            {renderEmptyState()}
+            <div className="mt-8 opacity-50 pointer-events-none flex flex-col">
+              {renderKpiCards()}
+              <YearsCalendar selectedLocation={selectedLocation} />
+            </div>
+          </>
+        )}
+      </div>
+    </SignedInLayout>
   );
 }

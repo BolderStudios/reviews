@@ -7,9 +7,9 @@ import Header from "@/components/ui/Header";
 export default async function Home() {
   const { userId } = await auth();
 
-  if (userId) {
-    redirect("/dashboard");
-  }
+  // if (userId) {
+  //   redirect("/dashboard");
+  // }
 
   return (
     <>
