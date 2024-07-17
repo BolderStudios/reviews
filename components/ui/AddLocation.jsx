@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { addLocationFunc } from "@/app/actions";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import {
   Command,
   CommandEmpty,
@@ -56,6 +57,7 @@ const formSchema = z.object({
 });
 
 export function AddLocation() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
 
@@ -81,6 +83,7 @@ export function AddLocation() {
           nameOfContact: "",
           positionOfContact: "",
         });
+        window.location.reload();
       } else {
         toast.error("Failed to add location. Please try again.");
       }

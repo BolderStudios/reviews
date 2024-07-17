@@ -63,8 +63,8 @@ const Billing = ({ emailAddress, currentPriceId }) => {
   // console.log("emailAddress", emailAddress);
 
   const handleSubscribe = async (priceID) => {
-    console.log("priceId inside handleSubscribe", priceID);
-    console.log("emailAddress inside handleSubscribe", emailAddress);
+    // console.log("priceId inside handleSubscribe", priceID);
+    // console.log("emailAddress inside handleSubscribe", emailAddress);
 
     try {
       const response = await fetch(`${siteUrl}/api/create-checkout-session`, {

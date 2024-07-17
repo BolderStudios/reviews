@@ -229,6 +229,9 @@ export async function updateSelectedLocation(locationObject, currentPathname) {
       case "review_us_page":
         newPath = `/${currentPathname}/${locationObject.id}`;
         break;
+      case "billing":
+        newPath = `/${currentPathname}`;
+        break;
     }
 
     console.log("New path: ", newPath);
@@ -318,12 +321,9 @@ export async function getLocationData(location_id) {
   return { success: true, selectedLocation };
 }
 
-export async function isOnboardingCompleteFunc() {
+export async function getLocations() {
   try {
     const { userId } = await auth();
-    if (!userId) {
-      throw new Error("No authenticated user");
-    }
 
     const { data, error } = await supabase
       .from("users")
@@ -333,7 +333,6 @@ export async function isOnboardingCompleteFunc() {
 
     if (error) throw error;
 
-    const onboardingComplete = data?.is_onboarding_complete;
     let locations = [];
     let userSelectedLocation;
 
@@ -360,9 +359,32 @@ export async function isOnboardingCompleteFunc() {
 
     return {
       success: true,
-      onboardingComplete,
       locations,
       userSelectedLocation,
+    };
+  } catch (error) {
+    console.error("Error fetching locations:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function isOnboardingCompleteFunc() {
+  try {
+    const { userId } = await auth();
+
+    const { data, error } = await supabase
+      .from("users")
+      .select()
+      .eq("clerk_id", userId)
+      .single();
+
+    if (error) throw error;
+
+    const onboardingComplete = data?.is_onboarding_complete;
+
+    return {
+      success: true,
+      onboardingComplete,
     };
   } catch (error) {
     console.error("Error fetching onboarding status:", error);

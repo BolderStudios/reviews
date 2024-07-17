@@ -9,8 +9,6 @@ import Onboarding from "@/components/Onboarding";
 export function SignedInLayout({ children }) {
   const [loading, setLoading] = useState(true);
   const [onboardingComplete, setOnboardingComplete] = useState(null);
-  const [locations, setLocations] = useState([]);
-  const [userSelectedLocation, setUserSelectedLocation] = useState(null);
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
@@ -18,10 +16,6 @@ export function SignedInLayout({ children }) {
         const data = await isOnboardingCompleteFunc();
         if (data.success) {
           setOnboardingComplete(data.onboardingComplete);
-          setLocations(data.locations || []);
-          setUserSelectedLocation(data.userSelectedLocation);
-
-        //   console.log("ALL DATA FROM checkOnboardingStatus:", data);
         } else {
           console.error("Error fetching onboarding status:", data.error);
         }
@@ -50,10 +44,7 @@ export function SignedInLayout({ children }) {
 
   return (
     <div className="flex flex-1">
-      <SidebarNavigation
-        locations={locations}
-        userSelectedLocation={userSelectedLocation}
-      />
+      <SidebarNavigation />
       <div className="flex flex-col w-full overflow-y-auto h-screen">
         <Navbar />
         <div className="flex-grow">{children}</div>

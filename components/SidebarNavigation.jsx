@@ -1,14 +1,11 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
-import { useRouter } from "next/navigation";
 import {
   Home,
   ShoppingCart,
-  FileUp,
-  FormInput,
   Info,
   Check,
   ChevronsUpDown,
@@ -20,13 +17,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -40,42 +30,54 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { AddLocation } from "@/components/ui/AddLocation";
-import { updateSelectedLocation } from "@/app/actions";
+import { updateSelectedLocation, getLocations } from "@/app/actions";
 import { toast } from "sonner";
 
-export default function SidebarNavigation({
-  locations = [],
-  userSelectedLocation,
-}) {
+export default function SidebarNavigation() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] =
-    useState(userSelectedLocation);
+  const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
-  // console.log("currentPathname", currentPathname);
-  // console.log("selectedLocation", selectedLocation);
+  const handleLocationChange = async (location) => {
+    setSelectedLocation(location);
+    setOpen(false);
+
+    if (currentPathname !== "billing") {
+      console.log("Updating location...", location, currentPathname);
+      try {
+        const data = await updateSelectedLocation(location, currentPathname);
+        if (data.success) {
+          router.push(data.newPath);
+          toast.success("Location updated successfully");
+        } else {
+          toast.error("Failed to update location");
+        }
+      } catch (error) {
+        console.error("Error updating location:", error);
+        toast.error("An error occurred while updating location");
+      }
+    }
+  };
 
   useEffect(() => {
-    const updateLocation = async () => {
-      const data = await updateSelectedLocation(
-        selectedLocation,
-        currentPathname
-      );
-      // console.log("DATA FROM updateLocation:", data);
-
-      if (data.success) {
-        // toast.success(data.message);
-
-        router.push(data.newPath);
-        router.refresh();
+    const getAllLocations = async () => {
+      try {
+        const data = await getLocations();
+        if (data.success) {
+          setSelectedLocation(data.userSelectedLocation);
+          setLocations(data.locations);
+        }
+      } catch (error) {
+        console.error("Error fetching locations:", error);
       }
     };
 
-    updateLocation();
-  }, [selectedLocation]);
+    getAllLocations();
+  }, []);
 
   const activeLinkClass = (href) =>
     `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
@@ -136,10 +138,7 @@ export default function SidebarNavigation({
                             className="w-full p-2"
                             key={`location-${location.id}`}
                             value={location.organization_name}
-                            onSelect={() => {
-                              setSelectedLocation(location);
-                              setOpen(false);
-                            }}
+                            onSelect={() => handleLocationChange(location)}
                           >
                             <div className="flex items-center w-full">
                               <Check
@@ -178,22 +177,6 @@ export default function SidebarNavigation({
                 <Home className="h-4 w-4" />
                 Dashboard
               </Link>
-              {/* <Link
-                prefetch={false}
-                href="/file-uploader"
-                className={activeLinkClass("/file-uploader")}
-              >
-                <FileUp className="h-4 w-4" />
-                File Uploader Example
-              </Link> */}
-              {/* <Link
-                prefetch={false}
-                href="/form"
-                className={activeLinkClass("/form")}
-              >
-                <FormInput className="h-4 w-4" />
-                Form Example
-              </Link> */}
               <Link
                 prefetch={false}
                 href={`/connections/${selectedLocation?.id || ""}`}
@@ -242,7 +225,6 @@ export default function SidebarNavigation({
                 <BookOpenText className="h-4 w-4" />
                 Reviews
               </Link>
-
               <Link
                 prefetch={false}
                 href="/billing"
@@ -253,23 +235,6 @@ export default function SidebarNavigation({
               </Link>
             </nav>
           </div>
-
-          {/* <div className="mt-auto p-4">
-            <Card>
-              <CardHeader className="p-2 pt-0 md:p-4">
-                <CardTitle>Upgrade to Pro</CardTitle>
-                <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                <Button size="sm" className="w-full">
-                  Upgrade
-                </Button>
-              </CardContent>
-            </Card>
-          </div> */}
         </div>
       </aside>
 
