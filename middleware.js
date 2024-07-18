@@ -22,7 +22,7 @@ export default clerkMiddleware(async (auth, req) => {
     const url = req.nextUrl;
 
     if (isProtectedRoute(req)) {
-      const { userId, sessionClaims } = await auth();
+      const { userId } = await auth();
 
       if (!userId) {
         console.log("No user ID, redirecting to sign-in");
@@ -31,7 +31,7 @@ export default clerkMiddleware(async (auth, req) => {
         return NextResponse.redirect(signInUrl);
       }
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("users")
         .select()
         .eq("clerk_id", userId)

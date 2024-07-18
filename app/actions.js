@@ -335,6 +335,7 @@ export async function getLocations() {
 
     let locations = [];
     let userSelectedLocation;
+    let userSelectedLocationId = data?.selected_location_id;
 
     if (data !== null) {
       const { data: userLocations, error: locationsError } = await supabase
@@ -361,6 +362,7 @@ export async function getLocations() {
       success: true,
       locations,
       userSelectedLocation,
+      userSelectedLocationId
     };
   } catch (error) {
     console.error("Error fetching locations:", error);

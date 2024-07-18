@@ -40,7 +40,10 @@ export default function SidebarNavigation() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const locationRef = useRef(null);
-  const [locations, setLocations] = useLocalStorage(`locations_${user?.user?.id}`, []);
+  const [locations, setLocations] = useLocalStorage(
+    `locations_${user?.user?.id}`,
+    []
+  );
   const [selectedLocation, setSelectedLocation] = useLocalStorage(
     `selectedLocation_${user?.user?.id}`,
     null
@@ -77,10 +80,9 @@ export default function SidebarNavigation() {
 
       if (data.success) {
         setLocations(data.locations);
+        setSelectedLocation(data.userSelectedLocation);
 
-        if (!selectedLocation) {
-          setSelectedLocation(data.userSelectedLocation);
-        }
+        router.push(`/${currentPathname}/${data.userSelectedLocationId}`);
 
         setLastFetchTime(Date.now());
       }
@@ -92,8 +94,10 @@ export default function SidebarNavigation() {
   useEffect(() => {
     const timeSinceLastFetch = Date.now() - lastFetchTime;
     const fiveMinutes = 5 * 60 * 1000;
+    const oneMinute = 60 * 1000;
 
-    if (locations.length === 0 || timeSinceLastFetch > fiveMinutes) {
+    if (locations.length === 0 || timeSinceLastFetch > oneMinute) {
+      console.log("Fetching locations...");
       fetchLocations();
     }
   }, [locations, lastFetchTime, fetchLocations]);

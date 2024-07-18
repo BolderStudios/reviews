@@ -110,7 +110,6 @@ export default function OnboardingComponent() {
 
     try {
       await completeOnboarding(formData);
-      // localStorage.setItem(`onboarding_complete_${user?.user?.id}`, "true");
       toast.success("Onboarding complete 🎉");
       router.push("/dashboard");
 

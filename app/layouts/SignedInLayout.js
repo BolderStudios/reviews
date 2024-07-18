@@ -5,18 +5,10 @@ import SidebarNavigation from "@/components/SidebarNavigation";
 import { useState, useEffect } from "react";
 import { isOnboardingCompleteFunc } from "@/app/actions";
 import Onboarding from "@/components/Onboarding";
-import { useUser } from "@clerk/nextjs";
 
 export function SignedInLayout({ children }) {
-  const user = useUser();
-  console.log(user?.user?.id);
   const [loading, setLoading] = useState(true);
-    const [onboardingComplete, setOnboardingComplete] = useState(false);
-//   const [onboardingComplete, setOnboardingComplete] = useState(
-//     localStorage.getItem(`onboarding_complete_${user?.user?.id}`) === "true"
-//       ? true
-//       : false
-//   );
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
