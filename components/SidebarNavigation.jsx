@@ -82,7 +82,11 @@ export default function SidebarNavigation() {
         setLocations(data.locations);
         setSelectedLocation(data.userSelectedLocation);
 
-        router.push(`/${currentPathname}/${data.userSelectedLocationId}`);
+        const currentLocationId = pathname.split("/")[2];
+
+        if (currentLocationId !== data.userSelectedLocationId) {
+          router.push(`/${currentPathname}/${data.userSelectedLocationId}`);
+        }
 
         setLastFetchTime(Date.now());
       }
