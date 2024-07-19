@@ -101,7 +101,7 @@ export default function SidebarNavigation() {
     const oneMinute = 60 * 1000;
 
     if (locations.length === 0 || timeSinceLastFetch > oneMinute) {
-      console.log("Fetching locations...");
+      // console.log("Fetching locations...");
       fetchLocations();
     }
   }, [locations, lastFetchTime, fetchLocations]);

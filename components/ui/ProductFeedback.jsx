@@ -6,6 +6,7 @@ import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { ProductFeedbackTable } from "./ProductFeedbackTable";
 import { AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 const columns = [
   {
@@ -88,35 +89,39 @@ export default function ProductFeedback({
   );
 
   const renderEmptyState = () => (
-    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
-      <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">
-        No Mentioned Employees Yet
-      </h3>
-      <p className="text-gray-500 text-center max-w-md">
-        It looks like there aren't any mentioned staff for this location yet. As
-        reviews come in, they'll appear here.
-      </p>
-    </div>
+    <SignedInLayout>
+      <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
+        <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          No Mentioned Employees Yet
+        </h3>
+        <p className="text-gray-500 text-center max-w-md">
+          It looks like there aren't any mentioned staff for this location yet.
+          As reviews come in, they'll appear here.
+        </p>
+      </div>
+    </SignedInLayout>
   );
 
   return (
-    <div className="px-8 py-6">
-      <h2 className="font-bold text-2xl mb-6">
-        Product Feedback ({productFeedbackList.length})
-      </h2>
-      {isPageLoading ? (
-        <SkeletonCard />
-      ) : productFeedbackList.length > 0 ? (
-        <ProductFeedbackTable columns={memoizedColumns} data={memoizedData} />
-      ) : (
-        <>
-          {renderEmptyState()}
-          <div className="mt-8 opacity-50 pointer-events-none">
-            <ProductFeedbackTable columns={memoizedColumns} data={[]} />
-          </div>
-        </>
-      )}
-    </div>
+    <SignedInLayout>
+      <div className="px-8 py-6">
+        <h2 className="font-bold text-2xl mb-6">
+          Product Feedback ({productFeedbackList.length})
+        </h2>
+        {isPageLoading ? (
+          <SkeletonCard />
+        ) : productFeedbackList.length > 0 ? (
+          <ProductFeedbackTable columns={memoizedColumns} data={memoizedData} />
+        ) : (
+          <>
+            {renderEmptyState()}
+            <div className="mt-8 opacity-50 pointer-events-none">
+              <ProductFeedbackTable columns={memoizedColumns} data={[]} />
+            </div>
+          </>
+        )}
+      </div>
+    </SignedInLayout>
   );
 }

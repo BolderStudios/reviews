@@ -6,6 +6,7 @@ import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { EmployeeMentionsTable } from "./EmployeeMentionsTable";
 import { AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 const columns = [
   {
@@ -99,22 +100,27 @@ export default function EmployeeMentions({
   );
 
   return (
-    <div className="px-8 py-6">
-      <h2 className="font-bold text-2xl mb-6">
-        Mentioned Employees ({staffMentions.length})
-      </h2>
-      {isPageLoading ? (
-        <SkeletonCard />
-      ) : staffMentions.length > 0 ? (
-        <EmployeeMentionsTable columns={memoizedColumns} data={memoizedData} />
-      ) : (
-        <>
-          {renderEmptyState()}
-          <div className="mt-8 opacity-50 pointer-events-none">
-            <EmployeeMentionsTable columns={memoizedColumns} data={[]} />
-          </div>
-        </>
-      )}
-    </div>
+    <SignedInLayout>
+      <div className="px-8 py-6">
+        <h2 className="font-bold text-2xl mb-6">
+          Mentioned Employees ({staffMentions.length})
+        </h2>
+        {isPageLoading ? (
+          <SkeletonCard />
+        ) : staffMentions.length > 0 ? (
+          <EmployeeMentionsTable
+            columns={memoizedColumns}
+            data={memoizedData}
+          />
+        ) : (
+          <>
+            {renderEmptyState()}
+            <div className="mt-8 opacity-50 pointer-events-none">
+              <EmployeeMentionsTable columns={memoizedColumns} data={[]} />
+            </div>
+          </>
+        )}
+      </div>
+    </SignedInLayout>
   );
 }
