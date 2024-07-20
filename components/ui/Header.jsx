@@ -56,7 +56,7 @@ const components = [
   },
 ];
 
-export default function Header() {
+export default function Header({ isSignedIn }) {
   return (
     <div className="flex justify-between items-center border-b border-stone-200 px-6">
       {/* Logo */}
@@ -150,11 +150,19 @@ export default function Header() {
           size="header"
           className="font-normal text-stone-700"
         >
-          <Link href="/sign-in">Login</Link>
+          {isSignedIn ? (
+            <Link href="/docs">Docs</Link>
+          ) : (
+            <Link href="/sign-in">Login</Link>
+          )}
         </Button>
 
         <Button asChild size="header">
-          <Link href="/sign-up">Signup</Link>
+          {isSignedIn ? (
+            <Link href="/dashboard">Dashboard</Link>
+          ) : (
+            <Link href="/sign-up">Signup</Link>
+          )}
         </Button>
       </div>
     </div>
