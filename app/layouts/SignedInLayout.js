@@ -5,7 +5,6 @@ import SidebarNavigation from "@/components/SidebarNavigation";
 import { useState, useEffect } from "react";
 import { isOnboardingCompleteFunc } from "@/app/actions";
 import Onboarding from "@/components/Onboarding";
-import { useLocalStorage } from "@uidotdev/usehooks";
 
 export function SignedInLayout({ children }) {
   const [loading, setLoading] = useState(true);
