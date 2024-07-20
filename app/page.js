@@ -2,7 +2,7 @@
 
 import Header from "@/components/ui/Header";
 
-export default async function Home() {
+export default async function Home() {  
   return (
     <>
       <Header />

@@ -32,7 +32,9 @@ export default clerkMiddleware(async (auth, req) => {
     // Check if it's localhost or the main site
     if (
       hostname === "localhost:3000" ||
-      hostname === process.env.NEXT_PUBLIC_SITE_URL
+      hostname === process.env.NEXT_PUBLIC_SITE_URL ||
+      hostname === "www.getbrandarmor.com" ||
+      hostname === "getbrandarmor.com"
     ) {
       if (isProtectedRoute(req)) {
         const { userId } = await auth();
