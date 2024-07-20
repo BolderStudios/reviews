@@ -247,7 +247,7 @@ export default function SidebarNavigation() {
                 className={activeLinkClass("/review_us_page")}
               >
                 <Star className="h-4 w-4" />
-                Review Us Page
+                Review Pages
               </Link>
               <Link
                 prefetch={false}

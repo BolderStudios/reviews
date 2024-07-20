@@ -11,8 +11,15 @@ import { ExternalLink } from "lucide-react";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 export default function ReviewUsPage({ selectedLocation, isFetching }) {
-  const subdomain = `${selectedLocation.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
-  const href = `www.${subdomain}/templates/standard`;
+  let subdomain;
+  let href;
+  if (process.env.NEXT_PUBLIC_REDIRECT_URL.startsWith("localhost")) {
+    subdomain = `${selectedLocation.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
+    href = `www.${subdomain}/templates/standard`;
+  } else {
+    subdomain = `${selectedLocation.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
+    href = `https://${subdomain}/templates/standard`;
+  }
 
   return (
     <SignedInLayout>
