@@ -17,6 +17,15 @@ const isProtectedRoute = createRouteMatcher([
   "/templates(.*)",
 ]);
 
+const isMainSite = (hostname) => {
+  return (
+    hostname === "localhost:3000" ||
+    hostname === process.env.NEXT_PUBLIC_SITE_URL ||
+    hostname === "www.getbrandarmor.com" ||
+    hostname === "getbrandarmor.com"
+  );
+};
+
 export default clerkMiddleware(async (auth, req) => {
   try {
     const url = req.nextUrl;
@@ -30,12 +39,7 @@ export default clerkMiddleware(async (auth, req) => {
     }`;
 
     // Check if it's localhost or the main site
-    if (
-      hostname === "localhost:3000" ||
-      hostname === process.env.NEXT_PUBLIC_SITE_URL ||
-      hostname === "www.getbrandarmor.com" ||
-      hostname === "getbrandarmor.com"
-    ) {
+    if (isMainSite(hostname)) {
       if (isProtectedRoute(req)) {
         const { userId } = await auth();
         if (!userId) {
@@ -63,7 +67,7 @@ export default clerkMiddleware(async (auth, req) => {
       } else {
         console.log("Non-protected route");
       }
-      // For the main site, we don't need to rewrite, so we can return next()
+
       return NextResponse.next();
     }
 

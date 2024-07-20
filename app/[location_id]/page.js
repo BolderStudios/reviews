@@ -1,8 +1,32 @@
 // [location_id]/page.js
 
-import Header from "@/components/ui/Header";
+"use client";
 
-export default async function Home() {
+import { usePathname, notFound } from "next/navigation";
+
+const validSubdomainRoutes = [
+  "/",
+  "/dashboard",
+  "/billing",
+  "/file-uploader",
+  "/form",
+  "/onboarding",
+  "/connections",
+  "/reviews",
+  "/keywords",
+  "/employee_mentions",
+  "/product_feedback",
+  "/review_us_page",
+  "/templates",
+];
+
+export default function Home() {
+  const pathname = usePathname();
+
+  if (!validSubdomainRoutes.includes(pathname)) {
+    notFound();
+  }
+
   return (
     <div>
       {/* <Header /> */}
