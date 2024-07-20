@@ -89,7 +89,6 @@ export default function ProductFeedback({
   );
 
   const renderEmptyState = () => (
-    <SignedInLayout>
       <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
         <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
         <h3 className="text-xl font-semibold text-gray-700 mb-2">
@@ -100,7 +99,6 @@ export default function ProductFeedback({
           As reviews come in, they'll appear here.
         </p>
       </div>
-    </SignedInLayout>
   );
 
   return (

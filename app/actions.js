@@ -387,6 +387,7 @@ export async function isOnboardingCompleteFunc() {
     return {
       success: true,
       onboardingComplete,
+      clerkId: userId,
     };
   } catch (error) {
     console.error("Error fetching onboarding status:", error);

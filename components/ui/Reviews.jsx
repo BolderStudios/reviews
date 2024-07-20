@@ -215,18 +215,16 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
   const memoizedData = useMemo(() => reviews, [reviews]);
 
   const renderEmptyState = () => (
-    <SignedInLayout>
-      <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
-        <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">
-          No Reviews Yet
-        </h3>
-        <p className="text-gray-500 text-center max-w-md">
-          It looks like there aren't any reviews for this location yet. As
-          reviews come in, they'll appear here.
-        </p>
-      </div>
-    </SignedInLayout>
+    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
+      <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
+      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        No Reviews Yet
+      </h3>
+      <p className="text-gray-500 text-center max-w-md">
+        It looks like there aren't any reviews for this location yet. As reviews
+        come in, they'll appear here.
+      </p>
+    </div>
   );
 
   return (
