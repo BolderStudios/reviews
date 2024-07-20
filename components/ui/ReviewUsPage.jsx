@@ -11,6 +11,9 @@ import { ExternalLink } from "lucide-react";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 export default function ReviewUsPage({ selectedLocation, isFetching }) {
+  const subdomain = `${selectedLocation.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
+  const href = `www.${subdomain}/templates/standard`;
+
   return (
     <SignedInLayout>
       <div className="px-8 py-6">
@@ -21,7 +24,7 @@ export default function ReviewUsPage({ selectedLocation, isFetching }) {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-md">Standard</CardTitle>
-                <Link href={`/templates/standard/${selectedLocation.id}`}>
+                <Link href={href}>
                   <ExternalLink className="text-blue-500 w-4 h-4">
                     Preview
                   </ExternalLink>
