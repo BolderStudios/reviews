@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Card,
   CardDescription,
@@ -9,6 +10,7 @@ import {
 import Link from "next/link";
 import { ExternalLink, QrCode } from "lucide-react";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
+import { generateQRCode } from "@/app/actions";
 import {
   Tooltip,
   TooltipContent,
@@ -28,8 +30,30 @@ export default function Funnels({ selectedLocation, isFetching }) {
     href = `https://${subdomain}/templates/standard/yelp`;
   }
 
-  const handleQRCodeClick = () => {
+  const handleQRCodeClick = async () => {
     console.log("QR code clicked");
+
+    const result = await generateQRCode();
+
+    if (result.success) {
+      console.log("QR code result", result.qrURL);
+
+      // Create a temporary anchor element
+      const downloadLink = document.createElement("a");
+      downloadLink.href = result.qrURL;
+      downloadLink.download = "qrcode.png"; 
+
+      // Append to the document body temporarily
+      document.body.appendChild(downloadLink);
+
+      // Programmatically click the link to trigger the download
+      downloadLink.click();
+
+      // Remove the link from the document
+      document.body.removeChild(downloadLink);
+    } else {
+      console.error("Failed to generate QR code:", result.error);
+    }
   };
 
   return (
@@ -48,7 +72,7 @@ export default function Funnels({ selectedLocation, isFetching }) {
                       <TooltipTrigger>
                         <QrCode
                           onClick={handleQRCodeClick}
-                          className="w-4 h-4 cursor-pointer"
+                          className="text-amber-950 w-4 h-4 cursor-pointer"
                         />
                       </TooltipTrigger>
                       <TooltipContent>

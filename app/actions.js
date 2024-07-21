@@ -7,11 +7,11 @@ import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
 import { inngest } from "@/inngest/client";
+import QRCode from "qrcode";
 import {
   updateIsFetching,
   updateFetchErrorMessage,
 } from "@/utils/actionsHelpers";
-import { redirect } from "next/navigation";
 
 export async function createUsername(username) {
   console.log("from createUsername action: ", username);
@@ -362,7 +362,7 @@ export async function getLocations() {
       success: true,
       locations,
       userSelectedLocation,
-      userSelectedLocationId
+      userSelectedLocationId,
     };
   } catch (error) {
     console.error("Error fetching locations:", error);
@@ -391,6 +391,44 @@ export async function isOnboardingCompleteFunc() {
     };
   } catch (error) {
     console.error("Error fetching onboarding status:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function generateQRCode() {
+  const { userId } = await auth();
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .select()
+      .eq("clerk_id", userId)
+      .single();
+
+    if (error) throw error;
+
+    let qrLink = "";
+    if (process.env.NEXT_PUBLIC_REDIRECT_URL === "localhost:3000") {
+      qrLink = `http://${data.selected_location_id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}/templates/standard/yelp`;
+    } else {
+      qrLink = `https://${data.selected_location_id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}/templates/standard/yelp`;
+    }
+
+    console.log("QR Link:", qrLink); // Log the link for verification
+
+    // Generate QR code with higher quality settings
+    const qrCodeDataURL = await QRCode.toDataURL(qrLink, {
+      errorCorrectionLevel: "H",
+      margin: 4,
+      width: 300,
+      color: {
+        dark: "#000000",
+        light: "#ffffff",
+      },
+    });
+
+    return { success: true, qrURL: qrCodeDataURL };
+  } catch (error) {
+    console.error("Error generating QR code:", error);
     return { success: false, error: error.message };
   }
 }
