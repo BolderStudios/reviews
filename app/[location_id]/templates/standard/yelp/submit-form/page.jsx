@@ -1,5 +1,5 @@
-import React from "react";
+import { FeedbackSubmitPage } from "@/components/ui/FeedbackSubmitPage";
 
 export default function Page() {
-  return <div>Submit Page</div>;
+  return <FeedbackSubmitPage />;
 }

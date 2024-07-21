@@ -57,7 +57,6 @@ const formSchema = z.object({
 });
 
 export function AddLocation({ updateLocations }) {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
 
