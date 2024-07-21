@@ -1,4 +1,4 @@
-// "@/app/review_us_page/page.jsx"
+// "@/app/funnels/page.jsx"
 
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
@@ -13,5 +13,5 @@ export default async function Page() {
     .eq("clerk_id", userId)
     .single();
 
-  return redirect(`/review_us_page/${data.selected_location_id}`);
+  return redirect(`/funnels/${data.selected_location_id}`);
 }

@@ -50,10 +50,6 @@ export default function StandardYelpTemplate() {
             ))}
           </div>
         </div>
-        <p className="text-center mt-8 text-gray-600">
-          Psst! Your input is our secret sauce for next-level experiences. Spill
-          the beans!
-        </p>
       </div>
     </div>
   );

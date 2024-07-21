@@ -1,4 +1,5 @@
 // "@/app/templates/page.jsx"
+// NEEDS TO BE FIXED
 
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";

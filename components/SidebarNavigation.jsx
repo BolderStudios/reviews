@@ -243,11 +243,11 @@ export default function SidebarNavigation() {
               </Link>
               <Link
                 prefetch={false}
-                href={`/review_us_page/${selectedLocation?.id || ""}`}
-                className={activeLinkClass("/review_us_page")}
+                href={`/funnels/${selectedLocation?.id || ""}`}
+                className={activeLinkClass("/funnels")}
               >
                 <Star className="h-4 w-4" />
-                Review Pages
+                Funnels
               </Link>
               <Link
                 prefetch={false}
