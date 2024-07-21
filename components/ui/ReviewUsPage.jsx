@@ -13,12 +13,13 @@ import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 export default function ReviewUsPage({ selectedLocation, isFetching }) {
   let subdomain;
   let href;
+
   if (process.env.NEXT_PUBLIC_REDIRECT_URL.startsWith("localhost")) {
     subdomain = `${selectedLocation.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
-    href = `www.${subdomain}/templates/standard`;
+    href = `www.${subdomain}/templates/standard/yelp`;
   } else {
     subdomain = `${selectedLocation.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
-    href = `https://${subdomain}/templates/standard`;
+    href = `https://${subdomain}/templates/standard/yelp`;
   }
 
   return (
@@ -30,7 +31,7 @@ export default function ReviewUsPage({ selectedLocation, isFetching }) {
           <Card className="w-[250px] p-4">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-md">Standard</CardTitle>
+                <CardTitle className="text-md">Standard Yelp</CardTitle>
                 <Link href={href}>
                   <ExternalLink className="text-blue-500 w-4 h-4">
                     Preview
