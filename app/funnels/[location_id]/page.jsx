@@ -1,7 +1,7 @@
 // "@/app/review_us_page/[location_id]/page.jsx"
 
 import React from "react";
-import ReviewUsPage from "@/components/ui/ReviewUsPage";
+import Funnels from "@/components/ui/Funnels";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
@@ -27,7 +27,7 @@ export default async function Page({ params }) {
     .single();
 
   return (
-    <ReviewUsPage
+    <Funnels
       selectedLocation={location}
       isFetching={userData?.is_fetching}
     />
