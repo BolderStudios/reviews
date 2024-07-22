@@ -38,7 +38,13 @@ export function FeedbackSubmitPage() {
   const params = useParams();
 
   const { location_id } = params;
-  const actualLocationId = location_id.split(".")[1];
+  const splittedLocationId = location_id.split(".");
+  let actualLocationId;
+  if (splittedLocationId[0] === "www") {
+    actualLocationId = splittedLocationId[1];
+  } else {
+    actualLocationId = splittedLocationId[0];
+  }
 
   const form = useForm({
     resolver: zodResolver(formSchema),
