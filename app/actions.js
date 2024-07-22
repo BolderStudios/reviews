@@ -432,3 +432,57 @@ export async function generateQRCode() {
     return { success: false, error: error.message };
   }
 }
+
+export async function sendEmailRequest(
+  location_id,
+  formData,
+  rating,
+  selectedReasons
+) {
+  try {
+    const { data: locationData, error: locationError } = await supabase
+      .from("locations")
+      .select("*")
+      .eq("id", location_id)
+      .single();
+
+    if (locationError) throw locationError;
+
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("clerk_id", locationData.clerk_id)
+      .single();
+
+    if (userError) throw userError;
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/email-feedback`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail: userData.clerk_email,
+          feedback: formData.feedback,
+          customerName: formData.customerName,
+          customerPhoneNumber: formData.customerPhoneNumber,
+          rating,
+          selectedReasons,
+        }),
+        cache: "no-cache",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Error sending email request:", error);
+    return { success: false, error: error.message };
+  }
+}

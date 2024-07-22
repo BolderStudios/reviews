@@ -31,17 +31,13 @@ export default function Funnels({ selectedLocation, isFetching }) {
   }
 
   const handleQRCodeClick = async () => {
-    console.log("QR code clicked");
-
     const result = await generateQRCode();
 
     if (result.success) {
-      console.log("QR code result", result.qrURL);
-
       // Create a temporary anchor element
       const downloadLink = document.createElement("a");
       downloadLink.href = result.qrURL;
-      downloadLink.download = "qrcode.png"; 
+      downloadLink.download = "qrcode.png";
 
       // Append to the document body temporarily
       document.body.appendChild(downloadLink);
@@ -72,7 +68,7 @@ export default function Funnels({ selectedLocation, isFetching }) {
                       <TooltipTrigger>
                         <QrCode
                           onClick={handleQRCodeClick}
-                          className="text-amber-950 w-4 h-4 cursor-pointer"
+                          className="text-stone-600 w-4 h-4 cursor-pointer"
                         />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -84,8 +80,8 @@ export default function Funnels({ selectedLocation, isFetching }) {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <Link href={href}>
-                          <ExternalLink className="text-blue-500 w-4 h-4">
+                        <Link href={href} target="_blank">
+                          <ExternalLink className="text-stone-600 w-4 h-4">
                             Preview
                           </ExternalLink>
                         </Link>

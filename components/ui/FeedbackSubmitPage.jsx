@@ -21,11 +21,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { sendEmailRequest } from "@/app/actions";
+import { useParams } from "next/navigation";
 
 const formSchema = z.object({
   feedback: z.string().min(6, "Please share at least a few words with us."),
   customerName: z.string().min(1, "We'd love to know your name!"),
-  phoneNumber: z
+  customerPhoneNumber: z
     .string()
     .regex(/^\d{3}-\d{3}-\d{4}$/, "Please enter a valid phone number."),
 });
@@ -33,29 +35,34 @@ const formSchema = z.object({
 export function FeedbackSubmitPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const params = useParams();
+
+  const { location_id } = params;
+  const actualLocationId = location_id.split(".")[1];
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       feedback: "",
       customerName: "",
-      phoneNumber: "",
+      customerPhoneNumber: "",
     },
   });
 
   const handleSubmit = async (formData) => {
     setIsLoading(true);
-    // Here send the data to your backend
-    console.log("Form data:", formData);
+    const selectedReasons = localStorage.getItem("selectedReasons");
+    const rating = localStorage.getItem("rating");
+    await sendEmailRequest(actualLocationId, formData, rating, selectedReasons);
+
     localStorage.removeItem("selectedReasons");
     localStorage.removeItem("rating");
 
-    // Simulating an API call
     setTimeout(() => {
       setIsLoading(false);
       toast.success("Thank you for your feedback!");
       router.push("/templates/standard/yelp/thank-you");
-    }, 1500);
+    }, 1000);
   };
 
   return (
@@ -121,7 +128,7 @@ export function FeedbackSubmitPage() {
 
               <FormField
                 control={form.control}
-                name="phoneNumber"
+                name="customerPhoneNumber"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-md text-gray-700 font-semibold">
