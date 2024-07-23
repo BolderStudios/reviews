@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Buttons/button";
-import { MultipleFileUploader } from "./MultipleFileUploader";
+import { MultipleFileUploader } from "@/components/ui/Misc/MultipleFileUploader";
 
 export function DialogUploader() {
   return (

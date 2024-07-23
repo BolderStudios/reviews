@@ -9,19 +9,17 @@ import { useDropzone } from "react-dropzone";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Buttons/button";
-import { ButtonLoading } from "../Buttons/ButtonLoading";
-import { FileCard } from "../fileCard";
+import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
+import { FileCard } from "@/components/ui/fileCard";
 import {
   Form,
   FormControl,
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { uploadFile } from "@/app/actions";
-import { v4 as uuidv4 } from "uuid";
 
 import styles from "./border.module.css";
 import { CloudArrowUp, HandGrabbing } from "@phosphor-icons/react";

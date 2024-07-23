@@ -8,7 +8,7 @@ import { useState, useRef } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Buttons/button";
-import { ButtonLoading } from "../Buttons/ButtonLoading";
+import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
 import {
   Form,
   FormControl,

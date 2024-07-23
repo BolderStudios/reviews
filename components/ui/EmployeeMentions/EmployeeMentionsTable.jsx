@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DataTablePagination } from "../DataTablePagination";
+import { DataTablePagination } from "@/components/ui/DataTablePagination";
 
 export function EmployeeMentionsTable({ columns, data }) {
   const [sorting, setSorting] = useState([]);
