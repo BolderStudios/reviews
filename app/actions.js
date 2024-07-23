@@ -225,6 +225,8 @@ export async function updateSelectedLocation(locationObject, currentPathname) {
       case "dashboard":
       case "keywords":
       case "employee_mentions":
+      case "funnels":
+      case "customers":
       case "product_feedback":
       case "review_us_page":
         newPath = `/${currentPathname}/${locationObject.id}`;
@@ -437,7 +439,9 @@ export async function sendEmailRequest(
   location_id,
   formData,
   rating,
-  selectedReasons
+  selectedReasons,
+  source,
+  customer_id = null
 ) {
   try {
     const { data: locationData, error: locationError } = await supabase
@@ -466,10 +470,12 @@ export async function sendEmailRequest(
         body: JSON.stringify({
           userEmail: userData.clerk_email,
           feedback: formData.feedback,
-          customerName: formData.customerName,
-          customerPhoneNumber: formData.customerPhoneNumber,
+          customerName: formData?.customerName,
+          customerPhoneNumber: formData?.customerPhoneNumber,
           rating,
           selectedReasons,
+          source,
+          customer_id
         }),
         cache: "no-cache",
       }

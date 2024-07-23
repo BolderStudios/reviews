@@ -93,6 +93,33 @@ export type Database = {
           },
         ]
       }
+      customers: {
+        Row: {
+          created_at: string
+          email_address: string | null
+          id: string
+          location_id: string | null
+          name: string | null
+          phone_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_address?: string | null
+          id?: string
+          location_id?: string | null
+          name?: string | null
+          phone_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_address?: string | null
+          id?: string
+          location_id?: string | null
+          name?: string | null
+          phone_number?: string | null
+        }
+        Relationships: []
+      }
       detailed_aspects: {
         Row: {
           aspect: string | null
@@ -240,6 +267,7 @@ export type Database = {
           item: string | null
           location_id: string | null
           review_id: string | null
+          sentiment: string | null
         }
         Insert: {
           created_at?: string
@@ -248,6 +276,7 @@ export type Database = {
           item?: string | null
           location_id?: string | null
           review_id?: string | null
+          sentiment?: string | null
         }
         Update: {
           created_at?: string
@@ -256,6 +285,7 @@ export type Database = {
           item?: string | null
           location_id?: string | null
           review_id?: string | null
+          sentiment?: string | null
         }
         Relationships: [
           {
@@ -356,6 +386,7 @@ export type Database = {
           id: string
           location_id: string | null
           review_id: string | null
+          sentiment: string | null
         }
         Insert: {
           context?: string | null
@@ -364,6 +395,7 @@ export type Database = {
           id?: string
           location_id?: string | null
           review_id?: string | null
+          sentiment?: string | null
         }
         Update: {
           context?: string | null
@@ -372,6 +404,7 @@ export type Database = {
           id?: string
           location_id?: string | null
           review_id?: string | null
+          sentiment?: string | null
         }
         Relationships: [
           {

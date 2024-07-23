@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/Buttons/button";
+import { useRouter } from "next/navigation";
 
 export default function NotFoundContent() {
-  const [previousPath, setPreviousPath] = useState('/');
+  const [previousPath, setPreviousPath] = useState("/");
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const prevPath = sessionStorage.getItem('previousPath') || '/';
+    if (typeof window !== "undefined") {
+      const prevPath = sessionStorage.getItem("previousPath") || "/";
       setPreviousPath(prevPath);
     }
   }, []);
@@ -28,7 +28,7 @@ export default function NotFoundContent() {
         Go back
       </Button>
       <Button variant="link" asChild>
-        <Link href="/">Go back home</Link>
+        <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}`}>Go back home</Link>
       </Button>
     </div>
   );

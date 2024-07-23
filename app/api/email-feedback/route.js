@@ -8,17 +8,27 @@ export async function POST(req) {
     const {
       userEmail,
       feedback,
-      customerName,
-      customerPhoneNumber,
+      customerName = "",
+      customerPhoneNumber = "",
       rating,
       selectedReasons,
+      source,
+      customer_id,
     } = await req.json();
 
     const { data, error } = await resend.emails.send({
       from: "Acme <daniel@bolderstudios.com>",
       to: [userEmail],
       subject: "Review Request",
-      react: Feedback({ feedback, customerName, customerPhoneNumber, rating, selectedReasons }),
+      react: Feedback({
+        feedback,
+        customerName,
+        customerPhoneNumber,
+        rating,
+        selectedReasons,
+        source,
+        customer_id,
+      }),
     });
 
     if (error) {

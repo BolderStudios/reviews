@@ -29,8 +29,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { ButtonLoading } from "@/components/ui/ButtonLoading";
+import { Button } from "@/components/ui/Buttons/button";
+import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
 import {
   Form,
   FormControl,

@@ -1,6 +1,5 @@
-import React from "react";
-import StandardYelpTemplate from "@/components/ui/StandardYelpTemplate";
+import { notFound } from "next/navigation";
 
 export default async function Page() {
-  return <StandardYelpTemplate />;
+  return notFound();
 }

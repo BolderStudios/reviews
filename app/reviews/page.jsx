@@ -1,4 +1,4 @@
-// "@/app/connections/page.jsx"
+// "@/app/reviews/page.jsx"
 
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";

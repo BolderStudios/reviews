@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getCalendarDataByDay } from "@/utils/reviews";
-import { SkeletonCard } from "@/components/ui/SkeletonCard";
+import { SkeletonCard } from "@/components/ui/Misc/SkeletonCard";
 
 const is_leap_year = (year) => {
   return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);

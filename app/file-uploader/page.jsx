@@ -1,9 +1,9 @@
 // app/file-upload/page.jsx
 
 import React from "react";
-import { SingleFileUploader } from "@/components/ui/SingleFileUploader";
-import { MultipleFileUploader } from "@/components/ui/MultipleFileUploader";
-import { DialogUploader } from "@/components/ui/DialogUploader";
+import { SingleFileUploader } from "@/components/ui/Misc/SingleFileUploader";
+import { MultipleFileUploader } from "@/components/ui/Misc/MultipleFileUploader";
+import { DialogUploader } from "@/components/ui/Misc/DialogUploader";
 
 export default function Page() {
   return (

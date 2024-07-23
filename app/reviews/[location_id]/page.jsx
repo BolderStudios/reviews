@@ -1,7 +1,7 @@
 // "@/app/reviews/[location_id]/page.jsx"
 
 import React from "react";
-import Reviews from "@/components/ui/Reviews";
+import Reviews from "@/components/ui/Reviews/Reviews";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";

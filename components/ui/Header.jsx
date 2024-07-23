@@ -16,7 +16,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Button } from "./button";
+import { Button } from "./Buttons/button";
 
 const components = [
   {

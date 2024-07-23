@@ -15,9 +15,10 @@ import {
   BookOpenText,
   Contact,
   ShoppingBasket,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Buttons/button";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -248,6 +249,14 @@ export default function SidebarNavigation() {
               >
                 <Star className="h-4 w-4" />
                 Funnels
+              </Link>
+              <Link
+                prefetch={false}
+                href={`/customers/${selectedLocation?.id || ""}`}
+                className={activeLinkClass("/customers")}
+              >
+                <Users className="h-4 w-4" />
+                Customers
               </Link>
               <Link
                 prefetch={false}

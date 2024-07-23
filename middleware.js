@@ -15,6 +15,8 @@ const isProtectedRoute = createRouteMatcher([
   "/product_feedback(.*)",
   "/review_us_page(.*)",
   "/templates(.*)",
+  "/funnels(.*)",
+  "/customers(.*)",
 ]);
 
 const isMainSite = (hostname) => {

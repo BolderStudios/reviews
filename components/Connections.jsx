@@ -6,10 +6,10 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import YelpLogo from "@/public/yelp_logo.svg";
 import GoogleLogo from "@/public/google_logo.png";
-import { AddYelpConnection } from "./ui/AddYelpConnection";
-import { AddGoogleConnection } from "./ui/AddGoogleConnection";
+import { AddYelpConnection } from "./ui/Connections/AddYelpConnection";
+import { AddGoogleConnection } from "./ui/Connections/AddGoogleConnection";
 import { useRouter } from "next/navigation";
-import { SkeletonCard } from "@/components/ui/SkeletonCard";
+import { SkeletonCard } from "@/components/ui/Misc/SkeletonCard";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 export default function Connections({ selectedLocation, isFetching }) {

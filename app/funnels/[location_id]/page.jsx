@@ -1,7 +1,7 @@
 // "@/app/review_us_page/[location_id]/page.jsx"
 
 import React from "react";
-import Funnels from "@/components/ui/Funnels";
+import Funnels from "@/components/ui/Funnels/Funnels";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";

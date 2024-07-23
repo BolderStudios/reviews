@@ -1,7 +1,7 @@
 // "@/app/employee_mentions/[location_id]/page.jsx"
 
 import React from "react";
-import EmployeeMentions from "@/components/ui/EmployeeMentions";
+import EmployeeMentions from "@/components/ui/EmployeeMentions/EmployeeMentions";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";

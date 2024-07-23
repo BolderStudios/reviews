@@ -1,7 +1,7 @@
 // "@/app/product_feedback/[location_id]/page.jsx"
 
 import React from "react";
-import ProductFeedback from "@/components/ui/ProductFeedback";
+import ProductFeedback from "@/components/ui/ProductFeedback/ProductFeedback";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";

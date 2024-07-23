@@ -2,8 +2,8 @@
 
 "use client";
 
-import { Button } from "./ui/button";
-import ButtonCustomerPortal from "./ui/ButtonCustomerPortal";
+import { Button } from "./ui/Buttons/button";
+import ButtonCustomerPortal from "./ui/Buttons/ButtonCustomerPortal";
 import { loadStripe } from "@stripe/stripe-js";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
