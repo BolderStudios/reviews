@@ -319,8 +319,11 @@ export type Database = {
           created_at: string
           customer_email_address: string | null
           customer_id: string | null
+          customer_name: string | null
+          customer_phone_number: string | null
           date: string | null
           delivered: boolean
+          email_id: string | null
           id: string
           location_id: string | null
           opened: boolean
@@ -333,8 +336,11 @@ export type Database = {
           created_at?: string
           customer_email_address?: string | null
           customer_id?: string | null
+          customer_name?: string | null
+          customer_phone_number?: string | null
           date?: string | null
           delivered?: boolean
+          email_id?: string | null
           id?: string
           location_id?: string | null
           opened?: boolean
@@ -347,8 +353,11 @@ export type Database = {
           created_at?: string
           customer_email_address?: string | null
           customer_id?: string | null
+          customer_name?: string | null
+          customer_phone_number?: string | null
           date?: string | null
           delivered?: boolean
+          email_id?: string | null
           id?: string
           location_id?: string | null
           opened?: boolean

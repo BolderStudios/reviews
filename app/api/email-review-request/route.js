@@ -52,9 +52,12 @@ export async function POST(req) {
           location_id,
           customer_id: customer.id,
           customer_email_address: customer.email_address,
+          customer_name: customer.name,
+          customer_phone_number: customer.phone_number,
           date: new Date(),
           source: "email",
           email_id: unique_email_id,
+
         },
       ]);
 
