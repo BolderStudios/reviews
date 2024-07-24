@@ -435,7 +435,7 @@ export async function generateQRCode() {
   }
 }
 
-export async function sendEmailRequest(
+export async function receiveFeedback(
   location_id,
   formData,
   rating,
@@ -475,7 +475,7 @@ export async function sendEmailRequest(
           rating,
           selectedReasons,
           source,
-          customer_id
+          customer_id,
         }),
         cache: "no-cache",
       }
@@ -490,5 +490,71 @@ export async function sendEmailRequest(
   } catch (error) {
     console.error("Error sending email request:", error);
     return { success: false, error: error.message };
+  }
+}
+
+export async function sendEmailRequest(customer) {
+  try {
+    const { userId } = await auth();
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("clerk_id", userId)
+      .single();
+    if (userError) throw new Error("Failed to fetch user data");
+
+    const { data: locationData, error: locationError } = await supabase
+      .from("locations")
+      .select("*")
+      .eq("id", userData.selected_location_id)
+      .single();
+    if (locationError) throw locationError;
+
+    let subdomain;
+    let href_campaign;
+    if (process.env.NEXT_PUBLIC_REDIRECT_URL.startsWith("localhost")) {
+      subdomain = `${locationData.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
+      href_campaign = `http://www.${subdomain}/templates/standard/yelp/campaign/${customer.id}`;
+    } else {
+      subdomain = `${locationData.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
+      href_campaign = `https://${subdomain}/templates/standard/yelp/campaign/${customer.id}`;
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL}/api/email-review-request`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer,
+          href_campaign,
+        }),
+        cache: "no-cache",
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error(
+          "Email API endpoint not found. Please check your API routes."
+        );
+      }
+      const errorText = await response.text();
+      throw new Error(
+        `HTTP error! status: ${response.status}, body: ${errorText}`
+      );
+    }
+
+    const result = await response.json();
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Error sending email request:", error);
+    return {
+      success: false,
+      error: error.message,
+      details: error.stack,
+    };
   }
 }

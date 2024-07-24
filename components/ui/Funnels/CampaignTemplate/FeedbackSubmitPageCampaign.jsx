@@ -18,7 +18,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { sendEmailRequest } from "@/app/actions";
+import { receiveFeedback } from "@/app/actions";
 import { useParams } from "next/navigation";
 
 const formSchema = z.object({
@@ -53,7 +53,7 @@ export function FeedbackSubmitPageCampaign() {
     setIsLoading(true);
     const selectedReasons = localStorage.getItem("selectedReasons_campaign");
     const rating = localStorage.getItem("rating_campaign");
-    await sendEmailRequest(
+    await receiveFeedback(
       actualLocationId,
       formData,
       rating,

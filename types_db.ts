@@ -118,7 +118,15 @@ export type Database = {
           name?: string | null
           phone_number?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_customers_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       detailed_aspects: {
         Row: {
@@ -300,6 +308,63 @@ export type Database = {
             columns: ["review_id"]
             isOneToOne: false
             referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requests: {
+        Row: {
+          clicked: boolean
+          created_at: string
+          customer_id: string | null
+          date: string | null
+          id: string
+          location_id: string | null
+          opened: boolean
+          passed: boolean
+          received: boolean
+          redirected: boolean
+          source: string | null
+        }
+        Insert: {
+          clicked?: boolean
+          created_at?: string
+          customer_id?: string | null
+          date?: string | null
+          id?: string
+          location_id?: string | null
+          opened?: boolean
+          passed?: boolean
+          received?: boolean
+          redirected?: boolean
+          source?: string | null
+        }
+        Update: {
+          clicked?: boolean
+          created_at?: string
+          customer_id?: string | null
+          date?: string | null
+          id?: string
+          location_id?: string | null
+          opened?: boolean
+          passed?: boolean
+          received?: boolean
+          redirected?: boolean
+          source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_email_campaigns_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_email_campaigns_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
         ]

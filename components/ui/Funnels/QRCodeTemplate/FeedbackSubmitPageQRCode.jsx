@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { sendEmailRequest } from "@/app/actions";
+import { receiveFeedback } from "@/app/actions";
 import { useParams } from "next/navigation";
 
 const formSchema = z.object({
@@ -59,7 +59,7 @@ export function FeedbackSubmitPageQRCode() {
     setIsLoading(true);
     const selectedReasons = localStorage.getItem("selectedReasons_qr_code");
     const rating = localStorage.getItem("rating_qr_code");
-    await sendEmailRequest(actualLocationId, formData, rating, selectedReasons, "qr_code");
+    await receiveFeedback(actualLocationId, formData, rating, selectedReasons, "qr_code");
 
     localStorage.removeItem("selectedReasons_qr_code");
     localStorage.removeItem("rating_qr_code");

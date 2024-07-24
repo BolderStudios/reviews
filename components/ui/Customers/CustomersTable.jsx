@@ -6,6 +6,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   getFilteredRowModel,
+  setRowSelection,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -29,6 +30,7 @@ import { DataTablePagination } from "@/components/ui/DataTablePagination";
 export function CustomersTable({ columns, data }) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -51,7 +53,7 @@ export function CustomersTable({ columns, data }) {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 items-center py-4">
+      {/* <div className="flex flex-wrap gap-2 items-center py-4">
         <Input
           placeholder="Search summaries..."
           value={table.getColumn("summary")?.getFilterValue() ?? ""}
@@ -111,7 +113,7 @@ export function CustomersTable({ columns, data }) {
         <Button onClick={resetAllFilters} variant="outline">
           Reset All Filters
         </Button>
-      </div>
+      </div> */}
 
       <div className="rounded-md border">
         <Table>

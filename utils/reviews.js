@@ -35,6 +35,30 @@ export async function getAllReviewData(reviewId) {
   return result;
 }
 
+export async function getAllCustomerData(customerId) {
+  try {
+    const { data, error } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("id", customerId)
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    console.log("Data", data);
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+}
+
 export async function calcReviewData(locationId) {
   try {
     // Fetch reviews for the given location
@@ -185,7 +209,7 @@ export async function getCalendarDataByDay(locationId) {
   try {
     const { data: reviews, error: reviewsError } = await supabase
       .from("reviews")
-      .select("*")  // Select all fields
+      .select("*") // Select all fields
       .eq("location_id", locationId)
       .order("timestamp", { ascending: true });
 
@@ -198,8 +222,10 @@ export async function getCalendarDataByDay(locationId) {
     }
 
     const days = {};
-    reviews.forEach(review => {
-      const formattedDate = new Date(review.timestamp).toISOString().split('T')[0];
+    reviews.forEach((review) => {
+      const formattedDate = new Date(review.timestamp)
+        .toISOString()
+        .split("T")[0];
       if (!days[formattedDate]) {
         days[formattedDate] = {
           totalRating: 0,
@@ -209,7 +235,7 @@ export async function getCalendarDataByDay(locationId) {
           mixed: 0,
           google: 0,
           yelp: 0,
-          responseCount: 0
+          responseCount: 0,
         };
       }
       days[formattedDate].totalRating += review.rating;
@@ -247,8 +273,8 @@ export async function getCalendarDataByDay(locationId) {
       responseRate: ((data.responseCount / data.count) * 100).toFixed(2),
       sources: {
         google: data.google,
-        yelp: data.yelp
-      }
+        yelp: data.yelp,
+      },
     }));
 
     return { success: true, data: result };

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Buttons/button";
-import { CustomerView } from "./CustomerView";
+import { ReviewInsights } from "./ReviewInsights";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 const HighlightedText = ({ text, highlight }) => {
@@ -47,7 +47,7 @@ const columns = [
       const review = row.original;
       return (
         <div className="flex flex-col items-center justify-center">
-          <CustomerView review={review} />
+          <ReviewInsights review={review} />
         </div>
       );
     },

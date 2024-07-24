@@ -24,7 +24,5 @@ export default async function Page({ params }) {
     .eq("location_id", location_id)
     .order("created_at", { ascending: false });
 
-  return <h1>Customers Table</h1>;
-
-  //   return <Customers selectedLocation={location} customers={customers} />;
+  return <Customers selectedLocation={location} customers={customers} />;
 }

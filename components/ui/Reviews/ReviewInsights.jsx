@@ -16,7 +16,7 @@ import { Copy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
-export function CustomerView({ review }) {
+export function ReviewInsights({ review }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [reviewData, setReviewData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

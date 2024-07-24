@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export const Feedback = ({
   feedback,
   customerName = "",
@@ -11,7 +9,7 @@ export const Feedback = ({
 }) => (
   <div>
     <h1>Feedback, {feedback}!</h1>
-    
+
     {source === "qr_code" && (
       <div>
         <h2>Customer Name, {customerName}!</h2>
