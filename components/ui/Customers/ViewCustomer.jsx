@@ -30,7 +30,6 @@ export function ViewCustomer({ customer }) {
     if (isSheetOpen) {
       const fetchData = async () => {
         const result = await getAllCustomerData(customer.id);
-        console.log("Customer data", JSON.stringify(result.data, null, 2));
         setCustomerData(result.data);
         setTimeout(() => {
           setIsLoading(false);

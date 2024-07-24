@@ -45,8 +45,6 @@ export async function getAllCustomerData(customerId) {
 
     if (error) throw new Error(error.message);
 
-    console.log("Data", data);
-
     return {
       success: true,
       data,
