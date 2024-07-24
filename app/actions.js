@@ -541,11 +541,25 @@ export async function sendEmailRequest(customer) {
           "Email API endpoint not found. Please check your API routes."
         );
       }
+
       const errorText = await response.text();
       throw new Error(
         `HTTP error! status: ${response.status}, body: ${errorText}`
       );
     }
+
+    // Add a new request to the database from this user
+    const { data: request, error: requestError } = await supabase
+      .from("requests")
+      .insert([
+        {
+          location_id: locationData.id,
+          customer_id: customer.id,
+          customer_email_address: customer.email_address,
+          date: new Date(),
+          source: "email",
+        },
+      ]);
 
     const result = await response.json();
     return { success: true, data: result };

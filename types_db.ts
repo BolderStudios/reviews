@@ -314,42 +314,45 @@ export type Database = {
       }
       requests: {
         Row: {
+          bounced: boolean
           clicked: boolean
           created_at: string
+          customer_email_address: string | null
           customer_id: string | null
           date: string | null
+          delivered: boolean
           id: string
           location_id: string | null
           opened: boolean
-          passed: boolean
-          received: boolean
-          redirected: boolean
+          sent: boolean
           source: string | null
         }
         Insert: {
+          bounced?: boolean
           clicked?: boolean
           created_at?: string
+          customer_email_address?: string | null
           customer_id?: string | null
           date?: string | null
+          delivered?: boolean
           id?: string
           location_id?: string | null
           opened?: boolean
-          passed?: boolean
-          received?: boolean
-          redirected?: boolean
+          sent?: boolean
           source?: string | null
         }
         Update: {
+          bounced?: boolean
           clicked?: boolean
           created_at?: string
+          customer_email_address?: string | null
           customer_id?: string | null
           date?: string | null
+          delivered?: boolean
           id?: string
           location_id?: string | null
           opened?: boolean
-          passed?: boolean
-          received?: boolean
-          redirected?: boolean
+          sent?: boolean
           source?: string | null
         }
         Relationships: [

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
+import supabase from "@/utils/supabaseClient";
 
 const webhookSecret = process.env.RESEND_WEBHOOK_SECRET;
 
@@ -8,7 +9,6 @@ export async function POST(req) {
   try {
     const payload = await req.text();
     console.log("Payload:", payload);
-
     const headers = {
       "svix-id": req.headers.get("svix-id"),
       "svix-timestamp": req.headers.get("svix-timestamp"),
@@ -29,28 +29,45 @@ export async function POST(req) {
     const event = wh.verify(payload, headers);
     console.log("Verified webhook event:", event);
 
+    const recipient_email = event.data.to[0];
+
     // Handle different event types
     switch (event.type) {
       case "email.sent":
         console.log("Email sent event:", event);
-        // Handle email sent event
+        await updateRequestRow(recipient_email, "sent");
         break;
+
       case "email.delivered":
         console.log("Email delivered event:", event);
-        // Handle email delivered event
+        await updateRequestRow(recipient_email, "delivered");
         break;
+
       case "email.bounced":
         console.log("Email bounced event:", event);
-        // Handle email bounced event
+        await updateRequestRow(recipient_email, "bounced");
         break;
+
       case "email.opened":
         console.log("Email opened event:", event);
-        // Handle email opened event
+        await updateRequestRow(recipient_email, "opened");
         break;
+
       case "email.clicked":
         console.log("Email clicked event:", event);
-        // Handle email clicked event
+        await updateRequestRow(recipient_email, "clicked");
         break;
+
+      case "email.complained":
+        console.log("Email complained event:", event);
+        await updateRequestRow(recipient_email, "complained");
+        break;
+
+      case "email.delivery_delayed":
+        console.log("Email delivery delayed event:", event);
+        await updateRequestRow(recipient_email, "delivery_delayed");
+        break;
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
@@ -72,3 +89,43 @@ export async function POST(req) {
 export async function OPTIONS(req) {
   return NextResponse.json({}, { status: 200 });
 }
+
+const updateRequestRow = async (recipient_email, action) => {
+  let updateData = {};
+
+  switch (action) {
+    case "sent":
+      updateData = { sent: true };
+      break;
+    case "delivered":
+      updateData = { delivered: true };
+      break;
+    case "bounced":
+      updateData = { bounced: true };
+      break;
+    case "opened":
+      updateData = { opened: true };
+      break;
+    case "clicked":
+      updateData = { clicked: true };
+      break;
+    default:
+      console.log(`Unhandled action: ${action}`);
+      return;
+  }
+
+  const { data: updatedRequest, error: errorUpdatingRequest } = await supabase
+    .from("requests")
+    .update(updateData)
+    .eq("customer_email_address", recipient_email);
+
+  if (errorUpdatingRequest) {
+    console.error(
+      `Error updating request for ${action}:`,
+      errorUpdatingRequest
+    );
+    throw new Error(`Error updating request for ${action}`);
+  }
+
+  console.log(`Successfully updated request for ${action}:`, updatedRequest);
+};
