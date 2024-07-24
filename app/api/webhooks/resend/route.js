@@ -34,38 +34,14 @@ export async function POST(req) {
     // Handle different event types
     switch (event.type) {
       case "email.sent":
-        console.log("Email sent event:", event);
-        await updateRequestRow(recipient_email, "sent");
-        break;
-
       case "email.delivered":
-        console.log("Email delivered event:", event);
-        await updateRequestRow(recipient_email, "delivered");
-        break;
-
       case "email.bounced":
-        console.log("Email bounced event:", event);
-        await updateRequestRow(recipient_email, "bounced");
-        break;
-
       case "email.opened":
-        console.log("Email opened event:", event);
-        await updateRequestRow(recipient_email, "opened");
-        break;
-
       case "email.clicked":
-        console.log("Email clicked event:", event);
-        await updateRequestRow(recipient_email, "clicked");
-        break;
-
       case "email.complained":
-        console.log("Email complained event:", event);
-        await updateRequestRow(recipient_email, "complained");
-        break;
-
       case "email.delivery_delayed":
-        console.log("Email delivery delayed event:", event);
-        await updateRequestRow(recipient_email, "delivery_delayed");
+        console.log(`${event.type} event:`, event);
+        await updateRequestRow(recipient_email, event.type.split(".")[1]);
         break;
 
       default:
@@ -85,34 +61,12 @@ export async function POST(req) {
   }
 }
 
-// Add OPTIONS method to handle preflight requests
 export async function OPTIONS(req) {
   return NextResponse.json({}, { status: 200 });
 }
 
 const updateRequestRow = async (recipient_email, action) => {
-  let updateData = {};
-
-  switch (action) {
-    case "sent":
-      updateData = { sent: true };
-      break;
-    case "delivered":
-      updateData = { delivered: true };
-      break;
-    case "bounced":
-      updateData = { bounced: true };
-      break;
-    case "opened":
-      updateData = { opened: true };
-      break;
-    case "clicked":
-      updateData = { clicked: true };
-      break;
-    default:
-      console.log(`Unhandled action: ${action}`);
-      return;
-  }
+  const updateData = { [action]: true };
 
   const { data: updatedRequest, error: errorUpdatingRequest } = await supabase
     .from("requests")
