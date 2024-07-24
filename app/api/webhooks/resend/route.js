@@ -29,7 +29,7 @@ export async function POST(req) {
     const event = wh.verify(payload, headers);
     console.log("Verified webhook event:", event);
 
-    const recipient_email = event.data.to[0];
+    const email_id = event.data.email_id;
 
     // Handle different event types
     switch (event.type) {
@@ -41,7 +41,7 @@ export async function POST(req) {
       case "email.complained":
       case "email.delivery_delayed":
         console.log(`${event.type} event:`, event);
-        await updateRequestRow(recipient_email, event.type.split(".")[1]);
+        await updateRequestRow(email_id, event.type.split(".")[1]);
         break;
 
       default:
@@ -65,13 +65,13 @@ export async function OPTIONS(req) {
   return NextResponse.json({}, { status: 200 });
 }
 
-const updateRequestRow = async (recipient_email, action) => {
+const updateRequestRow = async (email_id, action) => {
   const updateData = { [action]: true };
 
   const { data: updatedRequest, error: errorUpdatingRequest } = await supabase
     .from("requests")
     .update(updateData)
-    .eq("customer_email_address", recipient_email);
+    .eq("email_id", email_id);
 
   if (errorUpdatingRequest) {
     console.error(

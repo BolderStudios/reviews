@@ -530,6 +530,7 @@ export async function sendEmailRequest(customer) {
         body: JSON.stringify({
           customer,
           href_campaign,
+          location_id: locationData.id
         }),
         cache: "no-cache",
       }
@@ -547,19 +548,6 @@ export async function sendEmailRequest(customer) {
         `HTTP error! status: ${response.status}, body: ${errorText}`
       );
     }
-
-    // Add a new request to the database from this user
-    const { data: request, error: requestError } = await supabase
-      .from("requests")
-      .insert([
-        {
-          location_id: locationData.id,
-          customer_id: customer.id,
-          customer_email_address: customer.email_address,
-          date: new Date(),
-          source: "email",
-        },
-      ]);
 
     const result = await response.json();
     return { success: true, data: result };
