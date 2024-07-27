@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Buttons/button";
 import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -30,6 +31,9 @@ const formSchema = z.object({
   customerPhoneNumber: z
     .string()
     .regex(/^\d{3}-\d{3}-\d{4}$/, "Please enter a valid phone number."),
+  consentToContact: z.boolean().refine((val) => val === true, {
+    message: "You must agree to be contacted before submitting.",
+  }),
 });
 
 export function FeedbackSubmitPageQRCode() {
@@ -52,14 +56,22 @@ export function FeedbackSubmitPageQRCode() {
       feedback: "",
       customerName: "",
       customerPhoneNumber: "",
+      consentToContact: false,
     },
   });
 
   const handleSubmit = async (formData) => {
     setIsLoading(true);
+    console.log("formData", formData);
     const selectedReasons = localStorage.getItem("selectedReasons_qr_code");
     const rating = localStorage.getItem("rating_qr_code");
-    await receiveFeedback(actualLocationId, formData, rating, selectedReasons, "qr_code");
+    await receiveFeedback(
+      actualLocationId,
+      formData,
+      rating,
+      selectedReasons,
+      "qr_code"
+    );
 
     localStorage.removeItem("selectedReasons_qr_code");
     localStorage.removeItem("rating_qr_code");
@@ -172,6 +184,31 @@ export function FeedbackSubmitPageQRCode() {
                       We might reach out to chat more about your experience.
                       Don't worry, we won't spam you!
                     </FormDescription>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="consentToContact"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        I consent to being contacted about my feedback
+                      </FormLabel>
+                      <FormDescription>
+                        By checking this box, you agree to allow us to contact
+                        you via the phone number provided for verification and
+                        follow-up purposes.
+                      </FormDescription>
+                    </div>
                   </FormItem>
                 )}
               />
