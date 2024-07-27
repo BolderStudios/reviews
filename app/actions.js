@@ -8,6 +8,7 @@ import { auth } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
 import { inngest } from "@/inngest/client";
 import QRCode from "qrcode";
+import twilio from "twilio";
 import {
   updateIsFetching,
   updateFetchErrorMessage,
@@ -493,6 +494,43 @@ export async function receiveFeedback(
   }
 }
 
+export async function sendSMSRequest(customer) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+
+  if (!accountSid || !authToken || !twilioPhoneNumber) {
+    console.error(
+      "Twilio credentials or phone number not set in environment variables"
+    );
+
+    throw new Error("Twilio configuration error");
+  }
+
+  const client = twilio(accountSid, authToken);
+
+  try {
+    const message = await client.messages.create({
+      body: `Hello ${customer.name}, thank you for your recent purchase. We'd love to hear your feedback!`,
+      from: twilioPhoneNumber,
+      to: `+1${customer.phone_number}`,
+    });
+
+    console.log(`Message sent successfully. SID: ${message.sid}`);
+    return {
+      success: true,
+      messageSid: message.sid,
+      status: message.status,
+    };
+  } catch (error) {
+    console.error("Error sending SMS:", error);
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+}
+
 export async function sendEmailRequest(customer) {
   try {
     const { userId } = await auth();
@@ -512,6 +550,7 @@ export async function sendEmailRequest(customer) {
 
     let subdomain;
     let href_campaign;
+
     if (process.env.NEXT_PUBLIC_REDIRECT_URL.startsWith("localhost")) {
       subdomain = `${locationData.id}.${process.env.NEXT_PUBLIC_REDIRECT_URL}`;
       href_campaign = `http://www.${subdomain}/templates/standard/yelp/campaign/${customer.id}`;
@@ -530,7 +569,7 @@ export async function sendEmailRequest(customer) {
         body: JSON.stringify({
           customer,
           href_campaign,
-          location_id: locationData.id
+          location_id: locationData.id,
         }),
         cache: "no-cache",
       }

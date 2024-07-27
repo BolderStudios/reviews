@@ -14,13 +14,14 @@ import { MousePointerClick } from "lucide-react";
 import { getAllCustomerData } from "@/utils/reviews";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { sendEmailRequest } from "@/app/actions";
+import { sendEmailRequest, sendSMSRequest } from "@/app/actions";
 
 export function ViewCustomer({ customer }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isSMSLoading, setIsSMSLoading] = useState(false);
 
   const handleTriggerClick = () => {
     setIsSheetOpen(true);
@@ -52,6 +53,22 @@ export function ViewCustomer({ customer }) {
       toast.error(`Error sending email request: ${error.message}`);
     } finally {
       setIsEmailLoading(false);
+    }
+  };
+
+  const handleSMSRequest = async () => {
+    setIsSMSLoading(true);
+    try {
+      const { success, error } = await sendSMSRequest(customer);
+      if (success) {
+        toast.success("SMS request sent successfully");
+      } else {
+        toast.error(`Failed to send sms request: ${error}`);
+      }
+    } catch (error) {
+      toast.error(`Error sending sms request: ${error.message}`);
+    } finally {
+      setIsSMSLoading(false);
     }
   };
 
@@ -105,9 +122,17 @@ export function ViewCustomer({ customer }) {
                   </Button>
                 )}
 
-                <Button variant="outline" size="xs">
-                  SMS Review Request
-                </Button>
+                {isSMSLoading ? (
+                  <ButtonLoading />
+                ) : (
+                  <Button
+                    onClick={handleSMSRequest}
+                    variant="outline"
+                    size="xs"
+                  >
+                    SMS Review Request
+                  </Button>
+                )}
               </div>
             </div>
           </div>
