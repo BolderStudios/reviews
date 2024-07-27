@@ -8,7 +8,6 @@ import { AlertCircle } from "lucide-react";
 import { ViewCustomer } from "@/components/ui/Customers/ViewCustomer";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
-
 const columns = [
   {
     accessorKey: "actions",
@@ -32,7 +31,7 @@ const columns = [
   },
   {
     accessorKey: "phone_number",
-    header: "Phone",
+    header: <p className="text-left">Phone</p>,
   },
 ];
 

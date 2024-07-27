@@ -57,7 +57,6 @@ export async function POST(req) {
           date: new Date(),
           source: "email",
           email_id: unique_email_id,
-
         },
       ]);
 
