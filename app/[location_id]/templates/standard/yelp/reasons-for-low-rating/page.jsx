@@ -3,7 +3,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Buttons/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

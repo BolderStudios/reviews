@@ -1,5 +1,5 @@
-import { FeedbackSubmitPage } from "@/components/ui/FeedbackSubmitPage";
+import { FeedbackSubmitPageCampaign } from "@/components/ui/Funnels/CampaignTemplate/FeedbackSubmitPageCampaign";
 
 export default function Page() {
-  return <FeedbackSubmitPage />;
+  return <FeedbackSubmitPageCampaign />;
 }
