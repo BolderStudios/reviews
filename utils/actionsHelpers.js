@@ -225,7 +225,8 @@ export async function storeReview(
             insertKeyword(
               inserted_review[0].id,
               inserted_category[0].id,
-              keyword
+              keyword,
+              locationId
             )
           ),
         ]);
@@ -333,7 +334,7 @@ async function insertContext(reviewId, categoryId, context, sentiment) {
   return data;
 }
 
-async function insertKeyword(reviewId, categoryId, keyword) {
+async function insertKeyword(reviewId, categoryId, keyword, location_id) {
   if (!keyword || !keyword.keyword) return null;
   const { data, error } = await supabase
     .from("keywords")
@@ -343,6 +344,7 @@ async function insertKeyword(reviewId, categoryId, keyword) {
         business_category_id: categoryId,
         name: keyword.keyword,
         sentiment: keyword.sentiment,
+        location_id: location_id,
       },
     ])
     .select("*");
