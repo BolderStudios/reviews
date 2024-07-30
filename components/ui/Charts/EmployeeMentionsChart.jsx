@@ -70,7 +70,7 @@ export function EmployeeMentionsChart({ staffChartData, staffChartConfig }) {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={staffChartConfig}
-          className="mx-auto aspect-square max-h-fit"
+          className="mx-auto aspect-square max-h-[300px]"
         >
           <PieChart>
             <ChartTooltip cursor={false} content={<CustomTooltipContent />} />
