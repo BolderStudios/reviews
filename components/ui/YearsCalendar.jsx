@@ -116,7 +116,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
           }
 
           return (
-            <TooltipProvider key={`day-${year}-${month}-${i}`}>
+            <TooltipProvider key={`day-${year}-${month}-${i}`} className="rounded-lg border border-gray-200">
               <Tooltip>
                 <TooltipTrigger>
                   <div
@@ -140,22 +140,120 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
                 </TooltipTrigger>
                 <TooltipContent>
                   {dayData ? (
-                    <div className="text-xs">
-                      <p>Date: {dayData.date}</p>
-                      <p>Total Reviews: {dayData.nCount}</p>
-                      <p>Average Rating: {dayData.avgRating}</p>
-                      <p>
-                        Positive: {dayData.nPositive} | Negative:{" "}
-                        {dayData.nNegative} | Mixed: {dayData.nMixed}
-                      </p>
-                      <p>Response Rate: {dayData.responseRate}%</p>
-                      <p>
-                        Sources: Google - {dayData.sources.google}, Yelp -{" "}
-                        {dayData.sources.yelp}
-                      </p>
+                    <div className="bg-white p-2 w-72">
+                      <h3 className="text-lg font-bold mb-3 text-gray-800">
+                        {dayData.date.split("-")[1] + "-" + dayData.date.split("-")[2] + "-" + dayData.date.split("-")[0]}
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center bg-gray-100 rounded-md p-2">
+                          <span className="font-semibold text-gray-700">
+                            Total Reviews
+                          </span>
+                          <span className="text-2xl font-bold text-stone-800">
+                            {dayData.nCount}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div
+                            className={`rounded-md p-2 text-center ${
+                              dayData.avgRating < 3
+                                ? "bg-red-50"
+                                : dayData.avgRating < 4
+                                ? "bg-yellow-50"
+                                : "bg-green-50"
+                            }`}
+                          >
+                            <span className="block text-sm font-medium text-gray-700">
+                              Average Rating
+                            </span>
+                            <span
+                              className={`block text-2xl font-bold ${
+                                dayData.avgRating < 3
+                                  ? "text-red-600"
+                                  : dayData.avgRating < 4
+                                  ? "text-yellow-600"
+                                  : "text-green-600"
+                              }`}
+                            >
+                              {dayData.avgRating}
+                            </span>
+                          </div>
+                          <div
+                            className={`rounded-md p-2 text-center ${
+                              dayData.responseRate < 50
+                                ? "bg-red-50"
+                                : dayData.responseRate < 80
+                                ? "bg-yellow-50"
+                                : "bg-green-50"
+                            }`}
+                          >
+                            <span className="block text-sm font-medium text-gray-700">
+                              Response Rate
+                            </span>
+                            <span
+                              className={`block text-2xl font-bold ${
+                                dayData.responseRate < 50
+                                  ? "text-red-600"
+                                  : dayData.responseRate < 80
+                                  ? "text-yellow-600"
+                                  : "text-green-600"
+                              }`}
+                            >
+                              {dayData.responseRate}%
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <div className="text-center">
+                            <span className="block text-sm font-medium text-gray-600">
+                              Positive
+                            </span>
+                            <span className="text-lg font-bold text-green-600">
+                              +{dayData.nPositive}
+                            </span>
+                          </div>
+                          <div className="text-center">
+                            <span className="block text-sm font-medium text-gray-600">
+                              Negative
+                            </span>
+                            <span className="text-lg font-bold text-red-600">
+                              -{dayData.nNegative}
+                            </span>
+                          </div>
+                          <div className="text-center">
+                            <span className="block text-sm font-medium text-gray-600">
+                              Mixed
+                            </span>
+                            <span className="text-lg font-bold text-orange-600">
+                              ±{dayData.nMixed}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="border-t pt-2">
+                          <h4 className="text-sm font-semibold text-gray-700 mb-1">
+                            Sources
+                          </h4>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Google</span>
+                            <span className="font-medium text-gray-800">
+                              {dayData.sources.google}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Yelp</span>
+                            <span className="font-medium text-gray-800">
+                              {dayData.sources.yelp}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ) : (
-                    <p>No data available for this date</p>
+                    <div className="bg-white p-2 w-72">
+                      <p className="text-gray-500 text-center">
+                        No data available for this date
+                      </p>
+                    </div>
                   )}
                 </TooltipContent>
               </Tooltip>
