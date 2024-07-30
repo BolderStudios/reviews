@@ -277,11 +277,11 @@ export default function SidebarNavigation() {
               </Link>
             </nav>
 
-            <div className="flex items-center justify-start mb-2 ml-4">
+            <div className="flex items-center justify-start pb-2 px-4">
               <SignOutButton redirectUrl="/sign-in">
                 <Button
                   variant="outline"
-                  className="w-2/3 flex items-center justify-center gap-[6px]"
+                  className="w-full flex items-center justify-center gap-[6px]"
                 >
                   <ArrowLeft size={14} className="mt-[1px]" />
                   <p className="leading-7">Signout</p>
