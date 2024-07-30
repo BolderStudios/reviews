@@ -55,6 +55,22 @@ const getDayName = (day) => {
   return dayNames[day];
 };
 
+const getColorByRating = (rating) => {
+  if (rating >= 4.5) return "bg-green-500";
+  if (rating >= 4) return "bg-green-400";
+  if (rating >= 3) return "bg-yellow-400";
+  if (rating >= 2) return "bg-orange-400";
+  return "bg-red-400";
+};
+
+const getTextColorByRating = (rating) => {
+  if (rating >= 4.5) return "text-green-600";
+  if (rating >= 4) return "text-green-500";
+  if (rating >= 3) return "text-yellow-600";
+  if (rating >= 2) return "text-orange-600";
+  return "text-red-600";
+};
+
 const renderMonth = (year, month, calendarData, setHoverDate) => {
   const days = days_in_month(year, month);
   const firstDay = new Date(year, month, 1).getDay();
@@ -72,7 +88,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
         {getMonthName(month)} {year}
       </h3>
 
-      <div className="grid grid-cols-7 gap-[1px]">
+      <div className="grid grid-cols-7 gap-[.5px]">
         {Array.from({ length: 7 }, (_, i) => (
           <div
             key={`day-name-${i}`}
@@ -104,12 +120,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
             if (isFutureDate) {
               bgColor = "bg-gray-100";
             } else if (dayData) {
-              // Determine color based on average rating
-              if (dayData.avgRating > 4.5) bgColor = "bg-green-500";
-              else if (dayData.avgRating > 3.5) bgColor = "bg-yellow-500";
-              else if (dayData.avgRating > 2.5) bgColor = "bg-orange-500";
-              else if (dayData.avgRating <= 2.5) bgColor = "bg-red-500";
-              else bgColor = "bg-gray-300";
+              bgColor = getColorByRating(dayData.avgRating);
             } else {
               bgColor = "bg-gray-200";
             }
@@ -162,50 +173,26 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div
-                            className={`rounded-md p-2 text-center ${
-                              dayData.avgRating < 3
-                                ? "bg-red-50"
-                                : dayData.avgRating < 4
-                                ? "bg-yellow-50"
-                                : "bg-green-50"
-                            }`}
+                            className={`rounded-md p-2 text-center ${getColorByRating(
+                              dayData.avgRating
+                            )}`}
                           >
-                            <span className="block text-sm font-medium text-gray-700">
+                            <span className="block text-sm font-medium text-white">
                               Average Rating
                             </span>
-                            <span
-                              className={`block text-2xl font-bold ${
-                                dayData.avgRating < 3
-                                  ? "text-red-600"
-                                  : dayData.avgRating < 4
-                                  ? "text-yellow-600"
-                                  : "text-green-600"
-                              }`}
-                            >
+                            <span className="block text-2xl font-bold text-white">
                               {dayData.avgRating}
                             </span>
                           </div>
                           <div
-                            className={`rounded-md p-2 text-center ${
-                              dayData.responseRate < 50
-                                ? "bg-red-50"
-                                : dayData.responseRate < 80
-                                ? "bg-yellow-50"
-                                : "bg-green-50"
-                            }`}
+                            className={`rounded-md p-2 text-center ${getColorByRating(
+                              dayData.responseRate / 20
+                            )}`}
                           >
-                            <span className="block text-sm font-medium text-gray-700">
+                            <span className="block text-sm font-medium text-white">
                               Response Rate
                             </span>
-                            <span
-                              className={`block text-2xl font-bold ${
-                                dayData.responseRate < 50
-                                  ? "text-red-600"
-                                  : dayData.responseRate < 80
-                                  ? "text-yellow-600"
-                                  : "text-green-600"
-                              }`}
-                            >
+                            <span className="block text-2xl font-bold text-white">
                               {dayData.responseRate}%
                             </span>
                           </div>
@@ -215,7 +202,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
                             <span className="block text-sm font-medium text-gray-600">
                               Positive
                             </span>
-                            <span className="text-lg font-bold text-green-600">
+                            <span className="text-lg font-bold text-green-500">
                               +{dayData.nPositive}
                             </span>
                           </div>
@@ -223,7 +210,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
                             <span className="block text-sm font-medium text-gray-600">
                               Negative
                             </span>
-                            <span className="text-lg font-bold text-red-600">
+                            <span className="text-lg font-bold text-red-400">
                               -{dayData.nNegative}
                             </span>
                           </div>
@@ -231,7 +218,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
                             <span className="block text-sm font-medium text-gray-600">
                               Mixed
                             </span>
-                            <span className="text-lg font-bold text-orange-600">
+                            <span className="text-lg font-bold text-yellow-400">
                               ±{dayData.nMixed}
                             </span>
                           </div>
@@ -323,6 +310,7 @@ export function YearsCalendar({ selectedLocation }) {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold mb-4">Sentiment by Day</h2>
         <div>
+          {/* Colors metric */}
           <div className="flex">
             <div className="w-8 h-3 bg-red-400 rounded-l-md">&nbsp;</div>
             <div className="w-8 h-3 bg-orange-400">&nbsp;</div>
