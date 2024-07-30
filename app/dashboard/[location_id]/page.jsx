@@ -33,9 +33,9 @@ export default async function Page({ params }) {
     .eq("location_id", location_id)
     .eq("sentiment", "Mixed");
 
-  console.log("Positive reviews length: ", positiveReviews.length);
-  console.log("Negative reviews length: ", negativeReviews.length);
-  console.log("Mixed reviews length: ", mixedReviews.length);
+  // console.log("Positive reviews length: ", positiveReviews.length);
+  // console.log("Negative reviews length: ", negativeReviews.length);
+  // console.log("Mixed reviews length: ", mixedReviews.length);
 
   const sentimentDistribution = {
     positive: positiveReviews.length,
@@ -71,7 +71,7 @@ export default async function Page({ params }) {
     .map(([name, data]) => ({ name, ...data }))
     .sort((a, b) => b.count - a.count);
 
-  const top4 = sortedEmployees.slice(0, 5);
+  const top5 = sortedEmployees.slice(0, 5);
 
   const otherMentions = sortedEmployees.slice(5).reduce(
     (sum, emp) => ({
@@ -84,7 +84,7 @@ export default async function Page({ params }) {
   );
 
   const staffChartData = [
-    ...top4.map((emp, index) => ({
+    ...top5.map((emp, index) => ({
       employee: emp.name,
       mentions: emp.count,
       positive: emp.positive,
@@ -98,17 +98,15 @@ export default async function Page({ params }) {
       positive: otherMentions.positive,
       negative: otherMentions.negative,
       mixed: otherMentions.mixed,
-      fill: "hsl(var(--chart-10))",
+      fill: "hsl(var(--chart-7))",
     },
   ];
-
-  console.log("Staff chart data: ", staffChartData);
 
   const staffChartConfig = {
     mentions: {
       label: "Mentions",
     },
-    ...top4.reduce(
+    ...top5.reduce(
       (config, emp, index) => ({
         ...config,
         [emp.name]: {
@@ -124,12 +122,100 @@ export default async function Page({ params }) {
     },
   };
 
+  const { data: productFeedbackMentions, error: productFeedbackMentionsError } =
+    await supabase
+      .from("product_service_feedback")
+      .select("*")
+      .eq("location_id", location_id);
+
+  console.log("Product feedback mentions: ", productFeedbackMentions);
+
+  if (productFeedbackMentionsError) {
+    console.error(
+      "Error fetching product/service feedback:",
+      productFeedbackMentionsError
+    );
+    // Handle the error appropriately
+  }
+
+  // Process the product/service feedback data
+  const productData = productFeedbackMentions.reduce((data, feedback) => {
+    const itemName = feedback.item;
+    const sentiment = feedback?.sentiment?.toLowerCase();
+
+    if (!data[itemName]) {
+      data[itemName] = { count: 0, positive: 0, negative: 0, mixed: 0 };
+    }
+
+    data[itemName].count++;
+    data[itemName][sentiment]++;
+
+    return data;
+  }, {});
+
+  const sortedProducts = Object.entries(productData)
+    .map(([name, data]) => ({ name, ...data }))
+    .sort((a, b) => b.count - a.count);
+
+  const top5Products = sortedProducts.slice(0, 5);
+
+  const otherProductMentions = sortedProducts.slice(5).reduce(
+    (sum, product) => ({
+      count: sum.count + product.count,
+      positive: sum.positive + product.positive,
+      negative: sum.negative + product.negative,
+      mixed: sum.mixed + product.mixed,
+    }),
+    { count: 0, positive: 0, negative: 0, mixed: 0 }
+  );
+
+  const productChartData = [
+    ...top5Products.map((product, index) => ({
+      item: product.name,
+      mentions: product.count,
+      positive: product.positive,
+      negative: product.negative,
+      mixed: product.mixed,
+      fill: `hsl(var(--chart-${index + 1}))`,
+    })),
+    {
+      item: "Other",
+      mentions: otherProductMentions.count,
+      positive: otherProductMentions.positive,
+      negative: otherProductMentions.negative,
+      mixed: otherProductMentions.mixed,
+      fill: "hsl(var(--chart-7))",
+    },
+  ];
+
+  const productChartConfig = {
+    mentions: {
+      label: "Mentions",
+    },
+    ...top5Products.reduce(
+      (config, product, index) => ({
+        ...config,
+        [product.name]: {
+          label: product.name,
+          color: `hsl(var(--chart-${index + 1}))`,
+        },
+      }),
+      {}
+    ),
+    Other: {
+      label: "Other",
+      color: "hsl(var(--chart-7))",
+    },
+  };
+
   return (
     <Dashboard
       selectedLocation={location}
       sentimentDistribution={sentimentDistribution}
       staffChartData={staffChartData}
       staffChartConfig={staffChartConfig}
+      productChartData={productChartData}
+      productChartConfig={productChartConfig}
     />
   );
 }

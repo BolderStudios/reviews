@@ -6,6 +6,7 @@ import { calcReviewData } from "@/utils/reviews";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { SentimentDistribution } from "./ui/Charts/SentimentDistribution";
 import { EmployeeMentionsChart } from "./ui/Charts/EmployeeMentionsChart";
+import { ProductFeedbackChart } from "./ui/Charts/ProductFeedbackChart";
 import {
   Star,
   BarChart,
@@ -21,6 +22,8 @@ export default function Dashboard({
   sentimentDistribution,
   staffChartData,
   staffChartConfig,
+  productChartData,
+  productChartConfig,
 }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
@@ -208,14 +211,20 @@ export default function Dashboard({
             <Skeleton className="h-[300px] w-full" />
           </div>
         ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-6">
             {renderKpiCards()}{" "}
             <div className="grid grid-cols-3 gap-6">
               <SentimentDistribution
                 sentimentDistribution={sentimentDistribution}
               />
-              <EmployeeMentionsChart staffChartData={staffChartData} staffChartConfig={staffChartConfig} />
-             
+              <EmployeeMentionsChart
+                staffChartData={staffChartData}
+                staffChartConfig={staffChartConfig}
+              />
+              <ProductFeedbackChart
+                productChartData={productChartData}
+                productChartConfig={productChartConfig}
+              />
             </div>
             <YearsCalendar selectedLocation={selectedLocation} />
           </div>

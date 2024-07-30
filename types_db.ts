@@ -171,6 +171,7 @@ export type Database = {
           business_category_id: string | null
           created_at: string
           id: string
+          location_id: string | null
           name: string | null
           review_id: string | null
           sentiment: string | null
@@ -179,6 +180,7 @@ export type Database = {
           business_category_id?: string | null
           created_at?: string
           id?: string
+          location_id?: string | null
           name?: string | null
           review_id?: string | null
           sentiment?: string | null
@@ -187,6 +189,7 @@ export type Database = {
           business_category_id?: string | null
           created_at?: string
           id?: string
+          location_id?: string | null
           name?: string | null
           review_id?: string | null
           sentiment?: string | null
@@ -197,6 +200,13 @@ export type Database = {
             columns: ["business_category_id"]
             isOneToOne: false
             referencedRelation: "business_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_keywords_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
           {
