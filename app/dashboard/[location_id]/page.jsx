@@ -71,9 +71,9 @@ export default async function Page({ params }) {
     .map(([name, data]) => ({ name, ...data }))
     .sort((a, b) => b.count - a.count);
 
-  const top4 = sortedEmployees.slice(0, 4);
+  const top4 = sortedEmployees.slice(0, 5);
 
-  const otherMentions = sortedEmployees.slice(4).reduce(
+  const otherMentions = sortedEmployees.slice(5).reduce(
     (sum, emp) => ({
       count: sum.count + emp.count,
       positive: sum.positive + emp.positive,
@@ -98,7 +98,7 @@ export default async function Page({ params }) {
       positive: otherMentions.positive,
       negative: otherMentions.negative,
       mixed: otherMentions.mixed,
-      fill: "hsl(var(--chart-5))",
+      fill: "hsl(var(--chart-10))",
     },
   ];
 
