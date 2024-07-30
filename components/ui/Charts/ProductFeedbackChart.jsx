@@ -58,7 +58,7 @@ export function ProductFeedbackChart({ productChartData, productChartConfig }) {
   return (
     <Card className="flex flex-col py-4">
       <CardHeader className="items-center pb-0">
-        <CardTitle className="text-md">Top Mentioned Employees</CardTitle>
+        <CardTitle className="text-md">Top Mentioned Services</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

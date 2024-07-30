@@ -128,7 +128,7 @@ export default async function Page({ params }) {
       .select("*")
       .eq("location_id", location_id);
 
-  console.log("Product feedback mentions: ", productFeedbackMentions);
+  // console.log("Product feedback mentions: ", productFeedbackMentions);
 
   if (productFeedbackMentionsError) {
     console.error(

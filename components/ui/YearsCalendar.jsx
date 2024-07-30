@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react";
 import { getCalendarDataByDay } from "@/utils/reviews";
 import { SkeletonCard } from "@/components/ui/Misc/SkeletonCard";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const is_leap_year = (year) => {
   return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
@@ -65,6 +71,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
       <h3 className="text-sm font-semibold mb-1 text-center">
         {getMonthName(month)} {year}
       </h3>
+
       <div className="grid grid-cols-7 gap-[1px]">
         {Array.from({ length: 7 }, (_, i) => (
           <div
@@ -109,25 +116,50 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
           }
 
           return (
-            <div
-              key={`day-${year}-${month}-${i}`}
-              className={`w-full aspect-square relative ${bgColor} border border-gray-100`}
-              onMouseEnter={() =>
-                isValidDay && dayData && setHoverDate(dayData)
-              }
-              onMouseLeave={() => setHoverDate(null)}
-            >
-              {isValidDay && isFutureDate && (
-                <div
-                  className="absolute inset-0 bg-white"
-                  style={{
-                    clipPath: "polygon(0 0, 100% 0, 100% 100%)",
-                    borderTop: "1px solid #e5e7eb",
-                    borderRight: "1px solid #e5e7eb",
-                  }}
-                ></div>
-              )}
-            </div>
+            <TooltipProvider key={`day-${year}-${month}-${i}`}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div
+                    className={`w-full aspect-square relative ${bgColor} border border-gray-100`}
+                    onMouseEnter={() =>
+                      isValidDay && dayData && setHoverDate(dayData)
+                    }
+                    onMouseLeave={() => setHoverDate(null)}
+                  >
+                    {isValidDay && isFutureDate && (
+                      <div
+                        className="absolute inset-0 bg-white"
+                        style={{
+                          clipPath: "polygon(0 0, 100% 0, 100% 100%)",
+                          borderTop: "1px solid #e5e7eb",
+                          borderRight: "1px solid #e5e7eb",
+                        }}
+                      ></div>
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {dayData ? (
+                    <div className="text-xs">
+                      <p>Date: {dayData.date}</p>
+                      <p>Total Reviews: {dayData.nCount}</p>
+                      <p>Average Rating: {dayData.avgRating}</p>
+                      <p>
+                        Positive: {dayData.nPositive} | Negative:{" "}
+                        {dayData.nNegative} | Mixed: {dayData.nMixed}
+                      </p>
+                      <p>Response Rate: {dayData.responseRate}%</p>
+                      <p>
+                        Sources: Google - {dayData.sources.google}, Yelp -{" "}
+                        {dayData.sources.yelp}
+                      </p>
+                    </div>
+                  ) : (
+                    <p>No data available for this date</p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           );
         })}
       </div>
@@ -143,6 +175,7 @@ const renderYear = (year, calendarData, setHoverDate) => {
           renderMonth(year, i, calendarData, setHoverDate)
         )}
       </div>
+
       <div className="grid grid-cols-6 gap-1">
         {Array.from({ length: 6 }, (_, i) =>
           renderMonth(year, i + 6, calendarData, setHoverDate)
@@ -156,7 +189,6 @@ export function YearsCalendar({ selectedLocation }) {
   const [year, setYear] = useState(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(true);
   const [calendarData, setCalendarData] = useState([]);
-  const [hoverDate, setHoverDate] = useState(null);
   const [firstReviewYear, setFirstReviewYear] = useState(null);
 
   useEffect(() => {
@@ -202,24 +234,7 @@ export function YearsCalendar({ selectedLocation }) {
         </button>
       </div>
 
-      {renderYear(year, calendarData, setHoverDate)}
-
-      {hoverDate && (
-        <div className="mt-2 text-sm">
-          <p>Date: {hoverDate.date}</p>
-          <p>Total Reviews: {hoverDate.nCount}</p>
-          <p>Average Rating: {hoverDate.avgRating}</p>
-          <p>
-            Positive: {hoverDate.nPositive} | Negative: {hoverDate.nNegative} |
-            Mixed: {hoverDate.nMixed}
-          </p>
-          <p>Response Rate: {hoverDate.responseRate}%</p>
-          <p>
-            Sources: Google - {hoverDate.sources.google}, Yelp -{" "}
-            {hoverDate.sources.yelp}
-          </p>
-        </div>
-      )}
+      {renderYear(year, calendarData, () => {})}
     </div>
   );
 }
