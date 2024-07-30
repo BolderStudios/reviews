@@ -16,6 +16,7 @@ import {
   Contact,
   ShoppingBasket,
   Users,
+  ArrowLeft,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Buttons/button";
@@ -34,7 +35,7 @@ import {
 import { AddLocation } from "@/components/ui/AddLocation";
 import { updateSelectedLocation, getLocations } from "@/app/actions";
 import { toast } from "sonner";
-import { useUser } from "@clerk/nextjs";
+import { useUser, SignOutButton } from "@clerk/nextjs";
 
 export default function SidebarNavigation() {
   const user = useUser();
@@ -200,7 +201,7 @@ export default function SidebarNavigation() {
             </Popover>
           </div>
 
-          <div className="flex-1">
+          <div className="flex flex-col justify-between h-full">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               <Link
                 prefetch={false}
@@ -275,6 +276,18 @@ export default function SidebarNavigation() {
                 Billing
               </Link>
             </nav>
+
+            <div className="flex items-center justify-start mb-2 ml-4">
+              <SignOutButton redirectUrl="/sign-in">
+                <Button
+                  variant="outline"
+                  className="w-2/3 flex items-center justify-center gap-[6px]"
+                >
+                  <ArrowLeft size={14} className="mt-[1px]" />
+                  <p className="leading-7">Signout</p>
+                </Button>
+              </SignOutButton>
+            </div>
           </div>
         </div>
       </aside>

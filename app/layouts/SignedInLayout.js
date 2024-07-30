@@ -34,20 +34,11 @@ export function SignedInLayout({ children }) {
     return <LoadingSpinner />;
   }
 
-  if (onboardingComplete !== true || onboardingComplete === undefined) {
-    return (
-      <>
-        <Onboarding />
-        {children}
-      </>
-    );
-  }
-
   return (
     <div className="flex flex-1">
       <SidebarNavigation />
       <div className="flex flex-col w-full overflow-y-auto h-screen">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="flex-grow">{children}</div>
       </div>
     </div>
@@ -56,11 +47,18 @@ export function SignedInLayout({ children }) {
 
 export default SignedInLayout;
 
-// Simple loading spinner component
 function LoadingSpinner() {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+    <div className="flex flex-1">
+      <SidebarNavigation />
+      <div className="flex flex-col w-full overflow-y-auto h-screen">
+        {/* <Navbar /> */}
+        <div className="flex-grow">
+          <div className="flex justify-center items-center h-screen">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
