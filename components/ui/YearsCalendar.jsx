@@ -116,7 +116,10 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
           }
 
           return (
-            <TooltipProvider key={`day-${year}-${month}-${i}`} className="rounded-lg border border-gray-200">
+            <TooltipProvider
+              key={`day-${year}-${month}-${i}`}
+              className="rounded-lg border border-gray-200"
+            >
               <Tooltip>
                 <TooltipTrigger>
                   <div
@@ -142,7 +145,11 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
                   {dayData ? (
                     <div className="bg-white p-2 w-72">
                       <h3 className="text-lg font-bold mb-3 text-gray-800">
-                        {dayData.date.split("-")[1] + "-" + dayData.date.split("-")[2] + "-" + dayData.date.split("-")[0]}
+                        {dayData.date.split("-")[1] +
+                          "-" +
+                          dayData.date.split("-")[2] +
+                          "-" +
+                          dayData.date.split("-")[0]}
                       </h3>
                       <div className="space-y-3">
                         <div className="flex justify-between items-center bg-gray-100 rounded-md p-2">
@@ -249,7 +256,7 @@ const renderMonth = (year, month, calendarData, setHoverDate) => {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-white p-2 w-72">
+                    <div className="bg-white p-2">
                       <p className="text-gray-500 text-center">
                         No data available for this date
                       </p>
@@ -313,7 +320,23 @@ export function YearsCalendar({ selectedLocation }) {
 
   return (
     <div className="max-w-full mt-6">
-      <h2 className="text-2xl font-bold mb-4">Sentiment by Day</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold mb-4">Sentiment by Day</h2>
+        <div>
+          <div className="flex">
+            <div className="w-8 h-3 bg-red-400 rounded-l-md">&nbsp;</div>
+            <div className="w-8 h-3 bg-orange-400">&nbsp;</div>
+            <div className="w-8 h-3 bg-yellow-400">&nbsp;</div>
+            <div className="w-8 h-3 bg-green-400">&nbsp;</div>
+            <div className="w-8 h-3 bg-green-500 rounded-r-md">&nbsp;</div>
+          </div>
+
+          <div className="text-xs text-stone-500 flex items-center justify-between">
+            <p>Negative</p>
+            <p>Positive</p>
+          </div>
+        </div>
+      </div>
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => setYear(Math.max(year - 1, firstReviewYear))}
