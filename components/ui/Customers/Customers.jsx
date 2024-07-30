@@ -4,9 +4,37 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { SkeletonCard } from "@/components/ui/Misc/SkeletonCard";
 import { CustomersTable } from "./CustomersTable";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { ViewCustomer } from "@/components/ui/Customers/ViewCustomer";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
+import { getAllCustomerData } from "@/utils/reviews";
+
+const RequestStatusBadge = ({ status }) => {
+  const getStatusColor = () => {
+    switch (status) {
+      case "Sent":
+        return "bg-blue-100 text-blue-800";
+      case "Delivered":
+        return "bg-green-100 text-green-800";
+      case "Opened":
+        return "bg-yellow-100 text-yellow-800";
+      case "Clicked":
+        return "bg-purple-100 text-purple-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center">
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor()}`}
+      >
+        {status}
+      </span>
+    </div>
+  );
+};
 
 const columns = [
   {
@@ -32,6 +60,53 @@ const columns = [
   {
     accessorKey: "phone_number",
     header: <p className="text-left">Phone</p>,
+  },
+  {
+    accessorKey: "requests",
+    header: () => <div className="text-center">Email Requests</div>,
+    cell: ({ row }) => {
+      const [requestStatus, setRequestStatus] = useState("Loading...");
+      const [isLoading, setIsLoading] = useState(true);
+      const customer = row.original;
+
+      useEffect(() => {
+        const fetchCustomerData = async () => {
+          try {
+            const customerData = await getAllCustomerData(customer.id);
+
+            if (customerData.requests.length > 0) {
+              const latestRequest = customerData.requests[0];
+
+              if (latestRequest.clicked) setRequestStatus("Clicked");
+              else if (latestRequest.opened) setRequestStatus("Opened");
+              else if (latestRequest.delivered) setRequestStatus("Delivered");
+              else if (latestRequest.sent) setRequestStatus("Sent");
+              else setRequestStatus("Not Sent");
+            } else {
+              setRequestStatus("Not Sent");
+            }
+          } catch (error) {
+            console.error("Error fetching customer data:", error);
+            setRequestStatus("Error");
+          } finally {
+            setIsLoading(false);
+          }
+        };
+
+        fetchCustomerData();
+      }, [customer.id]);
+
+      if (isLoading) {
+        return (
+          <div className="flex items-center">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Loading...
+          </div>
+        );
+      }
+
+      return <RequestStatusBadge status={requestStatus} />;
+    },
   },
 ];
 

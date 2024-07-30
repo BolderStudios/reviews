@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import {
   Sheet,
@@ -7,6 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/Buttons/button";
 import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -31,7 +33,8 @@ export function ViewCustomer({ customer }) {
     if (isSheetOpen) {
       const fetchData = async () => {
         const result = await getAllCustomerData(customer.id);
-        setCustomerData(result.data);
+        setCustomerData(result);
+
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
@@ -39,6 +42,8 @@ export function ViewCustomer({ customer }) {
       fetchData();
     }
   }, [isSheetOpen, customer.id]);
+
+  console.log(customerData);
 
   const handleEmailRequest = async () => {
     setIsEmailLoading(true);
@@ -84,7 +89,7 @@ export function ViewCustomer({ customer }) {
           <MousePointerClick className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="overflow-y-auto w-[95vw] max-w-[1000px]">
+      <SheetContent className="overflow-y-auto w-[40vw] max-w-[1000px]">
         <SheetHeader>
           <SheetTitle>Detailed information about the customer</SheetTitle>
         </SheetHeader>
@@ -103,12 +108,14 @@ export function ViewCustomer({ customer }) {
                     {customer.name[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
+
                 <div>
                   <h3 className="font-semibold">{customer.name}</h3>
                   <p className="text-sm text-muted-foreground">{`${customer.phone_number}`}</p>
                   <p className="text-sm text-muted-foreground">{`${customer.email_address}`}</p>
                 </div>
               </div>
+
               <div className="flex flex-col gap-2">
                 {isEmailLoading ? (
                   <ButtonLoading />
@@ -133,6 +140,18 @@ export function ViewCustomer({ customer }) {
                     SMS Review Request
                   </Button>
                 )}
+              </div>
+            </div>
+
+            <div>
+              <div className="w-full h-40 border border-gray-200 bg-stone-100 rounded-lg flex flex-col items-center justify-center p-4">
+                <MessageSquare className="text-gray-400 mb-2" size={24} />
+                <h3 className="text-lg font-semibold text-gray-700 mb-1">
+                  No feedback yet
+                </h3>
+                <p className="text-sm text-gray-500 text-center">
+                  Customer's feedback will appear here once submitted.
+                </p>
               </div>
             </div>
           </div>

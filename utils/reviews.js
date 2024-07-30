@@ -37,7 +37,7 @@ export async function getAllReviewData(reviewId) {
 
 export async function getAllCustomerData(customerId) {
   try {
-    const { data, error } = await supabase
+    const { data: customerData, error } = await supabase
       .from("customers")
       .select("*")
       .eq("id", customerId)
@@ -45,9 +45,18 @@ export async function getAllCustomerData(customerId) {
 
     if (error) throw new Error(error.message);
 
+    const { data: customerRequests, error: requestsError } = await supabase
+      .from("requests")
+      .select("*")
+      .eq("customer_id", customerId)
+      .order("date", { ascending: false });
+
+    if (requestsError) throw new Error(requestsError.message);
+
     return {
       success: true,
-      data,
+      data: customerData,
+      requests: customerRequests,
     };
   } catch (error) {
     return {
@@ -225,7 +234,7 @@ export async function getCalendarDataByDay(locationId) {
       const formattedDate = new Date(review.timestamp)
         .toISOString()
         .split("T")[0];
-        
+
       if (!days[formattedDate]) {
         days[formattedDate] = {
           totalRating: 0,
@@ -238,7 +247,7 @@ export async function getCalendarDataByDay(locationId) {
           responseCount: 0,
         };
       }
-      
+
       days[formattedDate].totalRating += review.rating;
       days[formattedDate].count += 1;
 
