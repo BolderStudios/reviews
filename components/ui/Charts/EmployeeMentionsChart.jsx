@@ -1,9 +1,7 @@
 "use client";
-
 import * as React from "react";
 import { TrendingUp } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
-
 import {
   Card,
   CardContent,
@@ -21,17 +19,53 @@ import {
 } from "@/components/ui/chart";
 
 export function EmployeeMentionsChart({ staffChartData, staffChartConfig }) {
-  console.log(staffChartData);
-  console.log(staffChartConfig);
-
   const totalMentions = React.useMemo(() => {
     return staffChartData.reduce((acc, curr) => acc + curr.mentions, 0);
+  }, [staffChartData]);
+
+  const CustomTooltipContent = React.useCallback(({ payload }) => {
+    if (payload && payload.length) {
+      const data = payload[0].payload;
+      const totalSentiments = data.positive + data.negative + data.mixed;
+
+      const sentimentPercentage = (sentiment) => {
+        return ((data[sentiment] / totalSentiments) * 100).toFixed(1);
+      };
+
+      return (
+        <div className="bg-background p-3 rounded-lg shadow-md border border-border">
+          <h3 className="font-semibold text-sm mb-2">{data.employee}</h3>
+          <p className="text-xs mb-2">Total Mentions: {data.mentions}</p>
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs gap-1">
+              <span className="text-green-500">Positive:</span>
+              <span>
+                {data.positive} ({sentimentPercentage("positive")}%)
+              </span>
+            </div>
+            <div className="flex justify-between text-xs gap-1">
+              <span className="text-red-500">Negative:</span>
+              <span>
+                {data.negative} ({sentimentPercentage("negative")}%)
+              </span>
+            </div>
+            <div className="flex justify-between text-xs gap-1">
+              <span className="text-yellow-500">Mixed:</span>
+              <span>
+                {data.mixed} ({sentimentPercentage("mixed")}%)
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
   }, []);
 
   return (
     <Card className="flex flex-col py-4">
       <CardHeader className="items-center pb-0">
-        <CardTitle className="text-md">Employee Mentions</CardTitle>
+        <CardTitle className="text-md">Top Mentioned Employees</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -39,10 +73,7 @@ export function EmployeeMentionsChart({ staffChartData, staffChartConfig }) {
           className="mx-auto aspect-square max-h-fit"
         >
           <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <ChartTooltip cursor={false} content={<CustomTooltipContent />} />
             <Pie
               data={staffChartData}
               dataKey="mentions"
@@ -87,14 +118,6 @@ export function EmployeeMentionsChart({ staffChartData, staffChartConfig }) {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col gap-2 text-xs">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
     </Card>
   );
 }

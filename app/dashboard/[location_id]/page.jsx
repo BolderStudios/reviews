@@ -48,44 +48,62 @@ export default async function Page({ params }) {
     .select("*")
     .eq("location_id", location_id);
 
-  // Count occurrences of each employee name
-  const employeeCounts = staffMentions.reduce((counts, mention) => {
-    counts.set(
-      mention.employee_name,
-      (counts.get(mention.employee_name) || 0) + 1
-    );
-    return counts;
-  }, new Map());
+  if (staffMentionsError) {
+    console.error("Error fetching staff mentions:", staffMentionsError);
+    // Handle the error appropriately
+  }
 
-  // Convert to array and sort by count
-  const sortedEmployees = Array.from(employeeCounts, ([name, count]) => ({
-    name,
-    count,
-  })).sort((a, b) => b.count - a.count);
+  const employeeData = staffMentions.reduce((data, mention) => {
+    const employeeName = mention.employee_name;
+    const sentiment = mention.sentiment.toLowerCase();
 
-  // Take the top 4 mentioned employees
+    if (!data[employeeName]) {
+      data[employeeName] = { count: 0, positive: 0, negative: 0, mixed: 0 };
+    }
+
+    data[employeeName].count++;
+    data[employeeName][sentiment]++;
+
+    return data;
+  }, {});
+
+  const sortedEmployees = Object.entries(employeeData)
+    .map(([name, data]) => ({ name, ...data }))
+    .sort((a, b) => b.count - a.count);
+
   const top4 = sortedEmployees.slice(0, 4);
 
-  // Calculate the sum of mentions for the rest
-  const otherMentions = sortedEmployees
-    .slice(4)
-    .reduce((sum, emp) => sum + emp.count, 0);
+  const otherMentions = sortedEmployees.slice(4).reduce(
+    (sum, emp) => ({
+      count: sum.count + emp.count,
+      positive: sum.positive + emp.positive,
+      negative: sum.negative + emp.negative,
+      mixed: sum.mixed + emp.mixed,
+    }),
+    { count: 0, positive: 0, negative: 0, mixed: 0 }
+  );
 
-  // Create the chartData array
   const staffChartData = [
     ...top4.map((emp, index) => ({
       employee: emp.name,
       mentions: emp.count,
+      positive: emp.positive,
+      negative: emp.negative,
+      mixed: emp.mixed,
       fill: `hsl(var(--chart-${index + 1}))`,
     })),
     {
       employee: "Other",
-      mentions: otherMentions,
+      mentions: otherMentions.count,
+      positive: otherMentions.positive,
+      negative: otherMentions.negative,
+      mixed: otherMentions.mixed,
       fill: "hsl(var(--chart-5))",
     },
   ];
 
-  // Create the chartConfig object
+  console.log("Staff chart data: ", staffChartData);
+
   const staffChartConfig = {
     mentions: {
       label: "Mentions",
