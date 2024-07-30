@@ -219,7 +219,9 @@ export default function Dashboard({ selectedLocation, sentimentDistribution }) {
             <div className="mt-8 opacity-50 pointer-events-none flex flex-col">
               {renderKpiCards()}
               <div className="grid grid-cols-3 gap-12">
-                <SentimentDistribution />
+                <SentimentDistribution
+                  sentimentDistribution={sentimentDistribution}
+                />
                 {/* <SentimentDistribution />
                 <SentimentDistribution /> */}
               </div>
