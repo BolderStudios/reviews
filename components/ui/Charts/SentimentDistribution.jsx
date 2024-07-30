@@ -111,7 +111,7 @@ export function SentimentDistribution({ sentimentDistribution }) {
         </ChartContainer>
       </CardContent>
 
-      <CardFooter className="flex-col gap-2 text-xs">
+      <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
           {positivePercentage}% are positive reviews {getIcon()}
         </div>

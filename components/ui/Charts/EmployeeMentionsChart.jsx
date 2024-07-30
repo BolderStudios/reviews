@@ -113,7 +113,7 @@ export function EmployeeMentionsChart({ staffChartData, staffChartConfig }) {
             </Pie>
             <ChartLegend
               content={<ChartLegendContent nameKey="employee" />}
-              className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+              className="flex justify-center items-center flex-wrap px-2"
             />
           </PieChart>
         </ChartContainer>
