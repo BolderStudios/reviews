@@ -17,5 +17,31 @@ export default async function Page({ params }) {
     notFound();
   }
 
-  return <Dashboard selectedLocation={location} />;
+  const { data: positiveReviews, error: positiveReviewsError } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("location_id", location_id)
+    .eq("sentiment", "Positive");
+  const { data: negativeReviews, error: negativeReviewsError } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("location_id", location_id)
+    .eq("sentiment", "Negative");
+  const { data: mixedReviews, error: mixedReviewsError } = await supabase
+    .from("reviews")
+    .select("*")
+    .eq("location_id", location_id)
+    .eq("sentiment", "Mixed");
+
+  console.log("Positive reviews length: ", positiveReviews.length);
+  console.log("Negative reviews length: ", negativeReviews.length);
+  console.log("Mixed reviews length: ", mixedReviews.length);
+
+  const sentimentDistribution = {
+    positive: positiveReviews.length,
+    negative: negativeReviews.length,
+    mixed: mixedReviews.length,
+  };
+
+  return <Dashboard selectedLocation={location} sentimentDistribution={sentimentDistribution} />;
 }

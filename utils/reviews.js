@@ -220,10 +220,12 @@ export async function getCalendarDataByDay(locationId) {
     }
 
     const days = {};
+
     reviews.forEach((review) => {
       const formattedDate = new Date(review.timestamp)
         .toISOString()
         .split("T")[0];
+        
       if (!days[formattedDate]) {
         days[formattedDate] = {
           totalRating: 0,
@@ -236,6 +238,7 @@ export async function getCalendarDataByDay(locationId) {
           responseCount: 0,
         };
       }
+      
       days[formattedDate].totalRating += review.rating;
       days[formattedDate].count += 1;
 

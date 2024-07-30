@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { calcReviewData } from "@/utils/reviews";
 import { KpiCard } from "@/components/ui/KpiCard";
+import { SentimentDistribution } from "./ui/Charts/SentimentDistribution";
 import {
   Star,
   BarChart,
@@ -14,7 +15,7 @@ import {
 import { YearsCalendar } from "./ui/YearsCalendar";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
-export default function Dashboard({ selectedLocation }) {
+export default function Dashboard({ selectedLocation, sentimentDistribution }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
 
@@ -203,6 +204,13 @@ export default function Dashboard({ selectedLocation }) {
         ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
           <div className="flex flex-col gap-4">
             {renderKpiCards()}{" "}
+            <div className="grid grid-cols-3 gap-12">
+              <SentimentDistribution
+                sentimentDistribution={sentimentDistribution}
+              />
+              {/* <SentimentDistribution />
+              <SentimentDistribution /> */}
+            </div>
             <YearsCalendar selectedLocation={selectedLocation} />
           </div>
         ) : (
@@ -210,6 +218,11 @@ export default function Dashboard({ selectedLocation }) {
             {renderEmptyState()}
             <div className="mt-8 opacity-50 pointer-events-none flex flex-col">
               {renderKpiCards()}
+              <div className="grid grid-cols-3 gap-12">
+                <SentimentDistribution />
+                {/* <SentimentDistribution />
+                <SentimentDistribution /> */}
+              </div>
               <YearsCalendar selectedLocation={selectedLocation} />
             </div>
           </>
