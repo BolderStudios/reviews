@@ -1,13 +1,11 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { useState } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Home,
   ShoppingCart,
-  Info,
   Check,
   ChevronsUpDown,
   Star,
@@ -33,24 +31,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { AddLocation } from "@/components/ui/AddLocation";
-import { updateSelectedLocation, getLocations } from "@/app/actions";
+import { updateSelectedLocation } from "@/app/actions";
 import { toast } from "sonner";
-import { useUser, SignOutButton } from "@clerk/nextjs";
+import { SignOutButton } from "@clerk/nextjs";
 
-export default function SidebarNavigation() {
-  const user = useUser();
+export default function SidebarNavigation({
+  passedLocations,
+  passedSelectedLocation,
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const locationRef = useRef(null);
-  const [locations, setLocations] = useLocalStorage(
-    `locations_${user?.user?.id}`,
-    []
+  const [selectedLocation, setSelectedLocation] = useState(
+    passedSelectedLocation
   );
-  const [selectedLocation, setSelectedLocation] = useLocalStorage(
-    `selectedLocation_${user?.user?.id}`,
-    null
-  );
-  const [lastFetchTime, setLastFetchTime] = useLocalStorage("lastFetchTime", 0);
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
@@ -60,7 +53,6 @@ export default function SidebarNavigation() {
     setOpen(false);
 
     if (currentPathname !== "billing") {
-      // console.log("Updating location...", location, currentPathname);
       try {
         const data = await updateSelectedLocation(location, currentPathname);
         if (data.success) {
@@ -74,42 +66,6 @@ export default function SidebarNavigation() {
         toast.error("An error occurred while updating location");
       }
     }
-  };
-
-  const fetchLocations = useCallback(async () => {
-    try {
-      const data = await getLocations();
-
-      if (data.success) {
-        setLocations(data.locations);
-        setSelectedLocation(data.userSelectedLocation);
-
-        const currentLocationId = pathname.split("/")[2];
-
-        if (currentLocationId !== data.userSelectedLocationId) {
-          router.push(`/${currentPathname}/${data.userSelectedLocationId}`);
-        }
-
-        setLastFetchTime(Date.now());
-      }
-    } catch (error) {
-      console.error("Error fetching locations:", error);
-    }
-  }, [setLocations, setSelectedLocation, setLastFetchTime, selectedLocation]);
-
-  useEffect(() => {
-    const timeSinceLastFetch = Date.now() - lastFetchTime;
-    const fiveMinutes = 5 * 60 * 1000;
-    const oneMinute = 60 * 1000;
-
-    if (locations.length === 0 || timeSinceLastFetch > oneMinute) {
-      // console.log("Fetching locations...");
-      fetchLocations();
-    }
-  }, [locations, lastFetchTime, fetchLocations]);
-
-  const updateLocations = async () => {
-    await fetchLocations();
   };
 
   const activeLinkClass = (href) =>
@@ -131,7 +87,6 @@ export default function SidebarNavigation() {
                   role="combobox"
                   aria-expanded={open}
                   className="w-full justify-between"
-                  ref={locationRef}
                 >
                   {selectedLocation ? (
                     <span className="flex items-center">
@@ -151,15 +106,12 @@ export default function SidebarNavigation() {
                 <Command>
                   <CommandList className="w-full">
                     <CommandGroup className="w-full p-0">
-                      <div
-                        className="w-full px-4 py-2 border-b mb-1"
-                        key="locations-header"
-                      >
+                      <div className="w-full px-4 py-2 border-b mb-1">
                         <span className="text-[13px] text-muted-foreground">
-                          Locations ({locations.length})
+                          Locations ({passedLocations.length})
                         </span>
                       </div>
-                      {locations
+                      {passedLocations
                         .sort((a, b) => {
                           if (a.is_primary && !b.is_primary) return -1;
                           if (!a.is_primary && b.is_primary) return 1;
@@ -191,8 +143,8 @@ export default function SidebarNavigation() {
                             </div>
                           </CommandItem>
                         ))}
-                      <div className="p-1 mt-1" key="add-location-wrapper">
-                        <AddLocation updateLocations={updateLocations} />
+                      <div className="p-1 mt-1">
+                        <AddLocation />
                       </div>
                     </CommandGroup>
                   </CommandList>

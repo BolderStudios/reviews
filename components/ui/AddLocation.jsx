@@ -16,7 +16,6 @@ import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { addLocationFunc } from "@/app/actions";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import {
   Command,
   CommandEmpty,
@@ -41,6 +40,7 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const positions = [
   { value: "owner", label: "Owner" },
@@ -56,7 +56,8 @@ const formSchema = z.object({
   positionOfContact: z.string().min(1, "Please select a position"),
 });
 
-export function AddLocation({ updateLocations }) {
+export function AddLocation() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
 
@@ -77,18 +78,19 @@ export function AddLocation({ updateLocations }) {
 
       if (response.success === true) {
         toast.success("Location added successfully!");
+
         form.reset({
           organizationName: "",
           nameOfContact: "",
           positionOfContact: "",
         });
-        // After successfully adding the location
-        await updateLocations();
-        // window.location.reload();
+        
+        router.refresh();
       } else {
         toast.error("Failed to add location. Please try again.");
       }
     } catch (error) {
+      console.log(error);
       toast.error("Failed to add location. Please try again.");
     } finally {
       setIsLoading(false);
@@ -104,7 +106,7 @@ export function AddLocation({ updateLocations }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Add New Location</DialogTitle>
+          <DialogTitle>Form to add a new location</DialogTitle>
           <DialogDescription>
             Enter the details of the new location you want to add.
           </DialogDescription>

@@ -7,11 +7,13 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { SentimentDistribution } from "./ui/Charts/SentimentDistribution";
 import { EmployeeMentionsChart } from "./ui/Charts/EmployeeMentionsChart";
 import { ProductFeedbackChart } from "./ui/Charts/ProductFeedbackChart";
+import { UpdateLocation } from "@/components/ui/UpdateLocation";
 import {
   Star,
   BarChart,
   MessageSquareQuote,
   Smile,
+  CircleX,
   AlertCircle,
 } from "lucide-react";
 import { YearsCalendar } from "./ui/YearsCalendar";
@@ -39,28 +41,6 @@ export default function Dashboard({
     fetchDashboardData();
   }, [selectedLocation]);
 
-  // Calculate CSAT
-  const calculateCSAT = () => {
-    if (!dashboardData) return 0;
-    const { sentiments } = dashboardData;
-    const totalSentiments =
-      sentiments?.positive + sentiments?.negative + sentiments?.mixed;
-    let css = 0;
-    if (totalSentiments > 0) {
-      css = (
-        (sentiments?.positive * 100 +
-          sentiments?.mixed * 75 +
-          sentiments?.negative * 50) /
-        totalSentiments
-      ).toFixed(0);
-    }
-    if (css > 90) return "A";
-    if (css > 80) return "B";
-    if (css > 70) return "C";
-    if (css > 60) return "D";
-    return "F";
-  };
-
   // Determine status for each KPI
   const getAverageRatingStatus = (rating) => {
     if (rating >= 4.5) return "positive";
@@ -71,13 +51,6 @@ export default function Dashboard({
   const getResponseRateStatus = (rate) => {
     if (rate >= 80) return "positive";
     if (rate >= 60) return "neutral";
-    return "negative";
-  };
-
-  const getCSATStatus = (score) => {
-    if (score === "A") return "positive";
-    if (score === "B") return "neutral";
-    if (score === "C") return "mixed";
     return "negative";
   };
 
@@ -100,17 +73,6 @@ export default function Dashboard({
     if (rate >= 60) return "Good: Above average response rate";
     if (rate >= 40) return "Average: Room for improvement";
     return "Below Average: Need to increase response rate";
-  };
-
-  const getCSATDescription = (score) => {
-    const descriptions = {
-      A: "Excellent: Customers are very satisfied",
-      B: "Good: Most customers are satisfied",
-      C: "Average: There's room for improvement",
-      D: "Below Average: Immediate attention required",
-      F: "Poor: Urgent action needed to improve satisfaction",
-    };
-    return descriptions[score] || "";
   };
 
   const getTotalReviewsStatus = (count) => {
@@ -203,6 +165,7 @@ export default function Dashboard({
       <div className="px-8 py-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-bold text-2xl">Location Overview</h2>
+          <UpdateLocation selectedLocation={selectedLocation} />
         </div>
         {isPageLoading ? (
           <div className="mt-6 space-y-6">

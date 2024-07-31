@@ -202,6 +202,130 @@ export async function addLocationFunc(formData) {
   }
 }
 
+export async function deleteLocationFunc(locationId) {
+  console.log("Deleting location ID: ", locationId);
+  const { userId } = await auth();
+
+  // Start a Supabase transaction
+  const { data: deletedLocation, error: deleteError } = await supabase
+    .from("locations")
+    .delete()
+    .eq("id", locationId)
+    .single();
+
+  if (deleteError) {
+    console.error("Error deleting location: ", deleteError);
+    return {
+      message: "Failed to delete location",
+      success: false,
+      error: deleteError.message,
+    };
+  }
+
+  console.log("Location deleted successfully");
+
+  // Find a new location to set as selected (prioritize primary, then any)
+  const { data: newPrimaryLocation, error: primaryLocationError } =
+    await supabase
+      .from("locations")
+      .select("*")
+      .eq("clerk_id", userId)
+      .eq("is_primary", true)
+      .single();
+
+  if (primaryLocationError && primaryLocationError.code !== "PGRST116") {
+    console.error("Error finding primary location: ", primaryLocationError);
+    return {
+      message: "Failed to update user after deletion",
+      success: false,
+      error: primaryLocationError.message,
+    };
+  }
+
+  let newSelectedLocationId = newPrimaryLocation?.id;
+
+  if (!newSelectedLocationId) {
+    const { data: anyLocation, error: anyLocationError } = await supabase
+      .from("locations")
+      .select("id")
+      .eq("clerk_id", userId)
+      .limit(1)
+      .single();
+
+    if (anyLocationError && anyLocationError.code !== "PGRST116") {
+      console.error("Error finding any location: ", anyLocationError);
+      return {
+        message: "Failed to update user after deletion",
+        success: false,
+        error: anyLocationError.message,
+      };
+    }
+
+    newSelectedLocationId = anyLocation?.id;
+  }
+
+  // Update the user's selected_location_id
+  const { data: updatedUser, error: updateError } = await supabase
+    .from("users")
+    .update({ selected_location_id: newSelectedLocationId })
+    .eq("clerk_id", userId)
+    .single();
+
+  if (updateError) {
+    console.error("Error updating user: ", updateError);
+    return {
+      message: "Failed to update user after deletion",
+      success: false,
+      error: updateError.message,
+    };
+  }
+
+  return {
+    message: "Location deleted successfully",
+    success: true,
+    clerkId: userId,
+    newLocationId: newSelectedLocationId,
+  };
+}
+
+export async function updateLocationFunc(locationId, formData) {
+  console.log("Updating location ID: ", locationId, "with data: ", formData);
+  const { userId } = await auth();
+
+  // Prepare the update object, only including fields that are present in formData
+  const updateObject = {};
+  if (formData.organizationName)
+    updateObject.organization_name = formData.organizationName;
+  if (formData.nameOfContact)
+    updateObject.contact_name = formData.nameOfContact;
+  if (formData.positionOfContact)
+    updateObject.contact_position = formData.positionOfContact;
+
+  // Only proceed with the update if there are fields to update
+  if (Object.keys(updateObject).length === 0) {
+    console.log("No fields to update");
+    return { message: "No changes to apply", success: true };
+  }
+
+  const { data, error } = await supabase
+    .from("locations")
+    .update(updateObject)
+    .eq("id", locationId);
+
+  if (error) {
+    console.error("Error updating location: ", error);
+    return { message: "Failed to update location", success: false, error };
+  }
+
+  console.log("Location updated successfully");
+  return {
+    message: "Location updated successfully",
+    success: true,
+    data,
+    clerkId: userId,
+  };
+}
+
 export async function updateSelectedLocation(locationObject, currentPathname) {
   try {
     const { userId } = await auth();
@@ -369,6 +493,41 @@ export async function getLocations() {
     };
   } catch (error) {
     console.error("Error fetching locations:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function fetchSidebarLocations() {
+  try {
+    const { userId } = await auth();
+
+    const { data, error } = await supabase
+      .from("users")
+      .select("selected_location_id")
+      .eq("clerk_id", userId)
+      .single();
+
+    if (error) throw error;
+
+    const selectedLocationId = data.selected_location_id;
+
+    const { data: selectedLocation, error: selectedLocationError } =
+      await supabase
+        .from("locations")
+        .select("*")
+        .eq("id", selectedLocationId)
+        .single();
+
+    const { data: locations, error: locationsError } = await supabase
+      .from("locations")
+      .select("*")
+      .eq("clerk_id", userId);
+
+    if (locationsError) throw locationsError;
+
+    return { success: true, locations, selectedLocation };
+  } catch (error) {
+    console.error("Error fetching sidebar locations:", error);
     return { success: false, error: error.message };
   }
 }
