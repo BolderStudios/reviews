@@ -36,8 +36,8 @@ import { toast } from "sonner";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function SidebarNavigation({
-  passedLocations,
-  passedSelectedLocation,
+  passedLocations = [],
+  passedSelectedLocation = null,
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
