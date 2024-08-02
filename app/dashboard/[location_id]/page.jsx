@@ -17,30 +17,29 @@ export default async function Page({ params }) {
     notFound();
   }
 
-  const { data: positiveReviews, error: positiveReviewsError } = await supabase
+  const { data: allReviews, error: allReviewsError } = await supabase
     .from("reviews")
     .select("*")
-    .eq("location_id", location_id)
-    .eq("sentiment", "Positive");
-  const { data: negativeReviews, error: negativeReviewsError } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("location_id", location_id)
-    .eq("sentiment", "Negative");
-  const { data: mixedReviews, error: mixedReviewsError } = await supabase
-    .from("reviews")
-    .select("*")
-    .eq("location_id", location_id)
-    .eq("sentiment", "Mixed");
+    .eq("location_id", location_id);
 
-  // console.log("Positive reviews length: ", positiveReviews.length);
-  // console.log("Negative reviews length: ", negativeReviews.length);
-  // console.log("Mixed reviews length: ", mixedReviews.length);
+  console.log("All reviews length: ", allReviews.length);
+
+  const posReviewsLength = allReviews.filter(
+    (review) => review.sentiment === "Positive"
+  ).length;
+
+  const negReviewsLength = allReviews.filter(
+    (review) => review.sentiment === "Negative"
+  ).length;
+
+  const mixedReviewsLength = allReviews.filter(
+    (review) => review.sentiment === "Mixed"
+  ).length;
 
   const sentimentDistribution = {
-    positive: positiveReviews.length,
-    negative: negativeReviews.length,
-    mixed: mixedReviews.length,
+    positive: posReviewsLength,
+    negative: negReviewsLength,
+    mixed: mixedReviewsLength,
   };
 
   const { data: staffMentions, error: staffMentionsError } = await supabase

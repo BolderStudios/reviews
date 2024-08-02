@@ -52,7 +52,6 @@ const columns = [
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
       const review = row.original;
-      console.log(review.summary);
 
       return review.summary === null ? (
         <TooltipProvider>

@@ -1,8 +1,7 @@
 "use client";
 
 import { TrendingUp, TrendingDown, Frown, Meh, Smile } from "lucide-react";
-import { Pie, PieChart } from "recharts";
-
+import { Pie, PieChart, Cell } from "recharts";
 import {
   Card,
   CardContent,
@@ -57,7 +56,7 @@ export function SentimentDistribution({ sentimentDistribution }) {
   ];
 
   const totalReviews = chartData.reduce((sum, item) => sum + item.reviews, 0);
-  console.log("totalReviews", totalReviews);
+
   const positivePercentage = (
     (sentimentDistribution.positive / totalReviews) *
     100
@@ -78,7 +77,6 @@ export function SentimentDistribution({ sentimentDistribution }) {
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-md">Sentiment Distribution</CardTitle>
       </CardHeader>
-
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
@@ -94,6 +92,7 @@ export function SentimentDistribution({ sentimentDistribution }) {
                     const sentiment = props.payload.sentiment;
                     const capitalizedSentiment =
                       sentiment.charAt(0).toUpperCase() + sentiment.slice(1);
+
                     return `${capitalizedSentiment} Reviews: ${value} (${(
                       (value / totalReviews) *
                       100
@@ -103,7 +102,17 @@ export function SentimentDistribution({ sentimentDistribution }) {
               }
             />
 
-            <Pie data={chartData} dataKey="reviews" label nameKey="reviews" />
+            <Pie
+              data={chartData}
+              dataKey="reviews"
+              nameKey="sentiment"
+              label={(entry) => entry.reviews}
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.fill} />
+              ))}
+            </Pie>
+
             <ChartLegend
               content={<ChartLegendContent nameKey="sentiment" />}
               className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
@@ -114,10 +123,10 @@ export function SentimentDistribution({ sentimentDistribution }) {
 
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          {positivePercentage}% are positive reviews {getIcon()}
+          {positivePercentage}% of reviews are positive {getIcon()}
         </div>
         <div className="leading-none text-muted-foreground">
-          Based on {totalReviews} total reviews
+          Based on {totalReviews} mapped reviews
         </div>
       </CardFooter>
     </Card>

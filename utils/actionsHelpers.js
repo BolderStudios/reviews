@@ -153,7 +153,7 @@ export async function generateInsights(review_text) {
   return message;
 }
 
-// ! Store review in Supabase: only works for Yelp reviews for now
+// Update to work for google as well
 export async function storeReview(
   review,
   insights,

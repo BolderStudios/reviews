@@ -63,14 +63,6 @@ const getColorByRating = (rating) => {
   return "bg-red-400";
 };
 
-const getTextColorByRating = (rating) => {
-  if (rating >= 4.5) return "text-green-600";
-  if (rating >= 4) return "text-green-500";
-  if (rating >= 3) return "text-yellow-600";
-  if (rating >= 2) return "text-orange-600";
-  return "text-red-600";
-};
-
 const renderMonth = (year, month, calendarData, setHoverDate) => {
   const days = days_in_month(year, month);
   const firstDay = new Date(year, month, 1).getDay();
@@ -286,10 +278,14 @@ export function YearsCalendar({ selectedLocation }) {
   useEffect(() => {
     const fetchCalendarData = async () => {
       setIsLoading(true);
+
       const result = await getCalendarDataByDay(selectedLocation.id);
+
       if (result.success) {
         setCalendarData(result.data);
+
         const firstYear = new Date(result.data[0].date).getFullYear();
+
         setFirstReviewYear(firstYear);
         setYear(Math.max(year, firstYear));
       } else {
