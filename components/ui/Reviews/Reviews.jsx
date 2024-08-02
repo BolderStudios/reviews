@@ -12,11 +12,18 @@ import {
   XCircle,
   ArrowUpDown,
   AlertCircle,
+  CircleHelp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Buttons/button";
 import { ReviewInsights } from "./ReviewInsights";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const HighlightedText = ({ text, highlight }) => {
   if (!highlight.trim()) {
@@ -45,7 +52,24 @@ const columns = [
     header: () => <div className="text-center">Actions</div>,
     cell: ({ row }) => {
       const review = row.original;
-      return (
+      console.log(review.summary);
+
+      return review.summary === null ? (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center justify-center cursor-pointer">
+                <CircleHelp className="h-4 w-4" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="max-w-32 text-center">
+                Customer didn't leave a review
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : (
         <div className="flex flex-col items-center justify-center">
           <ReviewInsights review={review} />
         </div>
@@ -133,7 +157,9 @@ const columns = [
       }
       return (
         <div className="flex justify-center">
-          <Badge variant={badgeVariant}>{value}</Badge>
+          <Badge variant={badgeVariant}>
+            {value === null ? "unknown" : value}
+          </Badge>
         </div>
       );
     },
@@ -145,35 +171,31 @@ const columns = [
     accessorKey: "summary",
     header: "Summary",
     filterFn: (row, id, value) => {
-      return row.getValue(id).toLowerCase().includes(value.toLowerCase());
+      const summary = row.getValue(id);
+      return summary === null
+        ? false
+        : summary.toLowerCase().includes(value.toLowerCase());
     },
     cell: ({ row, table }) => {
       const value = row.getValue("summary");
       const [isExpanded, setIsExpanded] = useState(false);
       const filterValue = table.getColumn("summary")?.getFilterValue() || "";
-
       return (
         <div className="w-full">
           <div className={isExpanded ? "" : "line-clamp-2"}>
-            <HighlightedText text={value} highlight={filterValue} />
+            <HighlightedText
+              text={value === null ? "No summary available." : value}
+              highlight={filterValue}
+            />
           </div>
-          {/* <div className="flex items-center justify-end mt-2">
-            <Button
-              variant="ghost"
-              size="sm"
+          {value !== null && value.length > 100 && (
+            <button
               onClick={() => setIsExpanded(!isExpanded)}
+              className="text-blue-500 hover:underline mt-1"
             >
-              {isExpanded ? (
-                <>
-                  Show Less <ChevronUp className="ml-2 h-4 w-4" />
-                </>
-              ) : (
-                <>
-                  Show More <ChevronDown className="ml-2 h-4 w-4" />
-                </>
-              )}
-            </Button>
-          </div> */}
+              {isExpanded ? "Show less" : "Show more"}
+            </button>
+          )}
         </div>
       );
     },

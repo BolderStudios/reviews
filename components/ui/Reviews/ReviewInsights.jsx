@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
 export function ReviewInsights({ review }) {
+  const isDisabled = review === null;
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [reviewData, setReviewData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
