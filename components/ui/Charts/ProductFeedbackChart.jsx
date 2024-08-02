@@ -104,10 +104,11 @@ export function ProductFeedbackChart({ productChartData, productChartConfig }) {
                 }}
               />
             </Pie>
-            <ChartLegend
+
+            {/* <ChartLegend
               content={<ChartLegendContent nameKey="item" />}
               className="flex justify-center items-center flex-wrap"
-            />
+            /> */}
           </PieChart>
         </ChartContainer>
       </CardContent>

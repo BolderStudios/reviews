@@ -83,7 +83,7 @@ export default async function Page({ params }) {
   );
 
   const staffChartData = [
-    ...top5.map((emp, index) => ({
+    ...sortedEmployees.map((emp, index) => ({
       employee: emp.name,
       mentions: emp.count,
       positive: emp.positive,
@@ -91,14 +91,14 @@ export default async function Page({ params }) {
       mixed: emp.mixed,
       fill: `hsl(var(--chart-${index + 1}))`,
     })),
-    {
-      employee: "Other",
-      mentions: otherMentions.count,
-      positive: otherMentions.positive,
-      negative: otherMentions.negative,
-      mixed: otherMentions.mixed,
-      fill: "hsl(var(--chart-7))",
-    },
+    // {
+    //   employee: "Other",
+    //   mentions: otherMentions.count,
+    //   positive: otherMentions.positive,
+    //   negative: otherMentions.negative,
+    //   mixed: otherMentions.mixed,
+    //   fill: "hsl(var(--chart-7))",
+    // },
   ];
 
   const staffChartConfig = {
@@ -169,7 +169,7 @@ export default async function Page({ params }) {
   );
 
   const productChartData = [
-    ...top5Products.map((product, index) => ({
+    ...sortedProducts.map((product, index) => ({
       item: product.name,
       mentions: product.count,
       positive: product.positive,
@@ -177,14 +177,14 @@ export default async function Page({ params }) {
       mixed: product.mixed,
       fill: `hsl(var(--chart-${index + 1}))`,
     })),
-    {
-      item: "Other",
-      mentions: otherProductMentions.count,
-      positive: otherProductMentions.positive,
-      negative: otherProductMentions.negative,
-      mixed: otherProductMentions.mixed,
-      fill: "hsl(var(--chart-7))",
-    },
+    // {
+    //   item: "Other",
+    //   mentions: otherProductMentions.count,
+    //   positive: otherProductMentions.positive,
+    //   negative: otherProductMentions.negative,
+    //   mixed: otherProductMentions.mixed,
+    //   fill: "hsl(var(--chart-7))",
+    // },
   ];
 
   const productChartConfig = {

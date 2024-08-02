@@ -111,10 +111,11 @@ export function EmployeeMentionsChart({ staffChartData, staffChartConfig }) {
                 }}
               />
             </Pie>
-            <ChartLegend
+
+            {/* <ChartLegend
               content={<ChartLegendContent nameKey="employee" />}
               className="flex justify-center items-center flex-wrap px-2"
-            />
+            /> */}
           </PieChart>
         </ChartContainer>
       </CardContent>
