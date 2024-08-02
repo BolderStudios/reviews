@@ -70,7 +70,7 @@ export default async function Page({ params }) {
     .map(([name, data]) => ({ name, ...data }))
     .sort((a, b) => b.count - a.count);
 
-  const top5 = sortedEmployees.slice(0, 5);
+  const top10 = sortedEmployees.slice(0, 5);
 
   const otherMentions = sortedEmployees.slice(5).reduce(
     (sum, emp) => ({
@@ -83,7 +83,7 @@ export default async function Page({ params }) {
   );
 
   const staffChartData = [
-    ...sortedEmployees.map((emp, index) => ({
+    ...top10.map((emp, index) => ({
       employee: emp.name,
       mentions: emp.count,
       positive: emp.positive,
@@ -91,21 +91,21 @@ export default async function Page({ params }) {
       mixed: emp.mixed,
       fill: `hsl(var(--chart-${index + 1}))`,
     })),
-    // {
-    //   employee: "Other",
-    //   mentions: otherMentions.count,
-    //   positive: otherMentions.positive,
-    //   negative: otherMentions.negative,
-    //   mixed: otherMentions.mixed,
-    //   fill: "hsl(var(--chart-7))",
-    // },
+    {
+      employee: "Other",
+      mentions: otherMentions.count,
+      positive: otherMentions.positive,
+      negative: otherMentions.negative,
+      mixed: otherMentions.mixed,
+      fill: "hsl(var(--chart-100))",
+    },
   ];
 
   const staffChartConfig = {
     mentions: {
       label: "Mentions",
     },
-    ...top5.reduce(
+    ...top10.reduce(
       (config, emp, index) => ({
         ...config,
         [emp.name]: {
@@ -156,9 +156,9 @@ export default async function Page({ params }) {
     .map(([name, data]) => ({ name, ...data }))
     .sort((a, b) => b.count - a.count);
 
-  const top5Products = sortedProducts.slice(0, 5);
+  const top10Products = sortedProducts.slice(0, 10);
 
-  const otherProductMentions = sortedProducts.slice(5).reduce(
+  const otherProductMentions = sortedProducts.slice(10).reduce(
     (sum, product) => ({
       count: sum.count + product.count,
       positive: sum.positive + product.positive,
@@ -169,7 +169,7 @@ export default async function Page({ params }) {
   );
 
   const productChartData = [
-    ...sortedProducts.map((product, index) => ({
+    ...top10Products.map((product, index) => ({
       item: product.name,
       mentions: product.count,
       positive: product.positive,
@@ -177,21 +177,21 @@ export default async function Page({ params }) {
       mixed: product.mixed,
       fill: `hsl(var(--chart-${index + 1}))`,
     })),
-    // {
-    //   item: "Other",
-    //   mentions: otherProductMentions.count,
-    //   positive: otherProductMentions.positive,
-    //   negative: otherProductMentions.negative,
-    //   mixed: otherProductMentions.mixed,
-    //   fill: "hsl(var(--chart-7))",
-    // },
+    {
+      item: "Other",
+      mentions: otherProductMentions.count,
+      positive: otherProductMentions.positive,
+      negative: otherProductMentions.negative,
+      mixed: otherProductMentions.mixed,
+      fill: "hsl(var(--chart-100))",
+    },
   ];
 
   const productChartConfig = {
     mentions: {
       label: "Mentions",
     },
-    ...top5Products.reduce(
+    ...top10Products.reduce(
       (config, product, index) => ({
         ...config,
         [product.name]: {
