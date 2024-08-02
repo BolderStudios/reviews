@@ -193,7 +193,7 @@ export async function addLocationFunc(formData) {
       },
     ]);
 
-  if (!error) {
+  if (!addLocationError) {
     console.log("Location added successfully");
     return { message: "Location added successfully", success: true };
   } else {
@@ -378,7 +378,7 @@ export async function updateSelectedLocation(locationObject, currentPathname) {
 }
 
 export async function initiateYelpFetch(formData) {
-  console.log("Form data —> ", formData);
+  console.log("YELP form data —> ", formData);
   const { userId } = await auth();
 
   try {
@@ -403,6 +403,37 @@ export async function initiateYelpFetch(formData) {
     return { success: true, message: "Yelp review fetch initiated" };
   } catch (error) {
     console.error("Error initiating Yelp fetch:", error);
+    await updateFetchErrorMessage(error.message, userId);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function initiateGoogleFetch(formData) {
+  const { userId } = await auth();
+
+  try {
+    const { data: userData, error: userError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("clerk_id", userId)
+      .single();
+
+    if (userError) throw new Error("Failed to fetch user data");
+
+    // Send event to Inngest
+    await inngest.send({
+      name: "fetch/google.reviews",
+      data: {
+        googlePlaceId: formData.googlePlaceId,
+        locationId: userData.selected_location_id,
+        clerkId: userId,
+        coordinates: formData.googlePlaceCoordinates,
+      },
+    });
+
+    return { success: true, message: "Google review fetch initiated" };
+  } catch (error) {
+    console.error("Error initiating Google fetch:", error);
     await updateFetchErrorMessage(error.message, userId);
     return { success: false, error: error.message };
   }

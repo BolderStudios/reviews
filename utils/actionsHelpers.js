@@ -1,10 +1,12 @@
 import supabase from "@/utils/supabaseClient";
 import Anthropic from "@anthropic-ai/sdk";
 
+// Anthropic SDK
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY, // defaults to process.env["ANTHROPIC_API_KEY"]
 });
 
+// Update fetching status of reviews from DataForSEO
 export async function updateIsFetching(booleanState, clerkId) {
   console.log("Updating fetch state to:", booleanState);
   console.log("User ID: ", clerkId);
@@ -22,6 +24,7 @@ export async function updateIsFetching(booleanState, clerkId) {
   return { success: true };
 }
 
+// Update fetch error message during reviews fetching from DataForSEO
 export async function updateFetchErrorMessage(errorMessage, clerkId) {
   console.log("Updating fetch error message to:", errorMessage);
   console.log("User ID: ", clerkId);
@@ -39,18 +42,42 @@ export async function updateFetchErrorMessage(errorMessage, clerkId) {
   return { success: true };
 }
 
-export async function updateSelectedLocation(locationId, yelpProfileUrl) {
-  const { data, error } = await supabase
-    .from("locations")
-    .update({
-      is_yelp_configured: true,
-      yelp_profile_url: yelpProfileUrl,
-    })
-    .eq("id", locationId);
+// When Yelp connection is configured, update the selected location with Yelp profile URL
+export async function updateSelectedLocation(
+  locationId,
+  yelpProfileUrl = "",
+  googlePlaceId = "",
+  coordinates
+) {
+  if (yelpProfileUrl !== "") {
+    const { data, error } = await supabase
+      .from("locations")
+      .update({
+        is_yelp_configured: true,
+        yelp_profile_url: yelpProfileUrl,
+      })
+      .eq("id", locationId);
 
-  if (error) {
-    console.error("Error updating selected location:", error);
-    return { success: false };
+    if (error) {
+      console.error("Error updating selected location:", error);
+      return { success: false };
+    }
+  }
+
+  if (googlePlaceId !== "" && coordinates !== "") {
+    const { data, error } = await supabase
+      .from("locations")
+      .update({
+        is_google_configured: true,
+        google_place_id: googlePlaceId,
+        google_place_coordinates: coordinates,
+      })
+      .eq("id", locationId);
+
+    if (error) {
+      console.error("Error updating selected location:", error);
+      return { success: false };
+    }
   }
 
   return { success: true };
@@ -71,6 +98,7 @@ export async function getLocationInfo(locationId) {
   return { success: true, data };
 }
 
+// Generates review response using Anthropic API
 export async function generateResponse(
   organization_name,
   contant_name,
@@ -101,6 +129,7 @@ export async function generateResponse(
   return message;
 }
 
+// Generates insights from a review text using the Anthropics API
 export async function generateInsights(review_text) {
   const message = await anthropic.messages.create({
     model: "claude-3-5-sonnet-20240620",
@@ -124,15 +153,18 @@ export async function generateInsights(review_text) {
   return message;
 }
 
+// ! Store review in Supabase: only works for Yelp reviews for now
 export async function storeReview(
   review,
   insights,
   locationId,
   clerkId,
-  response_text
+  generated_response,
+  source
 ) {
   try {
     console.log("Storing review -> ", review);
+
     const { data: inserted_review, error: inserted_review_error } =
       await supabase
         .from("reviews")
@@ -140,27 +172,57 @@ export async function storeReview(
           {
             location_id: locationId,
             source_review_id: review.review_id,
-            timestamp: review.timestamp.split("T")[0],
+            timestamp:
+              source === "yelp"
+                ? review.timestamp.split("T")[0]
+                : review.timestamp.split(" ")[0],
             rating: review.rating.value,
             review_text: review.review_text,
-            customer_name: review.user_profile.name,
-            customer_profile_url: review.user_profile.url,
-            customer_image_url: review.user_profile.image_url,
-            has_responded_to: review.responses === null ? false : true,
-            source: "yelp",
-            sentiment: insights.sentimentLabel,
-            summary: insights.summary,
-            generated_response: response_text,
+            customer_name:
+              source === "yelp"
+                ? review.user_profile.name
+                : review.profile_name,
+            customer_profile_url:
+              source === "yelp" ? review.user_profile.url : review.profile_url,
+            customer_image_url:
+              source === "yelp"
+                ? review.user_profile.image_url
+                : review.profile_image_url,
+            review_url: source === "yelp" ? null : review.review_url,
+            has_responded_to:
+              source === "yelp"
+                ? review.responses === null
+                  ? false
+                  : true
+                : review.owner_answer === null
+                ? false
+                : true,
+            source: source,
+            sentiment: insights === null ? null : insights.sentimentLabel,
+            summary: insights === null ? null : insights.summary,
+            generated_response:
+              generated_response === null ? null : generated_response,
             return_likelihood:
-              insights.businessInsights?.returnLikelihood?.indication || null,
-            response_text:
-              review.responses === null ? null : review.responses[0].text,
-            response_timestamp:
-              review.responses === null
+              insights === null
                 ? null
-                : review.responses[0].timestamp.split(" ")[0],
-            response_title:
-              review.responses === null ? null : review.responses[0].title,
+                : insights.businessInsights?.returnLikelihood?.indication ||
+                  null,
+            response_text:
+              source === "yelp"
+                ? review.responses === null
+                  ? null
+                  : review.responses[0].text
+                : review.owner_answer === null
+                ? null
+                : review.owner_answer,
+            response_timestamp:
+              source === "yelp"
+                ? review.responses === null
+                  ? null
+                  : review.responses[0].timestamp.split(" ")[0]
+                : review.owner_timestamp === null
+                ? null
+                : review.owner_timestamp,
           },
         ])
         .select("*");
@@ -283,10 +345,16 @@ export async function storeReview(
   }
 }
 
-export async function deleteReviewsForLocation(locationId) {
+// When fetching for reviews for a specific locaiton, we need to delete all existing reviews because current location ID is different
+// Usually, the user won't be fetching reviews for a new location under the same location ID
+export async function deleteReviewsForLocation(locationId, source) {
   try {
     const { data: existing_reviews, error: existing_reviews_error } =
-      await supabase.from("reviews").select("*").eq("location_id", locationId);
+      await supabase
+        .from("reviews")
+        .select("*")
+        .eq("location_id", locationId)
+        .eq("source", source);
 
     if (existing_reviews_error) {
       console.error("Error fetching existing reviews:", existing_reviews_error);
@@ -315,7 +383,7 @@ export async function deleteReviewsForLocation(locationId) {
   }
 }
 
-// Helper functions for inserting data
+// Helper function to insert a row in business_category_mentions table
 async function insertContext(reviewId, categoryId, context, sentiment) {
   if (!context) return null;
   const { data, error } = await supabase
@@ -334,6 +402,7 @@ async function insertContext(reviewId, categoryId, context, sentiment) {
   return data;
 }
 
+// Helper function to insert a row in keywords table
 async function insertKeyword(reviewId, categoryId, keyword, location_id) {
   if (!keyword || !keyword.keyword) return null;
   const { data, error } = await supabase
@@ -353,6 +422,7 @@ async function insertKeyword(reviewId, categoryId, keyword, location_id) {
   return data;
 }
 
+// Helper function to insert a row in detailed_aspects table
 async function insertDetailedAspect(reviewId, aspect, sentiment) {
   if (!aspect || !aspect.aspect) return null;
   const { data, error } = await supabase
@@ -372,6 +442,7 @@ async function insertDetailedAspect(reviewId, aspect, sentiment) {
   return data;
 }
 
+// Helper function to insert a row in staff_mentions table
 async function insertStaffMention(reviewId, locationId, mention) {
   if (!mention || !mention.name || mention.name.toLowerCase() === "n/a")
     return null;
@@ -392,6 +463,7 @@ async function insertStaffMention(reviewId, locationId, mention) {
   return data;
 }
 
+// Helper function to insert a row in product_service_feedback table
 async function insertProductServiceFeedback(reviewId, locationId, feedback) {
   if (!feedback || !feedback.item) return null;
   const { data, error } = await supabase

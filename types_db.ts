@@ -404,9 +404,9 @@ export type Database = {
           rating: number | null
           response_text: string | null
           response_timestamp: string | null
-          response_title: string | null
           return_likelihood: string | null
           review_text: string | null
+          review_url: string | null
           sentiment: string | null
           source: string | null
           source_review_id: string | null
@@ -425,9 +425,9 @@ export type Database = {
           rating?: number | null
           response_text?: string | null
           response_timestamp?: string | null
-          response_title?: string | null
           return_likelihood?: string | null
           review_text?: string | null
+          review_url?: string | null
           sentiment?: string | null
           source?: string | null
           source_review_id?: string | null
@@ -446,9 +446,9 @@ export type Database = {
           rating?: number | null
           response_text?: string | null
           response_timestamp?: string | null
-          response_title?: string | null
           return_likelihood?: string | null
           review_text?: string | null
+          review_url?: string | null
           sentiment?: string | null
           source?: string | null
           source_review_id?: string | null

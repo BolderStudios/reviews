@@ -1,12 +1,19 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Buttons/button";
-import { initiateYelpFetch, getFetchStatus } from "@/app/actions";
 import {
   Form,
   FormControl,
@@ -16,14 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { initiateYelpFetch, getFetchStatus } from "@/app/actions";
 
 const formSchema = z.object({
   yelpBusinessLink: z.string().url("Please enter a valid Yelp business URL"),
@@ -57,6 +57,7 @@ export function AddYelpConnection({
       if (success) {
         if (data.is_fetching) {
           setIsLoading(true);
+
           if (!hasShownFetchingToast.current) {
             toast.info(
               "Yelp review fetch is in progress. This may take up to 10 minutes."
@@ -65,11 +66,13 @@ export function AddYelpConnection({
           }
         } else {
           setIsLoading(false);
+
           if (
             data.fetch_error_message &&
             data.fetch_error_message !== lastErrorMessageRef.current
           ) {
             lastErrorMessageRef.current = data.fetch_error_message;
+
             if (!hasShownErrorToastRef.current) {
               toast.error(`Fetch error: ${data.fetch_error_message}`);
               hasShownErrorToastRef.current = true;
@@ -77,6 +80,7 @@ export function AddYelpConnection({
           } else if (hasShownFetchingToast.current) {
             hasShownFetchingToast.current = false;
             hasShownErrorToastRef.current = false;
+
             if (!data.fetch_error_message) {
               toast.success("Yelp reviews fetched successfully!");
               router.push("/dashboard");
@@ -116,7 +120,7 @@ export function AddYelpConnection({
   };
 
   const buttonContent = () => {
-    if (isLoading) return "Fetching Yelp Reviews...";
+    if (isLoading) return "Review Fetching In Progress...";
     if (is_yelp_configured) return "Update Yelp Profile";
     return "Connect Yelp Profile";
   };

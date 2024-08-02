@@ -145,7 +145,17 @@ export function UpdateLocation({ selectedLocation }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="w-fit">
+        <Button
+          disabled={
+            locationData?.organization_name === undefined ||
+            locationData?.organization_name === null
+              ? true
+              : false
+          }
+          variant="outline"
+          size="sm"
+          className="w-fit"
+        >
           Manage {locationData?.organization_name}
         </Button>
       </DialogTrigger>

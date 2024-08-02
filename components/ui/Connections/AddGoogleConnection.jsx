@@ -8,66 +8,137 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { addLocationFunc } from "@/app/actions";
 import { Button } from "@/components/ui/Buttons/button";
-import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { initiateGoogleFetch, getFetchStatus } from "@/app/actions";
 
 const formSchema = z.object({
   googlePlaceId: z.string().min(1, "Place ID is required"),
   googlePlaceCoordinates: z.string().min(1, "Coordinates are required"),
 });
 
-export function AddGoogleConnection() {
+export function AddGoogleConnection({
+  is_fetching,
+  google_place_id,
+  is_google_configured,
+  google_place_coordinates,
+}) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(is_fetching || false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const hasShownFetchingToast = useRef(false);
+  const lastErrorMessageRef = useRef("");
+  const hasShownErrorToastRef = useRef(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      googlePlaceId: "",
-      googlePlaceCoordinates: "",
+      googlePlaceId: google_place_id || "",
+      googlePlaceCoordinates: google_place_coordinates || "",
     },
   });
 
+  useEffect(() => {
+    let intervalId;
+
+    const checkFetchStatus = async () => {
+      const { success, data } = await getFetchStatus();
+
+      if (success) {
+        if (data.is_fetching) {
+          setIsLoading(true);
+
+          if (!hasShownFetchingToast.current) {
+            toast.info(
+              "Yelp review fetch is in progress. This may take up to 10 minutes."
+            );
+
+            hasShownFetchingToast.current = true;
+          }
+        } else {
+          setIsLoading(false);
+
+          if (
+            data.fetch_error_message &&
+            data.fetch_error_message !== lastErrorMessageRef.current
+          ) {
+            lastErrorMessageRef.current = data.fetch_error_message;
+
+            if (!hasShownErrorToastRef.current) {
+              toast.error(`Fetch error: ${data.fetch_error_message}`);
+              hasShownErrorToastRef.current = true;
+            }
+          } else if (hasShownFetchingToast.current) {
+            hasShownFetchingToast.current = false;
+            hasShownErrorToastRef.current = false;
+
+            if (!data.fetch_error_message) {
+              toast.success("Yelp reviews fetched successfully!");
+              router.push("/dashboard");
+            }
+          }
+        }
+      }
+    };
+
+    // Initial check
+    checkFetchStatus();
+
+    // Set up interval
+    intervalId = setInterval(checkFetchStatus, 30000);
+
+    // Cleanup function
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [router]);
+
   const handleSubmit = async (formData) => {
     setIsLoading(true);
-    try {
-      const response = await addLocationFunc(formData);
-      if (response.success === true) {
-        toast.success("Google Business Profile connected successfully!");
-        form.reset();
-      } else {
-        toast.error(
-          "Failed to connect Google Business Profile. Please try again."
-        );
-      }
-    } catch (error) {
-      toast.error("An error occurred. Please try again.");
-    } finally {
+    const { success } = await initiateGoogleFetch(formData);
+
+    if (success) {
+      toast.info(
+        "Google review fetch initiated. This process will take up to 10 minutes. You can close this dialog and check back later."
+      );
+      setIsDialogOpen(false);
+      router.refresh();
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
       setIsLoading(false);
       router.refresh();
     }
   };
 
+  const buttonContent = () => {
+    if (isLoading) return "Review Fetching In Progress...";
+    if (is_google_configured) return "Update Google Profile";
+    return "Connect Google Profile";
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full">Add Google Connection</Button>
+        <Button
+          disabled={isLoading}
+          className="w-full"
+          onClick={() => setIsDialogOpen(true)}
+        >
+          {buttonContent()}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
@@ -149,17 +220,13 @@ export function AddGoogleConnection() {
               )}
             />
 
-            {isLoading ? (
-              <ButtonLoading
-                size="lg"
-                width="w-full"
-                content="Connecting to Google..."
-              />
-            ) : (
-              <Button type="submit" size="lg" className="w-full">
-                Connect Google Business Profile
-              </Button>
-            )}
+            <Button type="submit" size="lg" className="w-full">
+              {isLoading
+                ? "Fetching..."
+                : is_google_configured
+                ? "Update and Fetch Reviews"
+                : "Connect and Fetch Reviews"}
+            </Button>
           </form>
         </Form>
       </DialogContent>

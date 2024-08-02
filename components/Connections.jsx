@@ -57,8 +57,8 @@ export default function Connections({ selectedLocation, isFetching }) {
                 </p>
                 <AddYelpConnection
                   is_fetching={isFetching}
-                  is_yelp_configured={selectedLocation.is_yelp_configured}
-                  yelp_profile_url={selectedLocation.yelp_profile_url}
+                  is_yelp_configured={selectedLocation?.is_yelp_configured}
+                  yelp_profile_url={selectedLocation?.yelp_profile_url}
                 />
               </div>
             </div>
@@ -80,11 +80,11 @@ export default function Connections({ selectedLocation, isFetching }) {
                   Connect your Google Business Profile to manage reviews.
                 </p>
                 <AddGoogleConnection
-                  is_google_configured={selectedLocation.is_google_configured}
-                  is_fetching={selectedLocation.is_fetching}
-                  google_place_id={selectedLocation.google_place_id}
+                  is_fetching={isFetching}
+                  is_google_configured={selectedLocation?.is_google_configured}
+                  google_place_id={selectedLocation?.google_place_id}
                   google_place_coordinates={
-                    selectedLocation.google_place_coordinates
+                    selectedLocation?.google_place_coordinates
                   }
                 />
               </div>

@@ -57,6 +57,7 @@ export function SentimentDistribution({ sentimentDistribution }) {
   ];
 
   const totalReviews = chartData.reduce((sum, item) => sum + item.reviews, 0);
+  console.log("totalReviews", totalReviews);
   const positivePercentage = (
     (sentimentDistribution.positive / totalReviews) *
     100
