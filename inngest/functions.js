@@ -453,8 +453,12 @@ export const processGoogleReviews = inngest.createFunction(
       );
       console.log(`Unique review count: ${uniqueReviews.length}`);
 
-      for (const [index, review] of uniqueReviews.entries()) {
-        await inngest.send({
+      const limit = pLimit(5); // Limit concurrency to 5
+      const baseDelay = 20000; // 20 seconds delay between reviews
+
+      const sendJob = async (review, index) => {
+        await new Promise((resolve) => setTimeout(resolve, baseDelay));
+        return inngest.send({
           name: "process/single.google.review",
           data: {
             review,
@@ -464,7 +468,14 @@ export const processGoogleReviews = inngest.createFunction(
             total: uniqueReviews.length,
           },
         });
-      }
+      };
+
+      // Create a job for each review with concurrency limit
+      const jobPromises = uniqueReviews.map((review, index) =>
+        limit(() => sendJob(review, index))
+      );
+
+      await Promise.all(jobPromises);
 
       console.log(
         `Created ${uniqueReviews.length} individual review processing jobs`

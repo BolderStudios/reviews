@@ -17,12 +17,19 @@ export default async function Page({ params }) {
     notFound();
   }
 
+  const { data: allProductMentions, error: allProductMentionsError } =
+    await supabase
+      .from("product_service_feedback")
+      .select("item")
+      .eq("location_id", location_id);
+
+  // console.log("All product mentions: ", allProductMentions);
+  // console.log("All product mentions: ", allProductMentions.length);
+
   const { data: allReviews, error: allReviewsError } = await supabase
     .from("reviews")
     .select("*")
     .eq("location_id", location_id);
-
-  console.log("All reviews length: ", allReviews.length);
 
   const posReviewsLength = allReviews.filter(
     (review) => review.sentiment === "Positive"

@@ -11,6 +11,7 @@ import {
   Star,
   ContainerIcon,
   BookOpenText,
+  Info,
   Contact,
   ShoppingBasket,
   Users,
@@ -172,14 +173,14 @@ export default function SidebarNavigation({
                 <ContainerIcon className="h-4 w-4" />
                 Connections
               </Link>
-              {/* <Link
+              <Link
                 prefetch={false}
                 href={`/keywords/${selectedLocation?.id || ""}`}
                 className={activeLinkClass("/keywords")}
               >
                 <Info className="h-4 w-4" />
                 Keywords
-              </Link> */}
+              </Link>
               <Link
                 prefetch={false}
                 href={`/employee_mentions/${selectedLocation?.id || ""}`}
