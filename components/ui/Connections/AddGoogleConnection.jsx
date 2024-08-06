@@ -15,14 +15,6 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Buttons/button";
 import GooglePlacesAPI from "@/components/ui/Connections/GooglePlacesAPI";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { initiateGoogleFetch, getFetchStatus } from "@/app/actions";
 
@@ -31,12 +23,7 @@ const formSchema = z.object({
   googlePlaceCoordinates: z.string().min(1, "Coordinates are required"),
 });
 
-export function AddGoogleConnection({
-  is_fetching,
-  google_place_id,
-  is_google_configured,
-  google_place_coordinates,
-}) {
+export function AddGoogleConnection({ is_fetching, is_google_configured }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(is_fetching || false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,14 +31,6 @@ export function AddGoogleConnection({
   const lastErrorMessageRef = useRef("");
   const hasShownErrorToastRef = useRef(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
-
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      googlePlaceId: google_place_id || "",
-      googlePlaceCoordinates: google_place_coordinates || "",
-    },
-  });
 
   useEffect(() => {
     let intervalId;
@@ -153,7 +132,7 @@ export function AddGoogleConnection({
         </DialogHeader>
 
         <GooglePlacesAPI setSelectedPlace={setSelectedPlace} />
-        
+
         <Button
           onClick={handleSubmit}
           disabled={isLoading || !selectedPlace}
@@ -168,88 +147,4 @@ export function AddGoogleConnection({
       </DialogContent>
     </Dialog>
   );
-}
-
-{
-  /* <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit, (errors) => {
-              Object.values(errors).forEach((error) => {
-                toast.error(error.message);
-              });
-            })}
-            className="space-y-4"
-          >
-            <FormField
-              control={form.control}
-              name="googlePlaceId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="googlePlaceId">Google Place ID</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="googlePlaceId"
-                      placeholder="ChIJ2eUgeAK6j4ARbn5u_wAGqWA"
-                      {...field}
-                    />
-                  </FormControl>
-                  <div className="text-sm text-muted-foreground">
-                    Enter your Google Place ID. You can find this by:
-                    <ol className="list-decimal list-inside mt-2 space-y-1">
-                      <li>
-                        Go to the{" "}
-                        <a
-                          href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 hover:underline"
-                        >
-                          Place ID Finder
-                        </a>
-                      </li>
-                      <li>Search for your business name</li>
-                      <li>Copy the Place ID shown in the results</li>
-                    </ol>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="googlePlaceCoordinates"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="googlePlaceCoordinates">
-                    Google Place Coordinates
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      id="googlePlaceCoordinates"
-                      placeholder="37.7749,-122.4194"
-                      {...field}
-                    />
-                  </FormControl>
-                  <div className="text-sm text-muted-foreground">
-                    Enter the latitude and longitude of your business location,
-                    separated by a comma. You can find these coordinates by:
-                    <ol className="list-decimal list-inside mt-2 space-y-1">
-                      <li>Go to Google Maps</li>
-                      <li>Right-click on your business location</li>
-                      <li>Copy the coordinates shown at the top</li>
-                    </ol>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" size="lg" className="w-full">
-              {isLoading
-                ? "Fetching..."
-                : is_google_configured
-                ? "Update and Fetch Reviews"
-                : "Connect and Fetch Reviews"}
-            </Button>
-          </form>
-        </Form> */
 }

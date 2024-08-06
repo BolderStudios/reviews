@@ -82,10 +82,6 @@ export default function Connections({ selectedLocation, isFetching }) {
                 <AddGoogleConnection
                   is_fetching={isFetching}
                   is_google_configured={selectedLocation?.is_google_configured}
-                  google_place_id={selectedLocation?.google_place_id}
-                  google_place_coordinates={
-                    selectedLocation?.google_place_coordinates
-                  }
                 />
               </div>
             </div>
