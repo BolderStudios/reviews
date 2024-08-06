@@ -5,6 +5,7 @@ import Connections from "@/components/Connections";
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
+import GooglePlacesAPI from "@/components/ui/Connections/GooglePlacesAPI";
 
 export default async function Page({ params }) {
   const { location_id } = params;
@@ -31,5 +32,7 @@ export default async function Page({ params }) {
       selectedLocation={location}
       isFetching={userData?.is_fetching}
     />
+
+    // <GooglePlacesAPI />
   );
 }

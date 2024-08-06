@@ -408,7 +408,7 @@ export async function initiateYelpFetch(formData) {
   }
 }
 
-export async function initiateGoogleFetch(formData) {
+export async function initiateGoogleFetch(selectedPlace) {
   const { userId } = await auth();
 
   try {
@@ -424,10 +424,10 @@ export async function initiateGoogleFetch(formData) {
     await inngest.send({
       name: "fetch/google.reviews",
       data: {
-        googlePlaceId: formData.googlePlaceId,
+        googlePlaceId: selectedPlace.place_id,
         locationId: userData.selected_location_id,
         clerkId: userId,
-        coordinates: formData.googlePlaceCoordinates,
+        coordinates: `${selectedPlace.lat}, ${selectedPlace.lng}`,
       },
     });
 

@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Buttons/button";
+import GooglePlacesAPI from "@/components/ui/Connections/GooglePlacesAPI";
 import {
   Form,
   FormControl,
@@ -42,6 +43,7 @@ export function AddGoogleConnection({
   const hasShownFetchingToast = useRef(false);
   const lastErrorMessageRef = useRef("");
   const hasShownErrorToastRef = useRef(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -106,9 +108,9 @@ export function AddGoogleConnection({
     };
   }, [router]);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async () => {
     setIsLoading(true);
-    const { success } = await initiateGoogleFetch(formData);
+    const { success } = await initiateGoogleFetch(selectedPlace);
 
     if (success) {
       toast.info(
@@ -140,6 +142,7 @@ export function AddGoogleConnection({
           {buttonContent()}
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Connect Google Business Profile</DialogTitle>
@@ -148,7 +151,27 @@ export function AddGoogleConnection({
             reviews.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
+
+        <GooglePlacesAPI setSelectedPlace={setSelectedPlace} />
+        
+        <Button
+          onClick={handleSubmit}
+          disabled={isLoading || !selectedPlace}
+          className="w-full"
+        >
+          {isLoading
+            ? "Fetching..."
+            : is_google_configured
+            ? "Update and Fetch Reviews"
+            : "Connect and Fetch Reviews"}
+        </Button>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+{
+  /* <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit, (errors) => {
               Object.values(errors).forEach((error) => {
@@ -228,8 +251,5 @@ export function AddGoogleConnection({
                 : "Connect and Fetch Reviews"}
             </Button>
           </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
+        </Form> */
 }
