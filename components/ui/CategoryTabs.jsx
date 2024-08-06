@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function CategoryTabs({ categories }) {
   const defaultCategory = categories[0];
+  
   const [selectedCategory, setSelectedCategory] = useState(defaultCategory);
   const [keywords, setKeywords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,15 +14,19 @@ export function CategoryTabs({ categories }) {
   useEffect(() => {
     const callExtractKeywords = async () => {
       setIsLoading(true);
+
       const extractedKeywords = await extractKeywords(selectedCategory);
+      
       if (extractedKeywords.success) {
         setKeywords(extractedKeywords.keywords);
       } else {
         console.error("Failed to extract keywords:", extractedKeywords.error);
         setKeywords([]);
       }
+
       setIsLoading(false);
     };
+
     callExtractKeywords();
   }, [selectedCategory]);
 

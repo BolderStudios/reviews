@@ -51,6 +51,15 @@ const industries = [
   { value: "retail", label: "Retail" },
   { value: "healthcare", label: "Healthcare" },
   { value: "technology", label: "Technology" },
+  { value: "cafe-bakery", label: "Café/Bakery" },
+  { value: "juice-bar-smoothie-shop", label: "Juice Bar/Smoothie Shop" },
+  { value: "nail-salon", label: "Nail Salon" },
+  { value: "barbershop", label: "Barbershop" },
+  { value: "hair-salon", label: "Hair Salon" },
+  { value: "beauty-salon-spa", label: "Beauty Salon/Spa" },
+  { value: "yoga-studio", label: "Yoga Studio" },
+  { value: "gym-fitness-center", label: "Gym/Fitness Center" },
+  { value: "coffee-shop", label: "Coffee Shop" },
 ];
 
 const positions = [

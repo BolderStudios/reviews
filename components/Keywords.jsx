@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { getCategories } from "@/utils/reviews";
@@ -13,10 +14,13 @@ export default function Keywords({ selectedLocation }) {
   useEffect(() => {
     const fetchCategoriesData = async () => {
       setIsPageLoading(true);
+
       const categories = await getCategories(selectedLocation.id);
+
       setCategoriesData(categories);
       setIsPageLoading(false);
     };
+
     fetchCategoriesData();
   }, [selectedLocation]);
 
@@ -51,6 +55,7 @@ export default function Keywords({ selectedLocation }) {
         ) : (
           <>
             {renderEmptyState()}
+            
             <div className="mt-8 opacity-50 pointer-events-none">
               <CategoryTabs categories={[]} />
             </div>
