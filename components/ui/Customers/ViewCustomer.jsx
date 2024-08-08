@@ -147,10 +147,10 @@ export function ViewCustomer({ customer }) {
               <div className="w-full h-40 border border-gray-200 bg-stone-100 rounded-lg flex flex-col items-center justify-center p-4">
                 <MessageSquare className="text-gray-400 mb-2" size={24} />
                 <h3 className="text-lg font-semibold text-gray-700 mb-1">
-                  Testimonial hasn't been submitted yet
+                  No Testimonial Yet
                 </h3>
                 <p className="text-sm text-gray-500 text-center">
-                  Customer's testimonial will appear here once submitted.
+                  Testimonial will appear here once submitted.
                 </p>
               </div>
             </div>

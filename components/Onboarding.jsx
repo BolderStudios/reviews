@@ -48,6 +48,9 @@ import { Textarea } from "@/components/ui/textarea";
 
 const industries = [
   { value: "restaurant", label: "Restaurant" },
+  { value: "general-contractor", label: "General Contractor" },
+  { value: "handyman", label: "Handyman" },
+  { value: "real-estate", label: "Real Estate" },
   { value: "retail", label: "Retail" },
   { value: "healthcare", label: "Healthcare" },
   { value: "technology", label: "Technology" },
