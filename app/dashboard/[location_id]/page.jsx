@@ -20,11 +20,11 @@ export default async function Page({ params }) {
   const { data: allProductMentions, error: allProductMentionsError } =
     await supabase
       .from("product_service_feedback")
-      .select("item")
+      .select("item, sentiment")
       .eq("location_id", location_id);
 
   // console.log("All product mentions: ", allProductMentions);
-  // console.log("All product mentions: ", allProductMentions.length);
+  // console.log("All product mentions length: ", allProductMentions.length);
 
   const { data: allReviews, error: allReviewsError } = await supabase
     .from("reviews")

@@ -47,7 +47,6 @@ const positions = [
   { value: "manager", label: "Manager" },
   { value: "director", label: "Director" },
   { value: "supervisor", label: "Supervisor" },
-  { value: "n/a", label: "N/A" },
 ];
 
 const formSchema = z.object({
@@ -84,7 +83,7 @@ export function AddLocation() {
           nameOfContact: "",
           positionOfContact: "",
         });
-        
+
         router.refresh();
       } else {
         toast.error("Failed to add location. Please try again.");

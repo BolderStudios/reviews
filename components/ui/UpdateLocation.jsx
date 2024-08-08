@@ -40,7 +40,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -50,7 +49,6 @@ const positions = [
   { value: "manager", label: "Manager" },
   { value: "director", label: "Director" },
   { value: "supervisor", label: "Supervisor" },
-  { value: "n/a", label: "N/A" },
 ];
 
 const formSchema = z.object({
@@ -90,9 +88,22 @@ export function UpdateLocation({ selectedLocation }) {
   }, [selectedLocation]);
 
   const handleUpdate = async (formData) => {
+    console.log("formData", formData);
+    if (formData.nameOfContact === "" && formData.positionOfContact !== "") {
+      toast.error("Please the name of contact.");
+      return;
+    }
+
+    if (formData.positionOfContact === "" && formData.nameOfContact !== "") {
+      toast.error("Please enter the position of contact.");
+      return;
+    }
+
     setIsUpdating(true);
+
     try {
       const response = await updateLocationFunc(selectedLocation.id, formData);
+
       if (response.success) {
         if (response.message === "No changes to apply") {
           toast.info(response.message);
@@ -106,6 +117,7 @@ export function UpdateLocation({ selectedLocation }) {
       }
     } catch (error) {
       console.error("Error updating location:", error);
+
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsUpdating(false);

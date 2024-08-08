@@ -292,14 +292,19 @@ export async function updateLocationFunc(locationId, formData) {
   console.log("Updating location ID: ", locationId, "with data: ", formData);
   const { userId } = await auth();
 
-  // Prepare the update object, only including fields that are present in formData
+  // Prepare the update object
   const updateObject = {};
-  if (formData.organizationName)
+
+  // Always update organization_name if provided
+  if (formData.organizationName) {
     updateObject.organization_name = formData.organizationName;
-  if (formData.nameOfContact)
-    updateObject.contact_name = formData.nameOfContact;
-  if (formData.positionOfContact)
-    updateObject.contact_position = formData.positionOfContact;
+  }
+
+  // Only update name_of_contact and position_of_contact if both are provided
+  if (formData.nameOfContact && formData.positionOfContact) {
+    updateObject.name_of_contact = formData.nameOfContact;
+    updateObject.position_of_contact = formData.positionOfContact;
+  }
 
   // Only proceed with the update if there are fields to update
   if (Object.keys(updateObject).length === 0) {
