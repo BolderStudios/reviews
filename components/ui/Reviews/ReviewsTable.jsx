@@ -95,6 +95,23 @@ export function ReviewsTable({ columns, data }) {
           </SelectContent>
         </Select>
         <Select
+          value={table.getColumn("source")?.getFilterValue() ?? ""}
+          onValueChange={(value) =>
+            table.getColumn("source")?.setFilterValue(value)
+          }
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select Source" />
+          </SelectTrigger>
+          <SelectContent>
+            {["google", "yelp"].map((source) => (
+              <SelectItem key={source} value={source}>
+                {source[0].toUpperCase() + source.slice(1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
           value={table.getColumn("has_responded_to")?.getFilterValue() ?? ""}
           onValueChange={(value) =>
             table.getColumn("has_responded_to")?.setFilterValue(value)
