@@ -90,7 +90,7 @@ const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-    width: 88.3
+    width: 88.3,
   },
   {
     accessorKey: "timestamp",
@@ -186,20 +186,21 @@ const columns = [
       const filterValue = table.getColumn("summary")?.getFilterValue() || "";
       return (
         <div className="w-full">
-          <div className={isExpanded ? "" : "line-clamp-2"}>
+          <div className={isExpanded ? "" : "line-clamp-3"}>
             <HighlightedText
               text={value === null ? "No summary available." : value}
               highlight={filterValue}
             />
           </div>
-          {value !== null && value.length > 100 && (
+
+          {/* {value !== null && value.length > 100 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-blue-500 hover:underline mt-1"
             >
               {isExpanded ? "Show less" : "Show more"}
             </button>
-          )}
+          )} */}
         </div>
       );
     },
