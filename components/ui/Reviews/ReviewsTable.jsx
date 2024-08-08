@@ -137,7 +137,11 @@ export function ReviewsTable({ columns, data }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="h-12">
+                    <TableHead
+                      key={header.id}
+                      className="h-12"
+                      style={{ width: header.column.columnDef.width }}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -150,6 +154,7 @@ export function ReviewsTable({ columns, data }) {
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

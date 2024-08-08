@@ -104,6 +104,7 @@ export function EmployeeMentionsTable({ columns, data }) {
               </TableRow>
             ))}
           </TableHeader>
+          
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

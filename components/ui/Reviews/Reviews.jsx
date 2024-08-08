@@ -74,6 +74,7 @@ const columns = [
         </div>
       );
     },
+    width: 82.6,
   },
   {
     accessorKey: "source",
@@ -89,6 +90,7 @@ const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
+    width: 88.3
   },
   {
     accessorKey: "timestamp",
@@ -111,6 +113,7 @@ const columns = [
       const day = value.split("-")[2].split("T")[0];
       return <div className="text-center">{`${month}-${day}-${year}`}</div>;
     },
+    width: 118.9,
   },
   {
     accessorKey: "rating",
@@ -133,6 +136,7 @@ const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id).toString());
     },
+    width: 112,
   },
   {
     accessorKey: "sentiment",
@@ -165,6 +169,7 @@ const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
+    width: 105.9,
   },
   {
     accessorKey: "summary",
@@ -198,6 +203,7 @@ const columns = [
         </div>
       );
     },
+    width: 560,
   },
   {
     accessorKey: "has_responded_to",
@@ -217,6 +223,7 @@ const columns = [
     filterFn: (row, id, value) => {
       return value === row.getValue(id).toString();
     },
+    width: 97.9,
   },
 ];
 
