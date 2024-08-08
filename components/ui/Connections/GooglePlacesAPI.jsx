@@ -13,7 +13,7 @@ export default function GooglePlacesAPI({ setSelectedPlace }) {
     libraries: ["places"],
   });
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (!isLoaded) return <div>Loading Google Maps data...</div>;
 
   return <PlacesAutocomplete setSelected={setSelectedPlace} />;
 }

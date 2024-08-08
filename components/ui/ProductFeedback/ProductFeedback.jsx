@@ -11,7 +11,7 @@ import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 const columns = [
   {
     accessorKey: "item",
-    header: () => <div className="text-center">Item</div>,
+    header: () => <div className="text-center">Item/Service</div>,
     cell: ({ row }) => {
       const value = row.getValue("item");
       return <p className="text-center">{value}</p>;

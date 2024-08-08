@@ -88,7 +88,6 @@ export function UpdateLocation({ selectedLocation }) {
   }, [selectedLocation]);
 
   const handleUpdate = async (formData) => {
-    console.log("formData", formData);
     if (formData.nameOfContact === "" && formData.positionOfContact !== "") {
       toast.error("Please the name of contact.");
       return;
