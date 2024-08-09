@@ -604,7 +604,6 @@ export type Database = {
           clerk_email: string
           clerk_id: string
           created_at: string
-          customer_retention_challenges: string | null
           employee_count: number | null
           fetch_error_message: string | null
           id: string
@@ -613,13 +612,13 @@ export type Database = {
           is_onboarding_complete: boolean
           location_count: number | null
           organization_industry: string | null
+          pain_points: string | null
           selected_location_id: string | null
         }
         Insert: {
           clerk_email: string
           clerk_id: string
           created_at?: string
-          customer_retention_challenges?: string | null
           employee_count?: number | null
           fetch_error_message?: string | null
           id?: string
@@ -628,13 +627,13 @@ export type Database = {
           is_onboarding_complete?: boolean
           location_count?: number | null
           organization_industry?: string | null
+          pain_points?: string | null
           selected_location_id?: string | null
         }
         Update: {
           clerk_email?: string
           clerk_id?: string
           created_at?: string
-          customer_retention_challenges?: string | null
           employee_count?: number | null
           fetch_error_message?: string | null
           id?: string
@@ -643,6 +642,7 @@ export type Database = {
           is_onboarding_complete?: boolean
           location_count?: number | null
           organization_industry?: string | null
+          pain_points?: string | null
           selected_location_id?: string | null
         }
         Relationships: []

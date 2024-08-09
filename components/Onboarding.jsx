@@ -79,12 +79,9 @@ const formSchema = z.object({
   nameOfContact: z.string().min(1, "Review overseer's name is required"),
   employeeCount: z.coerce.number().min(1, "Add number of employees you have"),
   locationCount: z.coerce.number().min(1, "Add number of locations you run"),
-  customerRetentionChallenges: z
+  painPoints: z
     .string()
-    .min(1, "Describe your custom retential challenges"),
-  // complementarySolutions: z
-  //   .string()
-  //   .min(1, "Complementary solutions are required"),
+    .min(1, "Describe how you currently ask customers for testimonials"),
 });
 
 export default function OnboardingComponent() {
@@ -100,7 +97,7 @@ export default function OnboardingComponent() {
       organizationIndustry: "",
       employeeCount: "",
       locationCount: "",
-      customerRetentionChallenges: "",
+      painPoints: "",
       nameOfContact: "",
       positionOfContact: "",
     }
@@ -130,7 +127,7 @@ export default function OnboardingComponent() {
         organizationIndustry: "",
         employeeCount: "",
         locationCount: "",
-        customerRetentionChallenges: "",
+        painPoints: "",
         nameOfContact: "",
         positionOfContact: "",
       });
@@ -416,47 +413,22 @@ export default function OnboardingComponent() {
 
             <FormField
               control={form.control}
-              name="customerRetentionChallenges"
+              name="painPoints"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel
-                    className="text-foreground"
-                    htmlFor="customerRetentionChallenges"
-                  >
-                    Customer Retential Challenges
+                  <FormLabel className="text-foreground" htmlFor="painPoints">
+                    Current testimonial request process
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      id="customerRetentionChallenges"
-                      placeholder="Describe your business goals or challenges regarding customer retention"
+                      id="painPoints"
+                      placeholder="Describe how you currently ask customers for testimonials (e.g., email, in person, automated system)"
                       {...field}
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
-
-            {/* <FormField
-              control={form.control}
-              name="complementarySolutions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    className="text-foreground"
-                    htmlFor="complementarySolutions"
-                  >
-                    Complementary Solutions
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      id="complementarySolutions"
-                      placeholder="Describe complementary solutions we could offer to bring back customers"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
 
             <FormMessage className="text-muted-foreground text-xs">
               By completing this form, you agree to our{" "}

@@ -55,7 +55,7 @@ export const completeOnboarding = async (formData) => {
         organization_industry: formData.organizationIndustry,
         employee_count: formData.employeeCount,
         location_count: formData.locationCount,
-        customer_retention_challenges: formData.customerRetentionChallenges,
+        pain_points: formData.painPoints,
         selected_location_id: primaryLocation.id,
       })
       .eq("clerk_id", userId);
