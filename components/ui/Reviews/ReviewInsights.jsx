@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -12,9 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star, MousePointerClick } from "lucide-react";
 import { getAllReviewData } from "@/utils/reviews";
-import { Copy } from "lucide-react";
+import { Copy, ArrowUpRightIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export function ReviewInsights({ review }) {
   const isDisabled = review === null;
@@ -171,7 +171,20 @@ function CustomerInfoSection({ review, date }) {
         </Avatar>
 
         <div>
-          <h3 className="font-semibold">{review.customer_name}</h3>
+          <div className="flex gap-1 items-center">
+            <span className="font-semibold">{review.customer_name}</span>
+            <Link
+              target="_blank"
+              href={
+                review.source === "yelp"
+                  ? review.customer_profile_url
+                  : review.review_url
+              }
+            >
+              <ArrowUpRightIcon className="h-4 w-4 text-stone-700" />
+            </Link>
+          </div>
+
           <p className="text-sm text-muted-foreground">{`${month}-${day}-${year}`}</p>
         </div>
       </div>
