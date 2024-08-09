@@ -21,7 +21,6 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandList,
   CommandItem,
 } from "@/components/ui/command.jsx";
@@ -72,13 +71,23 @@ const positions = [
   { value: "supervisor", label: "Supervisor" },
 ];
 
+const numberOfCustomers = [
+  { value: "less than 10", label: "Less than 10" },
+  { value: "10 to 50", label: "10 to 50" },
+  { value: "51 to 200", label: "51 to 200" },
+  { value: "201 to 1000", label: "201 to 1000" },
+  { value: "more than 1000", label: "More than 1000" },
+];
+
 const formSchema = z.object({
   organizationName: z.string().min(1, "Business name is required"),
   organizationIndustry: z.string().min(1, "Please select an industry"),
   positionOfContact: z.string().min(1, "Please select a position"),
   nameOfContact: z.string().min(1, "Review overseer's name is required"),
   employeeCount: z.coerce.number().min(1, "Add number of employees you have"),
-  locationCount: z.coerce.number().min(1, "Add number of locations you run"),
+  customersCount: z.coerce
+    .string()
+    .min(1, "Add number of customers visit daily"),
   painPoints: z
     .string()
     .min(1, "Describe how you currently ask customers for testimonials"),
@@ -90,13 +99,14 @@ export default function OnboardingComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [openIndustry, setOpenIndustry] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
+  const [openCustomersCount, setOpenCustomersCount] = useState(false);
   const [onboardingForm, setOnboardingForm] = useLocalStorage(
     "onboarding_form",
     {
       organizationName: "",
       organizationIndustry: "",
       employeeCount: "",
-      locationCount: "",
+      customersCount: "",
       painPoints: "",
       nameOfContact: "",
       positionOfContact: "",
@@ -126,7 +136,7 @@ export default function OnboardingComponent() {
         organizationName: "",
         organizationIndustry: "",
         employeeCount: "",
-        locationCount: "",
+        customersCount: "",
         painPoints: "",
         nameOfContact: "",
         positionOfContact: "",
@@ -390,22 +400,73 @@ export default function OnboardingComponent() {
 
               <FormField
                 control={form.control}
-                name="locationCount"
+                name="customersCount"
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormLabel
                       className="text-foreground"
-                      htmlFor="locationCount"
+                      htmlFor="customersCount"
                     >
-                      How many locations do you run?
+                      How many customers visit daily?
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="locationCount"
-                        placeholder="Enter number of locations"
-                        {...field}
-                      />
-                    </FormControl>
+                    <Popover
+                      open={openCustomersCount}
+                      onOpenChange={setOpenCustomersCount}
+                    >
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openCustomersCount}
+                            className="w-full justify-between"
+                          >
+                            {field.value
+                              ? numberOfCustomers.find(
+                                  (count) => count.value === field.value
+                                )?.label
+                              : "Select customer count..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[260px] p-0">
+                        <Command className="w-full">
+                          <CommandEmpty className="w-full">
+                            No customer count option found.
+                          </CommandEmpty>
+                          <CommandGroup className="w-full">
+                            <CommandList className="w-full">
+                              {numberOfCustomers.map((count) => (
+                                <CommandItem
+                                  key={`count-${count.value}`}
+                                  value={count.value}
+                                  className="w-full"
+                                  onSelect={(value) => {
+                                    field.onChange(value);
+                                    setOpenCustomersCount(false);
+                                  }}
+                                >
+                                  <div className="flex items-center w-full">
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4 flex-shrink-0",
+                                        field.value === count.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <span className="flex-grow">
+                                      {count.label}
+                                    </span>
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </FormItem>
                 )}
               />

@@ -30,6 +30,7 @@ export const completeOnboarding = async (formData) => {
           organization_name: formData.organizationName,
           name_of_contact: formData.nameOfContact,
           position_of_contact: formData.positionOfContact,
+          daily_customers_count: formData.customersCount,
         },
       ])
       .select()
@@ -54,7 +55,7 @@ export const completeOnboarding = async (formData) => {
         is_onboarding_complete: true,
         organization_industry: formData.organizationIndustry,
         employee_count: formData.employeeCount,
-        location_count: formData.locationCount,
+        daily_customers_count: formData.customersCount,
         pain_points: formData.painPoints,
         selected_location_id: primaryLocation.id,
       })

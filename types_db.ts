@@ -222,6 +222,7 @@ export type Database = {
         Row: {
           clerk_id: string
           created_at: string
+          daily_customers_count: string | null
           google_place_coordinates: string | null
           google_place_id: string | null
           id: string
@@ -238,6 +239,7 @@ export type Database = {
         Insert: {
           clerk_id: string
           created_at?: string
+          daily_customers_count?: string | null
           google_place_coordinates?: string | null
           google_place_id?: string | null
           id?: string
@@ -254,6 +256,7 @@ export type Database = {
         Update: {
           clerk_id?: string
           created_at?: string
+          daily_customers_count?: string | null
           google_place_coordinates?: string | null
           google_place_id?: string | null
           id?: string
@@ -604,13 +607,13 @@ export type Database = {
           clerk_email: string
           clerk_id: string
           created_at: string
+          daily_customers_count: string | null
           employee_count: number | null
           fetch_error_message: string | null
           id: string
           is_admin: boolean
           is_fetching: boolean
           is_onboarding_complete: boolean
-          location_count: number | null
           organization_industry: string | null
           pain_points: string | null
           selected_location_id: string | null
@@ -619,13 +622,13 @@ export type Database = {
           clerk_email: string
           clerk_id: string
           created_at?: string
+          daily_customers_count?: string | null
           employee_count?: number | null
           fetch_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
           is_onboarding_complete?: boolean
-          location_count?: number | null
           organization_industry?: string | null
           pain_points?: string | null
           selected_location_id?: string | null
@@ -634,13 +637,13 @@ export type Database = {
           clerk_email?: string
           clerk_id?: string
           created_at?: string
+          daily_customers_count?: string | null
           employee_count?: number | null
           fetch_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
           is_onboarding_complete?: boolean
-          location_count?: number | null
           organization_industry?: string | null
           pain_points?: string | null
           selected_location_id?: string | null
