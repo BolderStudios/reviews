@@ -604,49 +604,46 @@ export type Database = {
       }
       users: {
         Row: {
+          business_category: string | null
+          business_type: string | null
           clerk_email: string
           clerk_id: string
           created_at: string
-          daily_customers_count: string | null
-          employee_count: number | null
           fetch_error_message: string | null
           id: string
           is_admin: boolean
           is_fetching: boolean
           is_onboarding_complete: boolean
-          organization_industry: string | null
-          pain_points: string | null
           selected_location_id: string | null
+          testimonial_process: string | null
         }
         Insert: {
+          business_category?: string | null
+          business_type?: string | null
           clerk_email: string
           clerk_id: string
           created_at?: string
-          daily_customers_count?: string | null
-          employee_count?: number | null
           fetch_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
           is_onboarding_complete?: boolean
-          organization_industry?: string | null
-          pain_points?: string | null
           selected_location_id?: string | null
+          testimonial_process?: string | null
         }
         Update: {
+          business_category?: string | null
+          business_type?: string | null
           clerk_email?: string
           clerk_id?: string
           created_at?: string
-          daily_customers_count?: string | null
-          employee_count?: number | null
           fetch_error_message?: string | null
           id?: string
           is_admin?: boolean
           is_fetching?: boolean
           is_onboarding_complete?: boolean
-          organization_industry?: string | null
-          pain_points?: string | null
           selected_location_id?: string | null
+          testimonial_process?: string | null
         }
         Relationships: []
       }

@@ -1,11 +1,12 @@
 "use server";
+
 import { auth } from "@clerk/nextjs/server";
 import supabase from "@/utils/supabaseClient";
 import { redirect } from "next/navigation";
 
-export const completeOnboarding = async (formData) => {
-  const { userId } = auth();
+export const completeOnboarding = async (formData, selectedPlace, clerkUser) => {
   console.log("Data from completeOnboarding: ", formData);
+  const { userId } = auth();
 
   try {
     const { data: user, error: userError } = await supabase
@@ -19,7 +20,9 @@ export const completeOnboarding = async (formData) => {
       return { message: "No Logged In User" };
     }
 
-    // Insert new location
+    // Fetch location data using Google Places API
+
+    // Use data from Google Places API and insert new location
     const { data: locationData, error: locationError } = await supabase
       .from("locations")
       .insert([
@@ -49,24 +52,23 @@ export const completeOnboarding = async (formData) => {
       throw new Error("Failed to create primary location");
     }
 
-    const { data, error } = await supabase
-      .from("users")
-      .update({
-        is_onboarding_complete: true,
-        organization_industry: formData.organizationIndustry,
-        employee_count: formData.employeeCount,
-        daily_customers_count: formData.customersCount,
-        pain_points: formData.painPoints,
-        selected_location_id: primaryLocation.id,
-      })
-      .eq("clerk_id", userId);
+    // const { data, error } = await supabase
+    //   .from("users")
+    //   .update({
+    //     is_onboarding_complete: true,
+    //     business_category: formData.businessCategory,
+    //     business_type: formData.businessType,
+    //     testimonial_process: formData.testimonialProcess,
+    //     selected_location_id: primaryLocation.id,
+    //   })
+    //   .eq("clerk_id", userId);
 
-    if (error) {
-      throw error;
-    }
+    // if (error) {
+    //   throw error;
+    // }
 
-    console.log("Onboarding complete. Redirecting to dashboard.");
-    redirect("/dashboard");
+    // console.log("Onboarding complete. Redirecting to dashboard.");
+    // redirect("/dashboard");
   } catch (error) {
     console.error("Error completing onboarding:", error);
     return { message: "Error completing onboarding", error: error.message };

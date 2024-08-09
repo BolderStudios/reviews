@@ -6,6 +6,7 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
+import { Input } from "../input";
 
 export default function GooglePlacesAPI({ setSelectedPlace }) {
   const { isLoaded } = useLoadScript({
@@ -48,7 +49,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
 
       setSelected({ lat, lng, place_id });
 
-      console.log("Selected:", { lat, lng, place_id });
+      // console.log("Selected:", { lat, lng, place_id });
     } catch (error) {
       console.error("Error: ", error);
     }
@@ -74,7 +75,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
 
   return (
     <div className="relative">
-      <input
+      <Input
         value={value}
         onChange={(e) => {
           setValue(e.target.value);
@@ -83,7 +84,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
         }}
         disabled={!ready}
         placeholder="Type your business name and address"
-        className="w-full p-2 border border-stone-300 rounded-md"
+        className="w-full p-2 border border-stone-300 rounded-md placeholder:text-sm placeholder:text-stone-500 text-sm"
         onFocus={() => setShowSuggestions(true)}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         onKeyDown={handleKeyDown}
@@ -96,7 +97,7 @@ const PlacesAutocomplete = ({ setSelected }) => {
       {showSuggestions && status === "OK" && (
         <ul
           id="suggestions-list"
-          className="absolute z-[9999999] w-full bg-white shadow-lg rounded-md mt-1"
+          className="absolute z-[9999999] w-full bg-white shadow-lg rounded-md mt-1 text-sm"
           role="listbox"
           ref={suggestionsRef}
           tabIndex="-1"
