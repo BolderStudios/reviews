@@ -202,21 +202,22 @@ export default function OnboardingComponent() {
       return;
     }
 
-    // setIsLoading(true);
+    setIsLoading(true);
 
     formData.businessLocation = selectedPlace;
 
     try {
       await completeOnboarding(formData);
-      // toast.success("Onboarding complete! Welcome aboard 🎉");
-      // router.push("/dashboard");
-      // form.reset({
-      //   businessCategory: "",
-      //   businessType: "",
-      //   testimonialProcess: "",
-      //   nameOfContact: "",
-      //   positionOfContact: "",
-      // });
+      
+      toast.success("Onboarding complete! Welcome aboard 🎉");
+      router.push("/dashboard");
+      form.reset({
+        businessCategory: "",
+        businessType: "",
+        testimonialProcess: "",
+        nameOfContact: "",
+        positionOfContact: "",
+      });
     } catch (error) {
       toast.error("Oops! Something went wrong. Please try again.");
     } finally {

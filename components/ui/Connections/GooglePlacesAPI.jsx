@@ -10,7 +10,10 @@ import { Input } from "../input";
 // Define libraries outside of the component
 const libraries = ["places"];
 
-export default function GooglePlacesAPI({ setSelectedPlace }) {
+export default function GooglePlacesAPI({
+  setSelectedPlace,
+  is_google_configured = null,
+}) {
   const options = useMemo(
     () => ({
       googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -23,10 +26,15 @@ export default function GooglePlacesAPI({ setSelectedPlace }) {
 
   if (loadError) return <div>Error loading Google Maps</div>;
   if (!isLoaded) return <div>Loading Google Maps data...</div>;
-  return <PlacesAutocomplete setSelected={setSelectedPlace} />;
+  return (
+    <PlacesAutocomplete
+      setSelected={setSelectedPlace}
+      is_google_configured={is_google_configured}
+    />
+  );
 }
 
-const PlacesAutocomplete = ({ setSelected }) => {
+const PlacesAutocomplete = ({ setSelected, is_google_configured }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const suggestionsRef = useRef(null);
@@ -85,7 +93,11 @@ const PlacesAutocomplete = ({ setSelected }) => {
           setActiveIndex(-1);
         }}
         disabled={!ready}
-        placeholder="Type your business name and address"
+        placeholder={`${
+          is_google_configured === null
+            ? "Type your business name and address"
+            : "Type new business name and address"
+        }`}
         className="w-full p-2 border border-stone-300 rounded-md placeholder:text-sm placeholder:text-stone-500 text-sm"
         onFocus={() => setShowSuggestions(true)}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}

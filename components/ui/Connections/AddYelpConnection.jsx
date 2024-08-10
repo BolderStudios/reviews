@@ -121,7 +121,8 @@ export function AddYelpConnection({
 
   const buttonContent = () => {
     if (isLoading) return "Review Fetching In Progress...";
-    if (is_yelp_configured) return "Update Yelp Profile";
+    if (is_yelp_configured) return "Already Connected";
+    // if (is_yelp_configured) return "Update Yelp Profile";
     return "Connect Yelp Profile";
   };
 
@@ -129,8 +130,8 @@ export function AddYelpConnection({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={isLoading}
-          className="w-full"
+          disabled={isLoading || is_yelp_configured}
+          className={`w-full ${is_yelp_configured ? "custor-not-allowed" : null}`}
           onClick={() => setIsDialogOpen(true)}
         >
           {buttonContent()}

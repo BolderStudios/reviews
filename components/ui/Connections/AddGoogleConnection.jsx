@@ -106,7 +106,8 @@ export function AddGoogleConnection({ is_fetching, is_google_configured }) {
 
   const buttonContent = () => {
     if (isLoading) return "Review Fetching In Progress...";
-    if (is_google_configured) return "Update Google Profile";
+    if (is_google_configured) return "Already Connected";
+    // if (is_google_configured) return "Update Google Profile";
     return "Connect Google Profile";
   };
 
@@ -114,8 +115,10 @@ export function AddGoogleConnection({ is_fetching, is_google_configured }) {
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <Button
-          disabled={isLoading}
-          className="w-full"
+          disabled={isLoading || is_google_configured}
+          className={`w-full ${
+            is_google_configured ? "custor-not-allowed" : null
+          }`}
           onClick={() => setIsDialogOpen(true)}
         >
           {buttonContent()}
@@ -131,7 +134,10 @@ export function AddGoogleConnection({ is_fetching, is_google_configured }) {
           </DialogDescription>
         </DialogHeader>
 
-        <GooglePlacesAPI setSelectedPlace={setSelectedPlace} />
+        <GooglePlacesAPI
+          setSelectedPlace={setSelectedPlace}
+          is_google_configured={is_google_configured}
+        />
 
         <Button
           onClick={handleSubmit}
