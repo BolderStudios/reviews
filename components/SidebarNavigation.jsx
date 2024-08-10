@@ -50,9 +50,14 @@ export default function SidebarNavigation({
   useEffect(() => {
     console.log("Current pathname:", pathname);
     console.log("Selected location:", passedSelectedLocation);
-    
     if (passedSelectedLocation) {
       lastKnownLocationIdRef.current = passedSelectedLocation.id;
+    } else if (!lastKnownLocationIdRef.current) {
+      // If no location is passed and we don't have a last known ID, try to extract it from the pathname
+      const pathParts = pathname.split("/");
+      if (pathParts.length > 2) {
+        lastKnownLocationIdRef.current = pathParts[2];
+      }
     }
     setIsNavigating(false);
   }, [pathname, passedSelectedLocation]);
@@ -69,6 +74,7 @@ export default function SidebarNavigation({
 
           if (data.success) {
             console.log("Location update successful, new path:", data.newPath);
+            lastKnownLocationIdRef.current = location.id;
             router.push(data.newPath);
             toast.success("Location updated successfully");
           } else {
@@ -155,6 +161,10 @@ export default function SidebarNavigation({
     []
   );
 
+  const getLocationId = useCallback(() => {
+    return passedSelectedLocation?.id || lastKnownLocationIdRef.current;
+  }, [passedSelectedLocation]);
+
   return (
     <div className="grid min-h-screen md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <aside className="hidden border-r bg-muted/40 md:block">
@@ -235,9 +245,7 @@ export default function SidebarNavigation({
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               {navigationLinks.map(
                 ({ href, icon: Icon, label, hasLocationId }) => {
-                  const locationId =
-                    passedSelectedLocation?.id ||
-                    lastKnownLocationIdRef.current;
+                  const locationId = getLocationId();
                   const fullHref =
                     hasLocationId && locationId
                       ? `/${href}/${locationId}`
