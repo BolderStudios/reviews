@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Home,
@@ -41,55 +41,82 @@ export default function SidebarNavigation({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
-  const handleLocationChange = useCallback(async (location) => {
-    setOpen(false);
+  const handleLocationChange = useCallback(
+    async (location) => {
+      setOpen(false);
+      setIsNavigating(true);
 
-    if (currentPathname !== "billing") {
-      try {
-        const data = await updateSelectedLocation(location, currentPathname);
-        if (data.success) {
-          router.push(data.newPath);
-          toast.success("Location updated successfully");
-        } else {
-          toast.error("Failed to update location");
+      if (currentPathname !== "billing") {
+        try {
+          const data = await updateSelectedLocation(location, currentPathname);
+
+          if (data.success) {
+            router.push(data.newPath);
+            toast.success("Location updated successfully");
+          } else {
+            toast.error("Failed to update location");
+          }
+        } catch (error) {
+          console.error("Error updating location:", error);
+          toast.error("An error occurred while updating location");
+        } finally {
+          setIsNavigating(false);
         }
-      } catch (error) {
-        console.error("Error updating location:", error);
-        toast.error("An error occurred while updating location");
       }
-    }
-  }, [currentPathname, router]);
+    },
+    [currentPathname, router]
+  );
 
-  const activeLinkClass = useCallback((href) =>
-    `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
-      currentPathname === href.split("/")[1]
-        ? "bg-muted text-primary"
-        : "text-muted-foreground"
-    } group`,
-  [currentPathname]);
+  const activeLinkClass = useCallback(
+    (href) =>
+      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
+        currentPathname === href.split("/")[1]
+          ? "bg-muted text-primary"
+          : "text-muted-foreground"
+      } group`,
+    [currentPathname]
+  );
 
-  const sortedLocations = useMemo(() => 
-    [...passedLocations].sort((a, b) => {
-      if (a.is_primary && !b.is_primary) return -1;
-      if (!a.is_primary && b.is_primary) return 1;
-      return a.organization_name.localeCompare(b.organization_name);
-    }),
-  [passedLocations]);
+  const sortedLocations = useMemo(
+    () =>
+      [...passedLocations].sort((a, b) => {
+        if (a.is_primary && !b.is_primary) return -1;
+        if (!a.is_primary && b.is_primary) return 1;
+        return a.organization_name.localeCompare(b.organization_name);
+      }),
+    [passedLocations]
+  );
 
-  const navigationLinks = useMemo(() => [
-    { href: 'dashboard', icon: Home, label: 'Dashboard', hasLocationId: true },
-    { href: 'connections', icon: ContainerIcon, label: 'Connections', hasLocationId: true },
-    { href: 'employee_mentions', icon: Contact, label: 'Mentioned Employees', hasLocationId: true },
-    { href: 'product_feedback', icon: ShoppingBasket, label: 'Product Feedback', hasLocationId: true },
-    { href: 'funnels', icon: Star, label: 'Funnels', hasLocationId: true },
-    { href: 'customers', icon: Users, label: 'Customers', hasLocationId: true },
-    { href: 'reviews', icon: BookOpenText, label: 'Reviews', hasLocationId: true },
-    { href: 'billing', icon: ShoppingCart, label: 'Billing', hasLocationId: false },
-  ], []);
+  const navigationLinks = useMemo(
+    () => [
+      { href: "dashboard", icon: Home, label: "Dashboard" },
+      { href: "connections", icon: ContainerIcon, label: "Connections" },
+      {
+        href: "employee_mentions",
+        icon: Contact,
+        label: "Mentioned Employees",
+      },
+      {
+        href: "product_feedback",
+        icon: ShoppingBasket,
+        label: "Product Feedback",
+      },
+      { href: "funnels", icon: Star, label: "Funnels" },
+      { href: "customers", icon: Users, label: "Customers" },
+      { href: "reviews", icon: BookOpenText, label: "Reviews" },
+      { href: "billing", icon: ShoppingCart, label: "Billing" },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [pathname]);
 
   return (
     <div className="grid min-h-screen md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -103,6 +130,7 @@ export default function SidebarNavigation({
                   role="combobox"
                   aria-expanded={open}
                   className="w-full"
+                  disabled={isNavigating}
                 >
                   {passedSelectedLocation ? (
                     <div className="flex items-center justify-between w-full">
@@ -135,6 +163,7 @@ export default function SidebarNavigation({
                           key={`location-${location.id}`}
                           value={location.organization_name}
                           onSelect={() => handleLocationChange(location)}
+                          disabled={isNavigating}
                         >
                           <div className="flex items-center w-full">
                             <Check
@@ -167,12 +196,19 @@ export default function SidebarNavigation({
 
           <div className="flex flex-col justify-between h-full">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {navigationLinks.map(({ href, icon: Icon, label, hasLocationId }) => (
+              {navigationLinks.map(({ href, icon: Icon, label }) => (
                 <Link
                   key={href}
                   prefetch={false}
-                  href={hasLocationId ? `/${href}/${passedSelectedLocation?.id || ""}` : `/${href}`}
+                  href={`/${href}/${passedSelectedLocation?.id || ""}`}
                   className={activeLinkClass(`/${href}`)}
+                  onClick={(e) => {
+                    if (isNavigating) {
+                      e.preventDefault();
+                    } else {
+                      setIsNavigating(true);
+                    }
+                  }}
                 >
                   <Icon className="h-4 w-4" />
                   {label}
@@ -185,6 +221,7 @@ export default function SidebarNavigation({
                 <Button
                   variant="outline"
                   className="w-full flex items-center justify-center gap-[6px]"
+                  disabled={isNavigating}
                 >
                   <ArrowLeft size={14} className="mt-[1px]" />
                   <p className="leading-7">Signout</p>
