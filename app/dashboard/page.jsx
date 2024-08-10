@@ -1,8 +1,9 @@
+// @/app/dashboard/page.jsx
 import supabase from "@/utils/supabaseClient";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { Suspense } from 'react';
+import ClientRedirect from "@/components/ui/ClientRedirect";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { Suspense } from "react";
 
 async function DashboardRedirect() {
   const { userId } = await auth();
@@ -22,7 +23,9 @@ async function DashboardRedirect() {
     return <div>No location selected. Please choose a location.</div>;
   }
 
-  redirect(`/dashboard/${data.selected_location_id}`);
+  return (
+    <ClientRedirect redirect_url={`/dashboard/${data.selected_location_id}`} />
+  );
 }
 
 export default function Page() {
