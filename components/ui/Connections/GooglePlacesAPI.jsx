@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useLoadScript } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
   getGeocode,
@@ -8,14 +7,22 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { Input } from "../input";
 
+// Define libraries outside of the component
+const libraries = ["places"];
+
 export default function GooglePlacesAPI({ setSelectedPlace }) {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    libraries: ["places"],
-  });
+  const options = useMemo(
+    () => ({
+      googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+      libraries: libraries,
+    }),
+    []
+  );
 
+  const { isLoaded, loadError } = useLoadScript(options);
+
+  if (loadError) return <div>Error loading Google Maps</div>;
   if (!isLoaded) return <div>Loading Google Maps data...</div>;
-
   return <PlacesAutocomplete setSelected={setSelectedPlace} />;
 }
 
@@ -41,15 +48,12 @@ const PlacesAutocomplete = ({ setSelected }) => {
     setValue(address, false);
     clearSuggestions();
     setShowSuggestions(false);
-
     try {
       const results = await getGeocode({ address });
       const { lat, lng } = await getLatLng(results[0]);
       const place_id = results[0].place_id;
 
       setSelected({ lat, lng, place_id });
-
-      // console.log("Selected:", { lat, lng, place_id });
     } catch (error) {
       console.error("Error: ", error);
     }
@@ -58,13 +62,11 @@ const PlacesAutocomplete = ({ setSelected }) => {
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-
       setActiveIndex((prevIndex) =>
         prevIndex < data.length - 1 ? prevIndex + 1 : prevIndex
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-
       setActiveIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1));
     } else if (e.key === "Enter" && activeIndex !== -1) {
       handleSelect(data[activeIndex].description);
@@ -93,7 +95,6 @@ const PlacesAutocomplete = ({ setSelected }) => {
         aria-autocomplete="list"
         aria-controls="suggestions-list"
       />
-      
       {showSuggestions && status === "OK" && (
         <ul
           id="suggestions-list"

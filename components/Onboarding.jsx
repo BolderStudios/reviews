@@ -202,28 +202,26 @@ export default function OnboardingComponent() {
       return;
     }
 
-    console.log("Onboarding data", formData, selectedPlace, user);
-
     // setIsLoading(true);
 
-    // try {
-    //   await completeOnboarding(formData, selectedPlace, user?.user);
+    formData.businessLocation = selectedPlace;
 
-    //   toast.success("Onboarding complete! Welcome aboard 🎉");
-    //   router.push("/dashboard");
-
-    //   form.reset({
-    //     businessCategory: "",
-    //     businessType: "",
-    //     testimonialProcess: "",
-    //     nameOfContact: "",
-    //     positionOfContact: "",
-    //   });
-    // } catch (error) {
-    //   toast.error("Oops! Something went wrong. Please try again.");
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    try {
+      await completeOnboarding(formData);
+      // toast.success("Onboarding complete! Welcome aboard 🎉");
+      // router.push("/dashboard");
+      // form.reset({
+      //   businessCategory: "",
+      //   businessType: "",
+      //   testimonialProcess: "",
+      //   nameOfContact: "",
+      //   positionOfContact: "",
+      // });
+    } catch (error) {
+      toast.error("Oops! Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -523,12 +521,6 @@ export default function OnboardingComponent() {
             <div>
               <p className="text-sm pb-2 font-medium">Business Location</p>
               <GooglePlacesAPI setSelectedPlace={setSelectedPlace} />
-
-              {selectedPlace === null ? (
-                <p className="text-xs text-red-500 mt-1 font-medium">
-                  Please find your business location
-                </p>
-              ) : null}
             </div>
 
             <FormField
