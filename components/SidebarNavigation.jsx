@@ -42,15 +42,11 @@ export default function SidebarNavigation({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState(
-    passedSelectedLocation
-  );
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
   const handleLocationChange = async (location) => {
-    setSelectedLocation(location);
     setOpen(false);
 
     if (currentPathname !== "billing") {
@@ -89,13 +85,13 @@ export default function SidebarNavigation({
                   aria-expanded={open}
                   className="w-full"
                 >
-                  {selectedLocation ? (
+                  {passedSelectedLocation ? (
                     <div className="flex items-center justify-between w-full">
                       <span className="flex-1 truncate mr-2">
-                        {selectedLocation.organization_name}
+                        {passedSelectedLocation.organization_name}
                       </span>
 
-                      {selectedLocation.is_primary && (
+                      {passedSelectedLocation.is_primary && (
                         <Star className="flex-shrink-0 h-4 w-4 text-yellow-500" />
                       )}
                     </div>
@@ -135,7 +131,7 @@ export default function SidebarNavigation({
                               <Check
                                 className={cn(
                                   "flex-shrink-0 mr-2 h-4 w-4",
-                                  selectedLocation?.organization_name ===
+                                  passedSelectedLocation?.organization_name ===
                                     location.organization_name
                                     ? "opacity-100"
                                     : "opacity-0"
@@ -164,7 +160,7 @@ export default function SidebarNavigation({
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               <Link
                 prefetch={false}
-                href={`/dashboard/${selectedLocation?.id || ""}`}
+                href={`/dashboard/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/dashboard")}
               >
                 <Home className="h-4 w-4" />
@@ -172,7 +168,7 @@ export default function SidebarNavigation({
               </Link>
               <Link
                 prefetch={false}
-                href={`/connections/${selectedLocation?.id || ""}`}
+                href={`/connections/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/connections")}
               >
                 <ContainerIcon className="h-4 w-4" />
@@ -180,7 +176,7 @@ export default function SidebarNavigation({
               </Link>
               {/* <Link
                 prefetch={false}
-                href={`/keywords/${selectedLocation?.id || ""}`}
+                href={`/keywords/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/keywords")}
               >
                 <Info className="h-4 w-4" />
@@ -188,7 +184,7 @@ export default function SidebarNavigation({
               </Link> */}
               <Link
                 prefetch={false}
-                href={`/employee_mentions/${selectedLocation?.id || ""}`}
+                href={`/employee_mentions/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/employee_mentions")}
               >
                 <Contact className="h-4 w-4" />
@@ -196,7 +192,7 @@ export default function SidebarNavigation({
               </Link>
               <Link
                 prefetch={false}
-                href={`/product_feedback/${selectedLocation?.id || ""}`}
+                href={`/product_feedback/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/product_feedback")}
               >
                 <ShoppingBasket className="h-4 w-4" />
@@ -204,7 +200,7 @@ export default function SidebarNavigation({
               </Link>
               <Link
                 prefetch={false}
-                href={`/funnels/${selectedLocation?.id || ""}`}
+                href={`/funnels/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/funnels")}
               >
                 <Star className="h-4 w-4" />
@@ -212,7 +208,7 @@ export default function SidebarNavigation({
               </Link>
               <Link
                 prefetch={false}
-                href={`/customers/${selectedLocation?.id || ""}`}
+                href={`/customers/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/customers")}
               >
                 <Users className="h-4 w-4" />
@@ -220,7 +216,7 @@ export default function SidebarNavigation({
               </Link>
               <Link
                 prefetch={false}
-                href={`/reviews/${selectedLocation?.id || ""}`}
+                href={`/reviews/${passedSelectedLocation?.id || ""}`}
                 className={activeLinkClass("/reviews")}
               >
                 <BookOpenText className="h-4 w-4" />

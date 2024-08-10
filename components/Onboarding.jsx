@@ -208,8 +208,10 @@ export default function OnboardingComponent() {
 
     try {
       await completeOnboarding(formData);
-      
+
       toast.success("Onboarding complete! Welcome aboard 🎉");
+      localStorage.setItem("is_onboarding_complete", true);
+
       router.push("/dashboard");
       form.reset({
         businessCategory: "",
@@ -219,6 +221,7 @@ export default function OnboardingComponent() {
         positionOfContact: "",
       });
     } catch (error) {
+      localStorage.setItem("is_onboarding_complete", false);
       toast.error("Oops! Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
