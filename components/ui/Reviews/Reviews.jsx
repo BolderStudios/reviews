@@ -1,7 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { SkeletonCard } from "@/components/ui/Misc/SkeletonCard";
+import { useState, useMemo } from "react";
 import { ReviewsTable } from "./ReviewsTable";
 import YelpLogo from "@/public/yelp_logo.svg";
 import GoogleLogo from "@/public/google_logo.png";
@@ -229,17 +227,6 @@ const columns = [
 ];
 
 export default function Reviews({ selectedLocation, isFetching, reviews }) {
-  const router = useRouter();
-  const [isPageLoading, setIsPageLoading] = useState(false);
-
-  useEffect(() => {
-    setIsPageLoading(true);
-    setTimeout(() => {
-      setIsPageLoading(false);
-    }, 500);
-    return () => clearTimeout();
-  }, [router]);
-
   const memoizedColumns = useMemo(() => columns, []);
   const memoizedData = useMemo(() => reviews, [reviews]);
 
@@ -262,9 +249,7 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
         <h2 className="font-bold text-2xl mb-6">
           Customer Reviews ({reviews.length})
         </h2>
-        {isPageLoading ? (
-          <SkeletonCard />
-        ) : reviews.length > 0 ? (
+        {reviews.length > 0 ? (
           <ReviewsTable columns={memoizedColumns} data={memoizedData} />
         ) : (
           <>

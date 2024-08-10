@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { SkeletonCard } from "@/components/ui/Misc/SkeletonCard";
 import { EmployeeMentionsTable } from "./EmployeeMentionsTable";
 import { AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -75,14 +74,6 @@ export default function EmployeeMentions({
   const router = useRouter();
   const [isPageLoading, setIsPageLoading] = useState(false);
 
-  useEffect(() => {
-    setIsPageLoading(true);
-    setTimeout(() => {
-      setIsPageLoading(false);
-    }, 500);
-    return () => clearTimeout();
-  }, [router]);
-
   const memoizedColumns = useMemo(() => columns, []);
   const memoizedData = useMemo(() => staffMentions, [staffMentions]);
 
@@ -105,9 +96,7 @@ export default function EmployeeMentions({
         <h2 className="font-bold text-2xl mb-6">
           Mentioned Employees ({staffMentions.length})
         </h2>
-        {isPageLoading ? (
-          <SkeletonCard />
-        ) : staffMentions.length > 0 ? (
+        {staffMentions.length > 0 ? (
           <EmployeeMentionsTable
             columns={memoizedColumns}
             data={memoizedData}

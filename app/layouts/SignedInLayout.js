@@ -55,7 +55,10 @@ export function SignedInLayout({ children }) {
           onboardingData.onboardingComplete.toString()
         );
       } else {
-        console.error("Error fetching onboarding status:", onboardingData.error);
+        console.error(
+          "Error fetching onboarding status:",
+          onboardingData.error
+        );
       }
     } catch (error) {
       console.error("Error checking onboarding status:", error);
@@ -85,7 +88,12 @@ export function SignedInLayout({ children }) {
     if (locations.length === 0) {
       fetchLocations();
     }
-  }, [onboardingComplete, locations.length, checkOnboardingStatus, fetchLocations]);
+  }, [
+    onboardingComplete,
+    locations.length,
+    checkOnboardingStatus,
+    fetchLocations,
+  ]);
 
   return (
     <div className="flex flex-1">

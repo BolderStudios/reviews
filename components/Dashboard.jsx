@@ -35,6 +35,7 @@ export default function Dashboard({
       setIsPageLoading(true);
       const data = await calcReviewData(selectedLocation.id);
       setDashboardData(data);
+      
       setIsPageLoading(false);
     };
 

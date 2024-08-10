@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { SkeletonCard } from "@/components/ui/Misc/SkeletonCard";
 import { CustomersTable } from "./CustomersTable";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { ViewCustomer } from "@/components/ui/Customers/ViewCustomer";
@@ -111,18 +109,6 @@ const columns = [
 ];
 
 export default function Customers({ selectedLocation, customers }) {
-  const router = useRouter();
-  const [isPageLoading, setIsPageLoading] = useState(false);
-
-  useEffect(() => {
-    setIsPageLoading(true);
-
-    setTimeout(() => {
-      setIsPageLoading(false);
-    }, 500);
-    return () => clearTimeout();
-  }, [router]);
-
   const memoizedColumns = useMemo(() => columns, []);
   const memoizedData = useMemo(() => customers, [customers]);
 
@@ -146,9 +132,7 @@ export default function Customers({ selectedLocation, customers }) {
           Customers ({customers.length})
         </h2>
 
-        {isPageLoading ? (
-          <SkeletonCard />
-        ) : customers.length > 0 ? (
+        {customers.length > 0 ? (
           <CustomersTable columns={memoizedColumns} data={memoizedData} />
         ) : (
           <>
