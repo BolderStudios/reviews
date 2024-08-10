@@ -80,7 +80,7 @@ export function SignedInLayout({ children }) {
       }
     }
 
-    console.log("locations", locations.length, "onboarding", onboardingComplete)
+    // console.log("locations", locations.length, "onboarding", onboardingComplete)
 
     if (!onboardingComplete || locations.length === 0) {
       fetchData();
@@ -89,16 +89,16 @@ export function SignedInLayout({ children }) {
     }
   }, [onboardingComplete, locations.length]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex flex-1">
-  //       <SidebarNavigation />
-  //       <div className="flex-grow">
-  //         <LoadingSpinner />
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="flex flex-1">
+        <SidebarNavigation />
+        <div className="flex-grow">
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-1">
