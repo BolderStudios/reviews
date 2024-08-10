@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Home,
@@ -42,13 +42,18 @@ export default function SidebarNavigation({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const lastKnownLocationIdRef = useRef(null);
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
   useEffect(() => {
-    console.log("Current pathname:", pathname); // Debugging line
-    console.log("Selected location:", passedSelectedLocation); // Debugging line
+    console.log("Current pathname:", pathname);
+    console.log("Selected location:", passedSelectedLocation);
+    
+    if (passedSelectedLocation) {
+      lastKnownLocationIdRef.current = passedSelectedLocation.id;
+    }
     setIsNavigating(false);
   }, [pathname, passedSelectedLocation]);
 
@@ -59,15 +64,15 @@ export default function SidebarNavigation({
 
       if (currentPathname !== "billing") {
         try {
-          console.log("Updating location to:", location); // Debugging line
+          console.log("Updating location to:", location);
           const data = await updateSelectedLocation(location, currentPathname);
 
           if (data.success) {
-            console.log("Location update successful, new path:", data.newPath); // Debugging line
+            console.log("Location update successful, new path:", data.newPath);
             router.push(data.newPath);
             toast.success("Location updated successfully");
           } else {
-            console.error("Failed to update location:", data); // Debugging line
+            console.error("Failed to update location:", data);
             toast.error("Failed to update location");
           }
         } catch (error) {
@@ -230,11 +235,15 @@ export default function SidebarNavigation({
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               {navigationLinks.map(
                 ({ href, icon: Icon, label, hasLocationId }) => {
-                  const fullHref = hasLocationId
-                    ? `/${href}/${passedSelectedLocation?.id || ""}`
-                    : `/${href}`;
+                  const locationId =
+                    passedSelectedLocation?.id ||
+                    lastKnownLocationIdRef.current;
+                  const fullHref =
+                    hasLocationId && locationId
+                      ? `/${href}/${locationId}`
+                      : `/${href}`;
 
-                  console.log(`Link ${label}: ${fullHref}`); // Debugging line
+                  console.log(`Link ${label}: ${fullHref}`);
 
                   return (
                     <Link
@@ -247,7 +256,7 @@ export default function SidebarNavigation({
                           e.preventDefault();
                         } else {
                           setIsNavigating(true);
-                          console.log(`Navigating to: ${fullHref}`); // Debugging line
+                          console.log(`Navigating to: ${fullHref}`);
                         }
                       }}
                     >
