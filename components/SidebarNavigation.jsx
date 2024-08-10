@@ -54,7 +54,7 @@ export default function SidebarNavigation({
       if (currentPathname !== "billing") {
         try {
           const data = await updateSelectedLocation(location, currentPathname);
-
+          
           if (data.success) {
             router.push(data.newPath);
             toast.success("Location updated successfully");
@@ -92,31 +92,58 @@ export default function SidebarNavigation({
     [passedLocations]
   );
 
+  useEffect(() => {
+    setIsNavigating(false);
+  }, [pathname]);
+
   const navigationLinks = useMemo(
     () => [
-      { href: "dashboard", icon: Home, label: "Dashboard" },
-      { href: "connections", icon: ContainerIcon, label: "Connections" },
+      {
+        href: "dashboard",
+        icon: Home,
+        label: "Dashboard",
+        hasLocationId: true,
+      },
+      {
+        href: "connections",
+        icon: ContainerIcon,
+        label: "Connections",
+        hasLocationId: true,
+      },
       {
         href: "employee_mentions",
         icon: Contact,
         label: "Mentioned Employees",
+        hasLocationId: true,
       },
       {
         href: "product_feedback",
         icon: ShoppingBasket,
         label: "Product Feedback",
+        hasLocationId: true,
       },
-      { href: "funnels", icon: Star, label: "Funnels" },
-      { href: "customers", icon: Users, label: "Customers" },
-      { href: "reviews", icon: BookOpenText, label: "Reviews" },
-      { href: "billing", icon: ShoppingCart, label: "Billing" },
+      { href: "funnels", icon: Star, label: "Funnels", hasLocationId: true },
+      {
+        href: "customers",
+        icon: Users,
+        label: "Customers",
+        hasLocationId: true,
+      },
+      {
+        href: "reviews",
+        icon: BookOpenText,
+        label: "Reviews",
+        hasLocationId: true,
+      },
+      {
+        href: "billing",
+        icon: ShoppingCart,
+        label: "Billing",
+        hasLocationId: false,
+      },
     ],
     []
   );
-
-  useEffect(() => {
-    setIsNavigating(false);
-  }, [pathname]);
 
   return (
     <div className="grid min-h-screen md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -196,24 +223,30 @@ export default function SidebarNavigation({
 
           <div className="flex flex-col justify-between h-full">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {navigationLinks.map(({ href, icon: Icon, label }) => (
-                <Link
-                  key={href}
-                  prefetch={false}
-                  href={`/${href}/${passedSelectedLocation?.id || ""}`}
-                  className={activeLinkClass(`/${href}`)}
-                  onClick={(e) => {
-                    if (isNavigating) {
-                      e.preventDefault();
-                    } else {
-                      setIsNavigating(true);
+              {navigationLinks.map(
+                ({ href, icon: Icon, label, hasLocationId }) => (
+                  <Link
+                    key={href}
+                    prefetch={false}
+                    href={
+                      hasLocationId
+                        ? `/${href}/${passedSelectedLocation?.id || ""}`
+                        : `/${href}`
                     }
-                  }}
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </Link>
-              ))}
+                    className={activeLinkClass(`/${href}`)}
+                    onClick={(e) => {
+                      if (isNavigating) {
+                        e.preventDefault();
+                      } else {
+                        setIsNavigating(true);
+                      }
+                    }}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </Link>
+                )
+              )}
             </nav>
 
             <div className="flex items-center justify-start pb-2 px-4">
