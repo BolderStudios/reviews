@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
 import {
   Home,
@@ -11,7 +11,6 @@ import {
   Star,
   ContainerIcon,
   BookOpenText,
-  Info,
   Contact,
   ShoppingBasket,
   Users,
@@ -46,7 +45,7 @@ export default function SidebarNavigation({
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
-  const handleLocationChange = async (location) => {
+  const handleLocationChange = useCallback(async (location) => {
     setOpen(false);
 
     if (currentPathname !== "billing") {
@@ -63,14 +62,34 @@ export default function SidebarNavigation({
         toast.error("An error occurred while updating location");
       }
     }
-  };
+  }, [currentPathname, router]);
 
-  const activeLinkClass = (href) =>
+  const activeLinkClass = useCallback((href) =>
     `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
       currentPathname === href.split("/")[1]
         ? "bg-muted text-primary"
         : "text-muted-foreground"
-    } group`;
+    } group`,
+  [currentPathname]);
+
+  const sortedLocations = useMemo(() => 
+    [...passedLocations].sort((a, b) => {
+      if (a.is_primary && !b.is_primary) return -1;
+      if (!a.is_primary && b.is_primary) return 1;
+      return a.organization_name.localeCompare(b.organization_name);
+    }),
+  [passedLocations]);
+
+  const navigationLinks = useMemo(() => [
+    { href: 'dashboard', icon: Home, label: 'Dashboard', hasLocationId: true },
+    { href: 'connections', icon: ContainerIcon, label: 'Connections', hasLocationId: true },
+    { href: 'employee_mentions', icon: Contact, label: 'Mentioned Employees', hasLocationId: true },
+    { href: 'product_feedback', icon: ShoppingBasket, label: 'Product Feedback', hasLocationId: true },
+    { href: 'funnels', icon: Star, label: 'Funnels', hasLocationId: true },
+    { href: 'customers', icon: Users, label: 'Customers', hasLocationId: true },
+    { href: 'reviews', icon: BookOpenText, label: 'Reviews', hasLocationId: true },
+    { href: 'billing', icon: ShoppingCart, label: 'Billing', hasLocationId: false },
+  ], []);
 
   return (
     <div className="grid min-h-screen md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -90,7 +109,6 @@ export default function SidebarNavigation({
                       <span className="flex-1 truncate mr-2">
                         {passedSelectedLocation.organization_name}
                       </span>
-
                       {passedSelectedLocation.is_primary && (
                         <Star className="flex-shrink-0 h-4 w-4 text-yellow-500" />
                       )}
@@ -108,44 +126,35 @@ export default function SidebarNavigation({
                     <CommandGroup className="w-full p-0">
                       <div className="w-full px-4 py-2 border-b mb-1">
                         <span className="text-sm text-muted-foreground">
-                          Locations ({passedLocations.length})
+                          Locations ({sortedLocations.length})
                         </span>
                       </div>
-                      {passedLocations
-                        .sort((a, b) => {
-                          if (a.is_primary && !b.is_primary) return -1;
-                          if (!a.is_primary && b.is_primary) return 1;
-
-                          return a.organization_name.localeCompare(
-                            b.organization_name
-                          );
-                        })
-                        .map((location) => (
-                          <CommandItem
-                            className="w-full p-2"
-                            key={`location-${location.id}`}
-                            value={location.organization_name}
-                            onSelect={() => handleLocationChange(location)}
-                          >
-                            <div className="flex items-center w-full">
-                              <Check
-                                className={cn(
-                                  "flex-shrink-0 mr-2 h-4 w-4",
-                                  passedSelectedLocation?.organization_name ===
-                                    location.organization_name
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              <span className="flex-1 truncate mr-2">
-                                {location.organization_name}
-                              </span>
-                              {location.is_primary && (
-                                <Star className="flex-shrink-0 h-4 w-4 text-yellow-500" />
+                      {sortedLocations.map((location) => (
+                        <CommandItem
+                          className="w-full p-2"
+                          key={`location-${location.id}`}
+                          value={location.organization_name}
+                          onSelect={() => handleLocationChange(location)}
+                        >
+                          <div className="flex items-center w-full">
+                            <Check
+                              className={cn(
+                                "flex-shrink-0 mr-2 h-4 w-4",
+                                passedSelectedLocation?.organization_name ===
+                                  location.organization_name
+                                  ? "opacity-100"
+                                  : "opacity-0"
                               )}
-                            </div>
-                          </CommandItem>
-                        ))}
+                            />
+                            <span className="flex-1 truncate mr-2">
+                              {location.organization_name}
+                            </span>
+                            {location.is_primary && (
+                              <Star className="flex-shrink-0 h-4 w-4 text-yellow-500" />
+                            )}
+                          </div>
+                        </CommandItem>
+                      ))}
                       <div className="p-1 mt-1">
                         <AddLocation />
                       </div>
@@ -158,78 +167,17 @@ export default function SidebarNavigation({
 
           <div className="flex flex-col justify-between h-full">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              <Link
-                prefetch={false}
-                href={`/dashboard/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/dashboard")}
-              >
-                <Home className="h-4 w-4" />
-                Dashboard
-              </Link>
-              <Link
-                prefetch={false}
-                href={`/connections/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/connections")}
-              >
-                <ContainerIcon className="h-4 w-4" />
-                Connections
-              </Link>
-              {/* <Link
-                prefetch={false}
-                href={`/keywords/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/keywords")}
-              >
-                <Info className="h-4 w-4" />
-                Keywords
-              </Link> */}
-              <Link
-                prefetch={false}
-                href={`/employee_mentions/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/employee_mentions")}
-              >
-                <Contact className="h-4 w-4" />
-                Mentioned Employees
-              </Link>
-              <Link
-                prefetch={false}
-                href={`/product_feedback/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/product_feedback")}
-              >
-                <ShoppingBasket className="h-4 w-4" />
-                Product Feedback
-              </Link>
-              <Link
-                prefetch={false}
-                href={`/funnels/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/funnels")}
-              >
-                <Star className="h-4 w-4" />
-                Funnels
-              </Link>
-              <Link
-                prefetch={false}
-                href={`/customers/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/customers")}
-              >
-                <Users className="h-4 w-4" />
-                Customers
-              </Link>
-              <Link
-                prefetch={false}
-                href={`/reviews/${passedSelectedLocation?.id || ""}`}
-                className={activeLinkClass("/reviews")}
-              >
-                <BookOpenText className="h-4 w-4" />
-                Reviews
-              </Link>
-              <Link
-                prefetch={false}
-                href="/billing"
-                className={activeLinkClass("/billing")}
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Billing
-              </Link>
+              {navigationLinks.map(({ href, icon: Icon, label, hasLocationId }) => (
+                <Link
+                  key={href}
+                  prefetch={false}
+                  href={hasLocationId ? `/${href}/${passedSelectedLocation?.id || ""}` : `/${href}`}
+                  className={activeLinkClass(`/${href}`)}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              ))}
             </nav>
 
             <div className="flex items-center justify-start pb-2 px-4">
