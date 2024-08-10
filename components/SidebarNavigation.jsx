@@ -90,7 +90,7 @@ export default function SidebarNavigation({
                   className="w-full"
                 >
                   {selectedLocation ? (
-                    <div className="flex items-center w-full">
+                    <div className="flex items-center justify-between w-full">
                       <span className="flex-1 truncate mr-2">
                         {selectedLocation.organization_name}
                       </span>
@@ -100,8 +100,7 @@ export default function SidebarNavigation({
                       )}
                     </div>
                   ) : (
-                    "Loading data..."
-                    // "Select location..."
+                    <span>Loading data...</span>
                   )}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>

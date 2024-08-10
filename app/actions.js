@@ -9,10 +9,8 @@ import { v4 as uuidv4 } from "uuid";
 import { inngest } from "@/inngest/client";
 import QRCode from "qrcode";
 import twilio from "twilio";
-import {
-  updateIsFetching,
-  updateFetchErrorMessage,
-} from "@/utils/actionsHelpers";
+import { updateFetchErrorMessage } from "@/utils/actionsHelpers";
+import axios from "axios";
 
 export async function createUsername(username) {
   console.log("from createUsername action: ", username);
@@ -175,30 +173,79 @@ export async function addLocationFunc(formData) {
   console.log("Adding location —> ", formData);
   const { userId } = await auth();
 
-  const { data, error } = await supabase
+  const { data: userData, error } = await supabase
     .from("users")
     .select("*")
     .eq("clerk_id", userId);
 
-  const { data: addedLocation, error: addLocationError } = await supabase
-    .from("locations")
-    .insert([
-      {
-        user_id: data[0].id,
-        clerk_id: userId,
-        organization_name: formData.organizationName,
-        name_of_contact: formData.nameOfContact,
-        position_of_contact: formData.positionOfContact,
-        is_primary: false,
-      },
-    ]);
+  // Fetch location data using Google Places API
+  const liveBusinessListingsAPIEndpoint =
+    "https://api.dataforseo.com/v3/business_data/business_listings/search/live";
 
-  if (!addLocationError) {
-    console.log("Location added successfully");
-    return { message: "Location added successfully", success: true };
-  } else {
-    console.error("Error adding location: ", error);
-    return { message: "Failed to add location", success: false };
+  const post_array = [];
+  post_array.push({
+    location_coordinate: `${formData.businessLocation.lat},${formData.businessLocation.lng}, 10`,
+    filters: [["place_id", "=", formData.businessLocation.place_id]],
+  });
+
+  const response = await axios({
+    method: "post",
+    url: liveBusinessListingsAPIEndpoint,
+    auth: {
+      username: process.env.NEXT_PUBLIC_DATAFORSEO_USERNAME,
+      password: process.env.NEXT_PUBLIC_DATAFORSEO_PASSWORD,
+    },
+    data: post_array,
+    headers: { "content-type": "application/json" },
+  });
+
+  if (
+    response.data.status_message === "Ok." &&
+    response.data.status_code === 20000
+  ) {
+    const fetchedLocationData = response.data.tasks[0].result[0].items[0];
+    console.log(
+      "Fetched response from Google Places API: ",
+      fetchedLocationData
+    );
+
+    const { data: newLocation, error: newLocationError } = await supabase
+      .from("locations")
+      .insert([
+        {
+          user_id: userData[0].id,
+          clerk_id: userId,
+          organization_name: fetchedLocationData.title,
+          name_of_contact: formData.nameOfContact,
+          position_of_contact: formData.positionOfContact,
+          is_primary: false,
+        },
+      ])
+      .select()
+      .single();
+
+    const { data, error } = await supabase
+      .from("users")
+      .update({
+        selected_location_id: newLocation.id,
+      })
+      .eq("clerk_id", userId);
+
+    if (error) {
+      throw error;
+    }
+
+    const { success } = await initiateGoogleFetch(formData.businessLocation);
+
+    if (!newLocationError && success) {
+      console.log("Location added successfully");
+
+      return { message: "Location added successfully", success: true };
+    } else {
+      console.error("Error adding location: ", error);
+
+      return { message: "Failed to add location", success: false };
+    }
   }
 }
 

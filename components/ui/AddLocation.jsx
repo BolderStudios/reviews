@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { addLocationFunc } from "@/app/actions";
 import { cn } from "@/lib/utils";
+import GooglePlacesAPI from "@/components/ui/Connections/GooglePlacesAPI";
 import {
   Command,
   CommandEmpty,
@@ -50,7 +51,7 @@ const positions = [
 ];
 
 const formSchema = z.object({
-  organizationName: z.string().min(1, "Organization name is required"),
+  // organizationName: z.string().min(1, "Organization name is required"),
   nameOfContact: z.string().min(1, "Point of contact name is required"),
   positionOfContact: z.string().min(1, "Please select a position"),
 });
@@ -59,18 +60,26 @@ export function AddLocation() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      organizationName: "",
       nameOfContact: "",
       positionOfContact: "",
     },
   });
 
   const handleSubmit = async (formData) => {
+    if (selectedPlace === null) {
+      toast.error("Please find your business location");
+      return;
+    }
+
     setIsLoading(true);
+
+    formData.businessLocation = selectedPlace;
 
     try {
       const response = await addLocationFunc(formData);
@@ -79,11 +88,12 @@ export function AddLocation() {
         toast.success("Location added successfully!");
 
         form.reset({
-          organizationName: "",
           nameOfContact: "",
           positionOfContact: "",
         });
 
+        setIsDialogOpen(false);
+        window.location.reload();
         router.refresh();
       } else {
         toast.error("Failed to add location. Please try again.");
@@ -97,9 +107,13 @@ export function AddLocation() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full">
+        <Button
+          onClick={() => setIsDialogOpen(true)}
+          variant="outline"
+          className="w-full"
+        >
           Add New Location
         </Button>
       </DialogTrigger>
@@ -120,7 +134,7 @@ export function AddLocation() {
             })}
             className="space-y-4"
           >
-            <FormField
+            {/* <FormField
               control={form.control}
               name="organizationName"
               render={({ field }) => (
@@ -133,7 +147,12 @@ export function AddLocation() {
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
+
+            <div>
+              <p className="text-sm pb-2 font-medium">Business Location</p>
+              <GooglePlacesAPI setSelectedPlace={setSelectedPlace} />
+            </div>
 
             <div>
               <div className="flex gap-4">
