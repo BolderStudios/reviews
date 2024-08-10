@@ -54,7 +54,7 @@ export default function SidebarNavigation({
       if (currentPathname !== "billing") {
         try {
           const data = await updateSelectedLocation(location, currentPathname);
-          
+
           if (data.success) {
             router.push(data.newPath);
             toast.success("Location updated successfully");

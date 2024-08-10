@@ -35,7 +35,7 @@ export default function Dashboard({
       setIsPageLoading(true);
       const data = await calcReviewData(selectedLocation.id);
       setDashboardData(data);
-      
+
       setIsPageLoading(false);
     };
 
@@ -165,7 +165,7 @@ export default function Dashboard({
     <SignedInLayout>
       <div className="px-8 py-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="font-bold text-2xl">Location Overview</h2>
+          <h2 className="font-bold text-2xl">Dashboard</h2>
           <UpdateLocation selectedLocation={selectedLocation} />
         </div>
         {isPageLoading ? (
