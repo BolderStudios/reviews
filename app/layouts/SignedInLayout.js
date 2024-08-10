@@ -22,8 +22,10 @@ export function SignedInLayout({ children }) {
     setLoading(true);
     try {
       const onboardingData = await isOnboardingCompleteFunc();
+
       if (onboardingData.success) {
         setOnboardingComplete(onboardingData.onboardingComplete);
+
         localStorage.setItem(
           "is_onboarding_complete",
           onboardingData.onboardingComplete.toString()
@@ -44,8 +46,10 @@ export function SignedInLayout({ children }) {
   const fetchLocations = useCallback(async () => {
     try {
       const locationsData = await fetchSidebarLocations();
+
       if (locationsData.success) {
         setLocations(locationsData.locations);
+
         setSelectedLocation(locationsData.selectedLocation);
       } else {
         console.error("Error fetching locations:", locationsData.error);
@@ -59,6 +63,7 @@ export function SignedInLayout({ children }) {
     if (!onboardingComplete) {
       checkOnboardingStatus();
     }
+    
     if (locations.length === 0) {
       fetchLocations();
     }

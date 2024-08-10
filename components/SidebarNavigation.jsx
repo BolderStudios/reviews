@@ -46,6 +46,12 @@ export default function SidebarNavigation({
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
 
+  useEffect(() => {
+    console.log("Current pathname:", pathname); // Debugging line
+    console.log("Selected location:", passedSelectedLocation); // Debugging line
+    setIsNavigating(false);
+  }, [pathname, passedSelectedLocation]);
+
   const handleLocationChange = useCallback(
     async (location) => {
       setOpen(false);
@@ -53,12 +59,15 @@ export default function SidebarNavigation({
 
       if (currentPathname !== "billing") {
         try {
+          console.log("Updating location to:", location); // Debugging line
           const data = await updateSelectedLocation(location, currentPathname);
 
           if (data.success) {
+            console.log("Location update successful, new path:", data.newPath); // Debugging line
             router.push(data.newPath);
             toast.success("Location updated successfully");
           } else {
+            console.error("Failed to update location:", data); // Debugging line
             toast.error("Failed to update location");
           }
         } catch (error) {
@@ -91,10 +100,6 @@ export default function SidebarNavigation({
       }),
     [passedLocations]
   );
-
-  useEffect(() => {
-    setIsNavigating(false);
-  }, [pathname]);
 
   const navigationLinks = useMemo(
     () => [
@@ -224,28 +229,33 @@ export default function SidebarNavigation({
           <div className="flex flex-col justify-between h-full">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               {navigationLinks.map(
-                ({ href, icon: Icon, label, hasLocationId }) => (
-                  <Link
-                    key={href}
-                    prefetch={false}
-                    href={
-                      hasLocationId
-                        ? `/${href}/${passedSelectedLocation?.id || ""}`
-                        : `/${href}`
-                    }
-                    className={activeLinkClass(`/${href}`)}
-                    onClick={(e) => {
-                      if (isNavigating) {
-                        e.preventDefault();
-                      } else {
-                        setIsNavigating(true);
-                      }
-                    }}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {label}
-                  </Link>
-                )
+                ({ href, icon: Icon, label, hasLocationId }) => {
+                  const fullHref = hasLocationId
+                    ? `/${href}/${passedSelectedLocation?.id || ""}`
+                    : `/${href}`;
+
+                  console.log(`Link ${label}: ${fullHref}`); // Debugging line
+
+                  return (
+                    <Link
+                      key={href}
+                      prefetch={false}
+                      href={fullHref}
+                      className={activeLinkClass(`/${href}`)}
+                      onClick={(e) => {
+                        if (isNavigating) {
+                          e.preventDefault();
+                        } else {
+                          setIsNavigating(true);
+                          console.log(`Navigating to: ${fullHref}`); // Debugging line
+                        }
+                      }}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {label}
+                    </Link>
+                  );
+                }
               )}
             </nav>
 
