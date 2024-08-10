@@ -56,12 +56,14 @@ const PlacesAutocomplete = ({ setSelected, is_google_configured }) => {
     setValue(address, false);
     clearSuggestions();
     setShowSuggestions(false);
+
     try {
       const results = await getGeocode({ address });
       const { lat, lng } = await getLatLng(results[0]);
       const place_id = results[0].place_id;
 
       setSelected({ lat, lng, place_id });
+      console.log("Selected Place: ", { lat, lng, place_id });
     } catch (error) {
       console.error("Error: ", error);
     }
@@ -85,7 +87,7 @@ const PlacesAutocomplete = ({ setSelected, is_google_configured }) => {
 
   return (
     <div className="relative">
-      <Input
+      <input
         value={value}
         onChange={(e) => {
           setValue(e.target.value);
@@ -102,10 +104,6 @@ const PlacesAutocomplete = ({ setSelected, is_google_configured }) => {
         onFocus={() => setShowSuggestions(true)}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         onKeyDown={handleKeyDown}
-        role="combobox"
-        aria-expanded={showSuggestions}
-        aria-autocomplete="list"
-        aria-controls="suggestions-list"
       />
       {showSuggestions && status === "OK" && (
         <ul

@@ -134,21 +134,6 @@ export function AddLocation() {
             })}
             className="space-y-4"
           >
-            {/* <FormField
-              control={form.control}
-              name="organizationName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-foreground">
-                    Organization Name
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter organization name" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
-
             <div>
               <p className="text-sm pb-2 font-medium">Business Location</p>
               <GooglePlacesAPI setSelectedPlace={setSelectedPlace} />
