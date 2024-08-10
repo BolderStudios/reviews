@@ -87,15 +87,18 @@ export default function SidebarNavigation({
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className="w-full justify-between"
+                  className="w-full"
                 >
                   {selectedLocation ? (
-                    <span className="flex items-center">
-                      {selectedLocation.organization_name}
+                    <div className="flex items-center w-full">
+                      <span className="flex-1 truncate mr-2">
+                        {selectedLocation.organization_name}
+                      </span>
+
                       {selectedLocation.is_primary && (
-                        <Star className="ml-2 h-4 w-4 text-yellow-500" />
+                        <Star className="flex-shrink-0 h-4 w-4 text-yellow-500" />
                       )}
-                    </span>
+                    </div>
                   ) : (
                     "Loading data..."
                     // "Select location..."
@@ -109,7 +112,7 @@ export default function SidebarNavigation({
                   <CommandList className="w-full">
                     <CommandGroup className="w-full p-0">
                       <div className="w-full px-4 py-2 border-b mb-1">
-                        <span className="text-[13px] text-muted-foreground">
+                        <span className="text-sm text-muted-foreground">
                           Locations ({passedLocations.length})
                         </span>
                       </div>
@@ -117,6 +120,7 @@ export default function SidebarNavigation({
                         .sort((a, b) => {
                           if (a.is_primary && !b.is_primary) return -1;
                           if (!a.is_primary && b.is_primary) return 1;
+
                           return a.organization_name.localeCompare(
                             b.organization_name
                           );
@@ -131,16 +135,18 @@ export default function SidebarNavigation({
                             <div className="flex items-center w-full">
                               <Check
                                 className={cn(
-                                  "mr-2 h-4 w-4",
+                                  "flex-shrink-0 mr-2 h-4 w-4",
                                   selectedLocation?.organization_name ===
                                     location.organization_name
                                     ? "opacity-100"
                                     : "opacity-0"
                                 )}
                               />
-                              {location.organization_name}
+                              <span className="flex-1 truncate mr-2">
+                                {location.organization_name}
+                              </span>
                               {location.is_primary && (
-                                <Star className="ml-2 h-4 w-4 text-yellow-500" />
+                                <Star className="flex-shrink-0 h-4 w-4 text-yellow-500" />
                               )}
                             </div>
                           </CommandItem>
