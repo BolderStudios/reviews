@@ -53,10 +53,20 @@ export default function Customers({ selectedLocation }) {
       {
         accessorKey: "email_address",
         header: "Email",
+        cell: ({ row }) => {
+          const { email_address } = row.original;
+
+          return <p>{email_address === null ? "-" : email_address}</p>;
+        },
       },
       {
         accessorKey: "phone_number",
-        header: "Phone",
+        header: "Phone Number",
+        cell: ({ row }) => {
+          const { phone_number } = row.original;
+
+          return <p>{phone_number === null ? "-" : phone_number}</p>;
+        },
       },
       {
         accessorKey: "requests",

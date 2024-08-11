@@ -68,9 +68,11 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
       return;
     }
 
+    const phoneNumber = formData.phoneNumber;
+
     if (
-      formData.phoneNumber &&
-      !/^\+?[1-9]\d{1,11}$/.test(formData.phoneNumber)
+      (phoneNumber && !/^\+?[1-9]\d{1,14}$/.test(phoneNumber)) ||
+      phoneNumber.length < 10
     ) {
       toast.error(
         "Invalid phone number format. Please use a valid format (e.g., +1-234-567-8900)."
@@ -78,19 +80,75 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
       return;
     }
 
-    if (!formData.emailAddress && !formData.phoneNumber) {
+    if (!formData.emailAddress && !phoneNumber) {
       toast.error("Please provide either an email address or a phone number.");
       return;
     }
 
+    let updatedPhoneNumber = formData.phoneNumber;
+
+    if (formData.phoneNumber) {
+      // Remove all non-digit characters
+      const digitsOnly = formData.phoneNumber.replace(/\D/g, "");
+
+      if (digitsOnly.length === 10) {
+        // Format: XXX-XXX-XXXX
+        updatedPhoneNumber = `+1 ${digitsOnly.substring(
+          0,
+          3
+        )}-${digitsOnly.substring(3, 6)}-${digitsOnly.substring(6)}`;
+      } else if (digitsOnly.length === 11 && digitsOnly.startsWith("1")) {
+        // Format: +1 XXX-XXX-XXXX
+        updatedPhoneNumber = `+1 ${digitsOnly.substring(
+          1,
+          4
+        )}-${digitsOnly.substring(4, 7)}-${digitsOnly.substring(7)}`;
+      } else if (digitsOnly.length === 11 && !digitsOnly.startsWith("1")) {
+        // Invalid format
+        toast.error(
+          "Invalid phone number format. For 11-digit numbers, it should start with '1'."
+        );
+        return;
+      } else if (
+        formData.phoneNumber.startsWith("+1") &&
+        digitsOnly.length === 11
+      ) {
+        // Already in +1 XXX-XXX-XXXX format, just standardize the formatting
+        updatedPhoneNumber = `+1 ${digitsOnly.substring(
+          1,
+          4
+        )}-${digitsOnly.substring(4, 7)}-${digitsOnly.substring(7)}`;
+      } else if (digitsOnly.length === 12 && digitsOnly.startsWith("1")) {
+        // Format: +1 XXX-XXX-XXXX
+        updatedPhoneNumber = `+1 ${digitsOnly.substring(
+          1,
+          4
+        )}-${digitsOnly.substring(4, 7)}-${digitsOnly.substring(7)}`;
+      } else if (digitsOnly.length < 10 || digitsOnly.length > 15) {
+        // Invalid length
+        toast.error(
+          "Invalid phone number length. Please enter a number between 10 and 15 digits."
+        );
+        return;
+      }
+
+      // For any other case, keep the original input
+    }
+
     try {
-      const response = await addCustomerManually(formData, selectedLocation.id);
+      const response = await addCustomerManually(
+        {
+          ...formData,
+          phoneNumber: updatedPhoneNumber,
+        },
+        selectedLocation.id
+      );
 
       if (response.success) {
         toast.success("Customer added successfully.");
         form.reset();
 
-        // setIsOpen(false);
+        //   setIsOpen(false);
 
         router.refresh();
         refreshPage();
@@ -142,10 +200,7 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
                     <FormItem>
                       <FormLabel className="text-primary">First name</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter their first name"
-                          {...field}
-                        />
+                        <Input placeholder="John" {...field} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -160,10 +215,7 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
                         Email address (optional)
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter their email address"
-                          {...field}
-                        />
+                        <Input placeholder="john@outlook.com" {...field} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -178,10 +230,7 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
                         Phone number (optional)
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter their phone number"
-                          {...field}
-                        />
+                        <Input placeholder="+1 234-567-8900" {...field} />
                       </FormControl>
                     </FormItem>
                   )}
