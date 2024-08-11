@@ -50,8 +50,8 @@ export default function SidebarNavigation({
   const currentPathname = pathname.split("/")[1];
 
   useEffect(() => {
-    console.log("Current pathname:", pathname);
-    console.log("Selected location:", passedSelectedLocation);
+    // console.log("Current pathname:", pathname);
+    // console.log("Selected location:", passedSelectedLocation);
 
     // Extract location ID from URL if available
     const pathParts = pathname.split("/");
@@ -82,13 +82,13 @@ export default function SidebarNavigation({
 
       if (currentPathname !== "billing") {
         try {
-          console.log("Updating location to:", location);
+          // console.log("Updating location to:", location);
           const data = await updateSelectedLocation(location, currentPathname);
 
           if (data.success) {
-            console.log("Location update successful, new path:", data.newPath);
+            // console.log("Location update successful, new path:", data.newPath);
             lastKnownLocationIdRef.current = location.id;
-            
+
             router.push(data.newPath);
             toast.success("Location updated successfully");
           } else {
@@ -270,7 +270,7 @@ export default function SidebarNavigation({
                       ? `/${href}/${locationId}`
                       : `/${href}`;
 
-                  console.log(`Link ${label}: ${fullHref}`);
+                  // console.log(`Link ${label}: ${fullHref}`);
 
                   return (
                     <Link
@@ -286,7 +286,7 @@ export default function SidebarNavigation({
                           e.preventDefault();
                         } else {
                           setIsNavigating(true);
-                          console.log(`Navigating to: ${fullHref}`);
+                          // console.log(`Navigating to: ${fullHref}`);
                         }
                       }}
                     >
