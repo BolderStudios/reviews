@@ -15,7 +15,10 @@ export type Database = {
           created_at: string
           id: string
           location_id: string
+          mixed_mentions: number | null
           name: string
+          negative_mentions: number | null
+          positive_mentions: number | null
           review_id: string
         }
         Insert: {
@@ -23,7 +26,10 @@ export type Database = {
           created_at?: string
           id?: string
           location_id: string
+          mixed_mentions?: number | null
           name: string
+          negative_mentions?: number | null
+          positive_mentions?: number | null
           review_id: string
         }
         Update: {
@@ -31,7 +37,10 @@ export type Database = {
           created_at?: string
           id?: string
           location_id?: string
+          mixed_mentions?: number | null
           name?: string
+          negative_mentions?: number | null
+          positive_mentions?: number | null
           review_id?: string
         }
         Relationships: [
@@ -95,27 +104,30 @@ export type Database = {
       }
       customers: {
         Row: {
+          clerk_id: string | null
           created_at: string
           email_address: string | null
+          first_name: string | null
           id: string
           location_id: string | null
-          name: string | null
           phone_number: string | null
         }
         Insert: {
+          clerk_id?: string | null
           created_at?: string
           email_address?: string | null
+          first_name?: string | null
           id?: string
           location_id?: string | null
-          name?: string | null
           phone_number?: string | null
         }
         Update: {
+          clerk_id?: string | null
           created_at?: string
           email_address?: string | null
+          first_name?: string | null
           id?: string
           location_id?: string | null
-          name?: string | null
           phone_number?: string | null
         }
         Relationships: [
@@ -135,6 +147,7 @@ export type Database = {
           detail: string | null
           id: string
           impact: string | null
+          location_id: string | null
           review_id: string | null
           sentiment: string | null
         }
@@ -144,6 +157,7 @@ export type Database = {
           detail?: string | null
           id?: string
           impact?: string | null
+          location_id?: string | null
           review_id?: string | null
           sentiment?: string | null
         }
@@ -153,10 +167,18 @@ export type Database = {
           detail?: string | null
           id?: string
           impact?: string | null
+          location_id?: string | null
           review_id?: string | null
           sentiment?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "public_detailed_aspects_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "public_detailed_aspects_review_id_fkey"
             columns: ["review_id"]
@@ -222,11 +244,9 @@ export type Database = {
         Row: {
           clerk_id: string
           created_at: string
-          daily_customers_count: string | null
           google_place_coordinates: string | null
           google_place_id: string | null
           id: string
-          is_competitor: boolean
           is_google_configured: boolean
           is_primary: boolean
           is_yelp_configured: boolean
@@ -239,11 +259,9 @@ export type Database = {
         Insert: {
           clerk_id: string
           created_at?: string
-          daily_customers_count?: string | null
           google_place_coordinates?: string | null
           google_place_id?: string | null
           id?: string
-          is_competitor?: boolean
           is_google_configured?: boolean
           is_primary?: boolean
           is_yelp_configured?: boolean
@@ -256,11 +274,9 @@ export type Database = {
         Update: {
           clerk_id?: string
           created_at?: string
-          daily_customers_count?: string | null
           google_place_coordinates?: string | null
           google_place_id?: string | null
           id?: string
-          is_competitor?: boolean
           is_google_configured?: boolean
           is_primary?: boolean
           is_yelp_configured?: boolean
@@ -513,6 +529,35 @@ export type Database = {
           },
         ]
       }
+      strengths: {
+        Row: {
+          created_at: string
+          id: string
+          location_id: string | null
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_strengths_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           cancel_at: number | null
@@ -646,6 +691,35 @@ export type Database = {
           testimonial_process?: string | null
         }
         Relationships: []
+      }
+      weaknesses: {
+        Row: {
+          created_at: string
+          id: string
+          location_id: string | null
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_weaknesses_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

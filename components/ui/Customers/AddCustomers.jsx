@@ -70,6 +70,11 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
 
     const phoneNumber = formData.phoneNumber;
 
+    if (!formData.emailAddress && !phoneNumber) {
+      toast.error("Please provide either an email address or a phone number.");
+      return;
+    }
+
     if (
       (phoneNumber && !/^\+?[1-9]\d{1,14}$/.test(phoneNumber)) ||
       phoneNumber.length < 10
@@ -77,11 +82,6 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
       toast.error(
         "Invalid phone number format. Please use a valid format (e.g., +1-234-567-8900)."
       );
-      return;
-    }
-
-    if (!formData.emailAddress && !phoneNumber) {
-      toast.error("Please provide either an email address or a phone number.");
       return;
     }
 
