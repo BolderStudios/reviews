@@ -37,8 +37,6 @@ export default clerkMiddleware(async (auth, req) => {
       searchParams.length > 0 ? `?${searchParams}` : ""
     }`;
 
-    console.log("Hostname", hostname);
-
     // Check if it's an ngrok URL
     if (hostname.includes("ngrok-free.app")) {
       console.log("Ngrok URL detected");

@@ -31,7 +31,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { AddLocation } from "@/components/ui/AddLocation";
+import { AddLocation } from "@/components/ui/Locations/AddLocation";
 import { updateSelectedLocation } from "@/app/actions";
 import { toast } from "sonner";
 import { SignOutButton } from "@clerk/nextjs";

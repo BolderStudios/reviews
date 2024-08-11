@@ -300,11 +300,11 @@ export async function storeReview(
       await Promise.all([
         ...(insights.detailedSentimentAnalysis.positiveAspects || []).map(
           (aspect) =>
-            insertDetailedAspect(inserted_review[0].id, aspect, "positive")
+            insertDetailedAspect(inserted_review[0].id, aspect, "positive", locationId)
         ),
         ...(insights.detailedSentimentAnalysis.negativeAspects || []).map(
           (aspect) =>
-            insertDetailedAspect(inserted_review[0].id, aspect, "negative")
+            insertDetailedAspect(inserted_review[0].id, aspect, "negative", locationId)
         ),
       ]);
     }
@@ -423,7 +423,7 @@ async function insertKeyword(reviewId, categoryId, keyword, location_id) {
 }
 
 // Helper function to insert a row in detailed_aspects table
-async function insertDetailedAspect(reviewId, aspect, sentiment) {
+async function insertDetailedAspect(reviewId, aspect, sentiment, locationId) {
   if (!aspect || !aspect.aspect) return null;
   const { data, error } = await supabase
     .from("detailed_aspects")
@@ -434,6 +434,7 @@ async function insertDetailedAspect(reviewId, aspect, sentiment) {
         detail: aspect.detail,
         impact: aspect.impact,
         sentiment: sentiment,
+        location_id: locationId,
       },
     ])
     .select("*");

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { CustomersTable } from "./CustomersTable";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { ViewCustomer } from "@/components/ui/Customers/ViewCustomer";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
-import { getAllCustomerData } from "@/utils/reviews";
+import { getSingleCustomerData } from "@/utils/reviews";
+import { AddCustomers } from "@/components/ui/Customers/AddCustomers";
+import { getAllCustomers } from "@/app/actions";
 
 const RequestStatusBadge = ({ status }) => {
   const getStatusColor = () => {
@@ -24,96 +26,110 @@ const RequestStatusBadge = ({ status }) => {
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <span
-        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor()}`}
-      >
-        {status}
-      </span>
-    </div>
+    <span
+      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor()}`}
+    >
+      {status}
+    </span>
   );
 };
 
-const columns = [
-  {
-    accessorKey: "actions",
-    header: () => <div className="text-center">Actions</div>,
-    cell: ({ row }) => {
-      const customer = row.original;
-      return (
-        <div className="flex flex-col items-center justify-center">
-          <ViewCustomer customer={customer} />
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "email_address",
-    header: "Email",
-  },
-  {
-    accessorKey: "phone_number",
-    header: <p className="text-left">Phone</p>,
-  },
-  {
-    accessorKey: "requests",
-    header: () => <div className="text-center">Email Requests</div>,
-    cell: ({ row }) => {
-      const [requestStatus, setRequestStatus] = useState("Loading...");
-      const [isLoading, setIsLoading] = useState(true);
-      const customer = row.original;
+export default function Customers({ selectedLocation }) {
+  const [customerData, setCustomerData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-      useEffect(() => {
-        const fetchCustomerData = async () => {
-          try {
-            const customerData = await getAllCustomerData(customer.id);
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({ row }) => <ViewCustomer customer={row.original} />,
+      },
+      {
+        accessorKey: "first_name",
+        header: "First Name",
+      },
+      {
+        accessorKey: "email_address",
+        header: "Email",
+      },
+      {
+        accessorKey: "phone_number",
+        header: "Phone",
+      },
+      {
+        accessorKey: "requests",
+        header: "Email Requests",
+        cell: ({ row }) => {
+          const [requestStatus, setRequestStatus] = useState("Not Sent");
+          const [isStatusLoading, setIsStatusLoading] = useState(true);
 
-            if (customerData.requests.length > 0) {
-              const latestRequest = customerData.requests[0];
+          useEffect(() => {
+            const fetchRequestStatus = async () => {
+              try {
+                const customerData = await getSingleCustomerData(
+                  row.original.id
+                );
 
-              if (latestRequest.clicked) setRequestStatus("Clicked");
-              else if (latestRequest.opened) setRequestStatus("Opened");
-              else if (latestRequest.delivered) setRequestStatus("Delivered");
-              else if (latestRequest.sent) setRequestStatus("Sent");
-              else setRequestStatus("Not Sent");
-            } else {
-              setRequestStatus("Not Sent");
-            }
-          } catch (error) {
-            console.error("Error fetching customer data:", error);
-            setRequestStatus("Error");
-          } finally {
-            setIsLoading(false);
+                if (customerData.requests.length > 0) {
+                  const latestRequest = customerData.requests[0];
+
+                  if (latestRequest.clicked) setRequestStatus("Clicked");
+                  else if (latestRequest.opened) setRequestStatus("Opened");
+                  else if (latestRequest.delivered)
+                    setRequestStatus("Delivered");
+                  else if (latestRequest.sent) setRequestStatus("Sent");
+                }
+              } catch (error) {
+                console.error("Error fetching request status:", error);
+                setRequestStatus("Error");
+              } finally {
+                setIsStatusLoading(false);
+              }
+            };
+
+            fetchRequestStatus();
+          }, [row.original.id]);
+
+          if (isStatusLoading) {
+            return <Loader2 className="h-4 w-4 animate-spin" />;
           }
-        };
 
-        fetchCustomerData();
-      }, [customer.id]);
+          return <RequestStatusBadge status={requestStatus} />;
+        },
+      },
+    ],
+    []
+  );
 
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            <span>Loading...</span>
-          </div>
-        );
+  const fetchCustomerData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const result = await getAllCustomers(selectedLocation.id);
+
+      if (result.success) {
+        setCustomerData(result.data);
+      } else {
+        console.error("Error fetching customer data:", result.error);
       }
+    } catch (error) {
+      console.error("Error fetching customer data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedLocation.id]);
 
-      return <RequestStatusBadge status={requestStatus} />;
-    },
-  },
-];
+  useEffect(() => {
+    fetchCustomerData();
+  }, [fetchCustomerData, refreshTrigger]);
 
-export default function Customers({ selectedLocation, customers }) {
-  const memoizedColumns = useMemo(() => columns, []);
-  const memoizedData = useMemo(() => customers, [customers]);
+  const refreshPage = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1);
+  }, []);
 
   const renderEmptyState = () => (
-    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner pointer-events-none">
+    <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg shadow-inner">
       <AlertCircle className="w-16 h-16 text-gray-400 mb-4" />
       <h3 className="text-xl font-semibold text-gray-700 mb-2">
         No Customers Yet
@@ -128,17 +144,27 @@ export default function Customers({ selectedLocation, customers }) {
   return (
     <SignedInLayout>
       <div className="px-8 py-6">
-        <h2 className="font-bold text-2xl mb-6">
-          Customers ({customers.length})
-        </h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-bold text-2xl">
+            Customers ({customerData.length})
+          </h2>
+          <AddCustomers
+            selectedLocation={selectedLocation}
+            refreshPage={refreshPage}
+          />
+        </div>
 
-        {customers.length > 0 ? (
-          <CustomersTable columns={memoizedColumns} data={memoizedData} />
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : customerData.length > 0 ? (
+          <CustomersTable columns={columns} data={customerData} />
         ) : (
           <>
             {renderEmptyState()}
             <div className="mt-8 opacity-50 pointer-events-none">
-              <CustomersTable columns={memoizedColumns} data={[]} />
+              <CustomersTable columns={columns} data={[]} />
             </div>
           </>
         )}

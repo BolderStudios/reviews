@@ -35,7 +35,7 @@ export async function getAllReviewData(reviewId) {
   return result;
 }
 
-export async function getAllCustomerData(customerId) {
+export async function getSingleCustomerData(customerId) {
   try {
     const { data: customerData, error } = await supabase
       .from("customers")

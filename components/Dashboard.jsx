@@ -7,7 +7,7 @@ import { KpiCard } from "@/components/ui/KpiCard";
 import { SentimentDistribution } from "./ui/Charts/SentimentDistribution";
 import { EmployeeMentionsChart } from "./ui/Charts/EmployeeMentionsChart";
 import { ProductFeedbackChart } from "./ui/Charts/ProductFeedbackChart";
-import { UpdateLocation } from "@/components/ui/UpdateLocation";
+import { UpdateLocation } from "@/components/ui/Locations/UpdateLocation";
 import {
   Star,
   BarChart,
@@ -168,6 +168,7 @@ export default function Dashboard({
           <h2 className="font-bold text-2xl">Dashboard</h2>
           <UpdateLocation selectedLocation={selectedLocation} />
         </div>
+        
         {isPageLoading ? (
           <div className="mt-6 space-y-6">
             <Skeleton className="h-[200px] w-full" />

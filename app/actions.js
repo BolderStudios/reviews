@@ -841,3 +841,44 @@ export async function sendEmailRequest(customer) {
     };
   }
 }
+
+export async function getAllCustomers(location_id) {
+  try {
+    const { data: customerData, error: customerError } = await supabase
+      .from("customers")
+      .select("*")
+      .eq("location_id", location_id);
+
+    if (customerError) throw customerError;
+    return { success: true, data: customerData };
+  } catch (error) {
+    console.error("Error fetching customer data:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function addCustomerManually(formData, location_id) {
+  try {
+    const { userId } = await auth();
+
+    const { data: customerData, error: customerError } = await supabase
+      .from("customers")
+      .insert([
+        {
+          first_name: formData.firstName,
+          email_address: formData.emailAddress || null,
+          phone_number: formData.phoneNumber || null,
+          location_id: location_id,
+          clerk_id: userId,
+        },
+      ])
+      .select()
+      .single();
+
+    if (customerError) throw customerError;
+    return { success: true, data: customerData };
+  } catch (error) {
+    console.error("Error adding customer manually:", error);
+    return { success: false, error: error.message };
+  }
+}

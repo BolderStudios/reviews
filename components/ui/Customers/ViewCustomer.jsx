@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/Buttons/button";
 import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MousePointerClick } from "lucide-react";
-import { getAllCustomerData } from "@/utils/reviews";
+import { getSingleCustomerData } from "@/utils/reviews";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { sendEmailRequest, sendSMSRequest } from "@/app/actions";
@@ -32,7 +32,7 @@ export function ViewCustomer({ customer }) {
   useEffect(() => {
     if (isSheetOpen) {
       const fetchData = async () => {
-        const result = await getAllCustomerData(customer.id);
+        const result = await getSingleCustomerData(customer.id);
         setCustomerData(result);
 
         setTimeout(() => {
@@ -105,12 +105,12 @@ export function ViewCustomer({ customer }) {
               <div className="flex items-center space-x-4">
                 <Avatar className="h-12 w-12">
                   <AvatarFallback>
-                    {customer.name[0].toUpperCase()}
+                    {customer.first_name[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
 
                 <div>
-                  <h3 className="font-semibold">{customer.name}</h3>
+                  <h3 className="font-semibold">{customer.first_name}</h3>
                   <p className="text-sm text-muted-foreground">{`${customer.phone_number}`}</p>
                   <p className="text-sm text-muted-foreground">{`${customer.email_address}`}</p>
                 </div>
