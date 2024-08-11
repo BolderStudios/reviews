@@ -15,6 +15,7 @@ import {
   ShoppingBasket,
   Users,
   ArrowLeft,
+  Loader,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Buttons/button";
@@ -43,6 +44,7 @@ export default function SidebarNavigation({
   const [open, setOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const lastKnownLocationIdRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const pathname = usePathname();
   const currentPathname = pathname.split("/")[1];
@@ -50,17 +52,28 @@ export default function SidebarNavigation({
   useEffect(() => {
     console.log("Current pathname:", pathname);
     console.log("Selected location:", passedSelectedLocation);
+
+    // Extract location ID from URL if available
+    const pathParts = pathname.split("/");
+    if (pathParts.length > 2) {
+      lastKnownLocationIdRef.current = pathParts[2];
+    }
+
     if (passedSelectedLocation) {
       lastKnownLocationIdRef.current = passedSelectedLocation.id;
-    } else if (!lastKnownLocationIdRef.current) {
-      // If no location is passed and we don't have a last known ID, try to extract it from the pathname
-      const pathParts = pathname.split("/");
-      if (pathParts.length > 2) {
-        lastKnownLocationIdRef.current = pathParts[2];
-      }
+
+      setIsLoading(false);
+    } else if (passedLocations.length > 0) {
+      // If locations are loaded but no selection, assume first location
+      lastKnownLocationIdRef.current = passedLocations[0].id;
+
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
     }
+
     setIsNavigating(false);
-  }, [pathname, passedSelectedLocation]);
+  }, [pathname, passedSelectedLocation, passedLocations]);
 
   const handleLocationChange = useCallback(
     async (location) => {
@@ -75,6 +88,7 @@ export default function SidebarNavigation({
           if (data.success) {
             console.log("Location update successful, new path:", data.newPath);
             lastKnownLocationIdRef.current = location.id;
+            
             router.push(data.newPath);
             toast.success("Location updated successfully");
           } else {
@@ -177,9 +191,14 @@ export default function SidebarNavigation({
                   role="combobox"
                   aria-expanded={open}
                   className="w-full"
-                  disabled={isNavigating}
+                  disabled={isNavigating || isLoading}
                 >
-                  {passedSelectedLocation ? (
+                  {isLoading ? (
+                    <span className="flex items-center">
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
+                      Loading...
+                    </span>
+                  ) : passedSelectedLocation ? (
                     <div className="flex items-center justify-between w-full">
                       <span className="flex-1 truncate mr-2">
                         {passedSelectedLocation.organization_name}
@@ -189,7 +208,7 @@ export default function SidebarNavigation({
                       )}
                     </div>
                   ) : (
-                    <span>Loading data...</span>
+                    <span>Select a location</span>
                   )}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -258,9 +277,12 @@ export default function SidebarNavigation({
                       key={href}
                       prefetch={false}
                       href={fullHref}
-                      className={activeLinkClass(`/${href}`)}
+                      className={cn(
+                        activeLinkClass(`/${href}`),
+                        isLoading && "pointer-events-none opacity-50"
+                      )}
                       onClick={(e) => {
-                        if (isNavigating) {
+                        if (isNavigating || isLoading) {
                           e.preventDefault();
                         } else {
                           setIsNavigating(true);
@@ -281,7 +303,7 @@ export default function SidebarNavigation({
                 <Button
                   variant="outline"
                   className="w-full flex items-center justify-center gap-[6px]"
-                  disabled={isNavigating}
+                  disabled={isNavigating || isLoading}
                 >
                   <ArrowLeft size={14} className="mt-[1px]" />
                   <p className="leading-7">Signout</p>
