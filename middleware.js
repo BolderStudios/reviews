@@ -37,6 +37,8 @@ export default clerkMiddleware(async (auth, req) => {
       searchParams.length > 0 ? `?${searchParams}` : ""
     }`;
 
+    console.log("Hostname", hostname);
+
     // Check if it's an ngrok URL
     if (hostname.includes("ngrok-free.app")) {
       console.log("Ngrok URL detected");
@@ -45,7 +47,7 @@ export default clerkMiddleware(async (auth, req) => {
         console.log("API route detected, passing through");
         return NextResponse.next();
       }
-    } else if (hostname.includes("vercel.app")) {
+    } else if (hostname.includes("vercel")) {
       console.log("Vercel URL detected");
       // If it's an API route, pass it through without rewriting
       if (url.pathname.startsWith("/api")) {
