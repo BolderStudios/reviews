@@ -45,6 +45,13 @@ export default clerkMiddleware(async (auth, req) => {
         console.log("API route detected, passing through");
         return NextResponse.next();
       }
+    } else if (hostname.includes("vercel.app")) {
+      console.log("Vercel URL detected");
+      // If it's an API route, pass it through without rewriting
+      if (url.pathname.startsWith("/api")) {
+        console.log("API route detected, passing through");
+        return NextResponse.next();
+      }
     }
 
     // Check if it's localhost or the main site
