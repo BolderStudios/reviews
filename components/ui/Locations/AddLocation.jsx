@@ -41,7 +41,7 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const positions = [
   { value: "owner", label: "Owner" },
@@ -62,6 +62,9 @@ export function AddLocation() {
   const [openPosition, setOpenPosition] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const pathname = usePathname();
+
+  const currentPath = pathname.split("/")[1];
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -82,7 +85,7 @@ export function AddLocation() {
     formData.businessLocation = selectedPlace;
 
     try {
-      const response = await addLocationFunc(formData);
+      const response = await addLocationFunc(formData, currentPath);
 
       if (response.success === true) {
         toast.success("Location added successfully!");
@@ -93,8 +96,8 @@ export function AddLocation() {
         });
 
         setIsDialogOpen(false);
-        window.location.reload();
         router.refresh();
+        router.push(response.newPath);
       } else {
         toast.error("Failed to add location. Please try again.");
       }

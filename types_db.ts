@@ -188,6 +188,48 @@ export type Database = {
           },
         ]
       }
+      highlighted_words: {
+        Row: {
+          created_at: string
+          id: string
+          location_id: string | null
+          review_id: string | null
+          sentiment: string | null
+          word: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          review_id?: string | null
+          sentiment?: string | null
+          word?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          review_id?: string | null
+          sentiment?: string | null
+          word?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_highlighted_words_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_highlighted_words_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       keywords: {
         Row: {
           business_category_id: string | null
@@ -292,6 +334,210 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      needs_improvement: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          location_id: string | null
+          review_excerpt: string | null
+          review_id: string | null
+          suggestion: string | null
+          summary: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_excerpt?: string | null
+          review_id?: string | null
+          suggestion?: string | null
+          summary?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_excerpt?: string | null
+          review_id?: string | null
+          suggestion?: string | null
+          summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_needs_improvement_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_needs_improvement_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people_dont_like: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          location_id: string | null
+          review_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_people_dont_like_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_people_dont_like_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people_hate: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          location_id: string | null
+          review_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_people_hate_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_people_hate_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people_love: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          location_id: string | null
+          review_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_people_love_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_people_love_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      peoples_pains: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          location_id: string | null
+          review_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_peoples_pains_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_peoples_pains_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -406,6 +652,38 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_topics: {
+        Row: {
+          count: number | null
+          created_at: string
+          id: string
+          review_id: string | null
+          topic: string | null
+        }
+        Insert: {
+          count?: number | null
+          created_at?: string
+          id?: string
+          review_id?: string | null
+          topic?: string | null
+        }
+        Update: {
+          count?: number | null
+          created_at?: string
+          id?: string
+          review_id?: string | null
+          topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_review_topics_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -534,19 +812,22 @@ export type Database = {
           created_at: string
           id: string
           location_id: string | null
-          name: string | null
+          review_id: string | null
+          strength: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           location_id?: string | null
-          name?: string | null
+          review_id?: string | null
+          strength?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           location_id?: string | null
-          name?: string | null
+          review_id?: string | null
+          strength?: string | null
         }
         Relationships: [
           {
@@ -554,6 +835,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_strengths_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -697,19 +985,22 @@ export type Database = {
           created_at: string
           id: string
           location_id: string | null
-          name: string | null
+          review_id: string | null
+          weakness: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           location_id?: string | null
-          name?: string | null
+          review_id?: string | null
+          weakness?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           location_id?: string | null
-          name?: string | null
+          review_id?: string | null
+          weakness?: string | null
         }
         Relationships: [
           {
@@ -717,6 +1008,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_weaknesses_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]

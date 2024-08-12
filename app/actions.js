@@ -170,7 +170,7 @@ export async function uploadFile(
   }
 }
 
-export async function addLocationFunc(formData) {
+export async function addLocationFunc(formData, currentPath) {
   console.log("Adding location —> ", formData);
   const { userId } = await auth();
 
@@ -232,6 +232,24 @@ export async function addLocationFunc(formData) {
       })
       .eq("clerk_id", userId);
 
+    let newPath = "/";
+    switch (currentPath) {
+      case "connections":
+      case "reviews":
+      case "dashboard":
+      case "keywords":
+      case "employee_mentions":
+      case "funnels":
+      case "customers":
+      case "product_feedback":
+      case "review_us_page":
+        newPath = `/${currentPath}/${newLocation.id}`;
+        break;
+      case "billing":
+        newPath = `/${currentPath}`;
+        break;
+    }
+
     if (error) {
       throw error;
     }
@@ -241,7 +259,7 @@ export async function addLocationFunc(formData) {
     if (!newLocationError && success) {
       console.log("Location added successfully");
 
-      return { message: "Location added successfully", success: true };
+      return { message: "Location added successfully", success: true, newPath };
     } else {
       console.error("Error adding location: ", error);
 
