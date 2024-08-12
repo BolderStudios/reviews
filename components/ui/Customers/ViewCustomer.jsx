@@ -8,10 +8,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Phone, AtSign } from "lucide-react";
 import { Button } from "@/components/ui/Buttons/button";
 import { ButtonLoading } from "@/components/ui/Buttons/ButtonLoading";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MousePointerClick } from "lucide-react";
 import { getSingleCustomerData } from "@/utils/reviews";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -89,9 +88,9 @@ export function ViewCustomer({ customer }) {
           <MousePointerClick className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="overflow-y-auto w-[40vw] max-w-[1000px]">
+      <SheetContent className="overflow-y-auto w-[50vw] max-w-[1000px]">
         <SheetHeader>
-          <SheetTitle>Detailed information about the customer</SheetTitle>
+          <SheetTitle>Customer information</SheetTitle>
         </SheetHeader>
         {isLoading ? (
           <div className="mt-6 space-y-6">
@@ -101,45 +100,71 @@ export function ViewCustomer({ customer }) {
           </div>
         ) : (
           <div className="mt-6 space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarFallback>
-                    {customer.first_name[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+            <div className="flex flex-col justify-between">
+              <h3 className="font-semibold">{customer.first_name}</h3>
 
-                <div>
-                  <h3 className="font-semibold">{customer.first_name}</h3>
-                  <p className="text-sm text-muted-foreground">{`${customer.phone_number}`}</p>
-                  <p className="text-sm text-muted-foreground">{`${customer.email_address}`}</p>
+              <div className="flex items-center justify-between">
+                <div className="flex space-x-4">
+                  <div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <AtSign className="h-4 w-4 inline-block text-stone-700" />
+                      <p className="text-sm text-muted-foreground">{`${
+                        customer.email_address === null
+                          ? "Haven't added yet"
+                          : customer.email_address
+                      }`}</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <Phone className="h-4 w-4 inline-block text-stone-700" />
+                      <p className="text-sm text-muted-foreground">
+                        {`${
+                          customer.phone_number === null
+                            ? "Haven't added yet"
+                            : customer.phone_number
+                        }`}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex flex-col gap-2">
-                {isEmailLoading ? (
-                  <ButtonLoading />
-                ) : (
-                  <Button
-                    onClick={handleEmailRequest}
-                    variant="outline"
-                    size="xs"
-                  >
-                    Email Review Request
-                  </Button>
-                )}
+                <div className="flex flex-col gap-2">
+                  {isEmailLoading ? (
+                    <ButtonLoading />
+                  ) : (
+                    <Button
+                      onClick={handleEmailRequest}
+                      variant="outline"
+                      size="xs"
+                      disabled={customer.email_address === null}
+                      className={`${
+                        customer.email_address === null
+                          ? "cursor-not-allowed"
+                          : ""
+                      }`}
+                    >
+                      Email Review Request
+                    </Button>
+                  )}
 
-                {isSMSLoading ? (
-                  <ButtonLoading />
-                ) : (
-                  <Button
-                    onClick={handleSMSRequest}
-                    variant="outline"
-                    size="xs"
-                  >
-                    SMS Review Request
-                  </Button>
-                )}
+                  {isSMSLoading ? (
+                    <ButtonLoading />
+                  ) : (
+                    <Button
+                      onClick={handleSMSRequest}
+                      variant="outline"
+                      size="xs"
+                      disabled={customer.phone_number === null}
+                      className={`${
+                        customer.phone_number === null
+                          ? "cursor-not-allowed"
+                          : ""
+                      }`}
+                    >
+                      SMS Review Request
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
 
