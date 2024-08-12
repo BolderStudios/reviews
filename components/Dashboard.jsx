@@ -13,7 +13,6 @@ import {
   BarChart,
   MessageSquareQuote,
   Smile,
-  CircleX,
   AlertCircle,
 } from "lucide-react";
 import { YearsCalendar } from "./ui/YearsCalendar";
@@ -168,7 +167,7 @@ export default function Dashboard({
           <h2 className="font-bold text-2xl">Dashboard</h2>
           <UpdateLocation selectedLocation={selectedLocation} />
         </div>
-        
+
         {isPageLoading ? (
           <div className="mt-6 space-y-6">
             <Skeleton className="h-[200px] w-full" />
@@ -177,7 +176,8 @@ export default function Dashboard({
           </div>
         ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
           <div className="flex flex-col gap-6">
-            {renderKpiCards()}{" "}
+            {renderKpiCards()}
+
             <div className="grid grid-cols-3 gap-6">
               <SentimentDistribution
                 sentimentDistribution={sentimentDistribution}

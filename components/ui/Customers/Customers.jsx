@@ -115,6 +115,7 @@ export default function Customers({ selectedLocation }) {
 
   const fetchCustomerData = useCallback(async () => {
     setIsLoading(true);
+
     try {
       const result = await getAllCustomers(selectedLocation.id);
 
