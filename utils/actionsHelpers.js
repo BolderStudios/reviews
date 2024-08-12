@@ -324,6 +324,9 @@ export async function storeReview(
       ]);
     }
 
+    console.log("Strengths: ", insights.businessInsights.strengths);
+    console.log("Weaknesses: ", insights.businessInsights.weaknesses);
+
     // Process strengths
     if (insights.businessInsights.strengths.length > 0) {
       await Promise.all(
