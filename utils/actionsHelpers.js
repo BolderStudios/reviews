@@ -325,7 +325,7 @@ export async function storeReview(
     }
 
     // Process strengths
-    if (insights.businessInsights && insights.businessInsights.strengths) {
+    if (insights.businessInsights.strengths.length > 0) {
       await Promise.all(
         insights.businessInsights.strengths.map((strength) =>
           insertStrength(inserted_review[0].id, locationId, strength)
@@ -334,7 +334,7 @@ export async function storeReview(
     }
 
     // Process weaknesses
-    if (insights.businessInsights && insights.businessInsights.weaknesses) {
+    if (insights.businessInsights.weaknesses.length > 0) {
       await Promise.all(
         insights.businessInsights.weaknesses.map((weakness) =>
           insertWeakness(inserted_review[0].id, locationId, weakness)
