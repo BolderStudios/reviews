@@ -50,8 +50,8 @@ export function ProductFeedbackTable({ columns, data }) {
   };
 
   return (
-    <div>
-      <div className="flex flex-wrap gap-2 items-center py-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap gap-2 items-center">
         <Input
           placeholder="Search item names..."
           value={table.getColumn("item")?.getFilterValue() ?? ""}

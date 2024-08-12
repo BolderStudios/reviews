@@ -12,8 +12,10 @@ import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 export default function Connections({ selectedLocation, isFetching }) {
   return (
     <SignedInLayout>
-      <div className="px-8 py-6">
-        <h2 className="font-bold text-2xl mb-6">Review Platforms</h2>
+      <div className="px-4 mt-3">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-bold text-2xl">Connections</h2>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="border border-stone-200 rounded-lg shadow-lg overflow-hidden">

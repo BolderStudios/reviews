@@ -57,8 +57,10 @@ export default function Funnels({ selectedLocation, isFetching }) {
 
   return (
     <SignedInLayout>
-      <div className="px-8 py-6">
-        <h2 className="font-bold text-2xl mb-6">Templates</h2>
+      <div className="px-4 mt-3">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-bold text-2xl">Templates</h2>
+        </div>
 
         <div className="flex items-center gap-4 flex-wrap">
           {/* Standard Yelp QR Code Card */}

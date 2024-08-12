@@ -46,7 +46,7 @@ const formSchema = z.object({
   phoneNumber: z.string().optional().or(z.literal("")),
 });
 
-export function AddCustomers({ selectedLocation, refreshPage }) {
+export function AddCustomers({ selectedLocation, refreshPage, disabled }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -165,7 +165,12 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="w-fit">
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-fit"
+          disabled={disabled}
+        >
           Add a customer
         </Button>
       </DialogTrigger>

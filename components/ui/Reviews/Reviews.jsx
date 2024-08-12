@@ -250,17 +250,19 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
 
   return (
     <SignedInLayout>
-      <div className="px-8 py-6">
-        <h2 className="font-bold text-2xl mb-6">
-          Customer Reviews ({reviews.length})
-        </h2>
+      <div className="px-4 mt-3">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-bold text-2xl">
+            Customer Reviews ({reviews.length})
+          </h2>
+        </div>
 
         {reviews.length > 0 ? (
           <ReviewsTable columns={columns} data={reviews} />
         ) : (
           <>
             {renderEmptyState()}
-            <div className="mt-8 opacity-50 pointer-events-none">
+            <div className="mt-4 opacity-50 pointer-events-none">
               <ReviewsTable columns={columns} data={[]} />
             </div>
           </>

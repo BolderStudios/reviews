@@ -50,8 +50,8 @@ export function EmployeeMentionsTable({ columns, data }) {
   };
 
   return (
-    <div>
-      <div className="flex flex-wrap gap-2 items-center py-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap gap-2 items-center">
         <Input
           placeholder="Search employee names..."
           value={table.getColumn("employee_name")?.getFilterValue() ?? ""}

@@ -45,7 +45,9 @@ export default function Customers({ selectedLocation }) {
       {
         accessorKey: "actions",
         header: "Actions",
-        cell: ({ row }) => <ViewCustomer customer={row.original} refreshPage={refreshPage} />,
+        cell: ({ row }) => (
+          <ViewCustomer customer={row.original} refreshPage={refreshPage} />
+        ),
       },
       {
         accessorKey: "first_name",
@@ -155,14 +157,15 @@ export default function Customers({ selectedLocation }) {
 
   return (
     <SignedInLayout>
-      <div className="px-8 py-6">
-        <div className="flex items-center justify-between mb-6">
+      <div className="px-4 mt-3">
+        <div className="flex items-center justify-between mb-5">
           <h2 className="font-bold text-2xl">
             Customers ({customerData.length})
           </h2>
           <AddCustomers
             selectedLocation={selectedLocation}
             refreshPage={refreshPage}
+            disabled={isLoading || customerData.length === 0}
           />
         </div>
 

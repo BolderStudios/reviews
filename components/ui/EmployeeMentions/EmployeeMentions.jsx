@@ -92,10 +92,13 @@ export default function EmployeeMentions({
 
   return (
     <SignedInLayout>
-      <div className="px-8 py-6">
-        <h2 className="font-bold text-2xl mb-6">
-          Mentioned Employees ({staffMentions.length})
-        </h2>
+      <div className="px-4 mt-3">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-bold text-2xl">
+            Mentioned Employees ({staffMentions.length})
+          </h2>
+        </div>
+
         {staffMentions.length > 0 ? (
           <EmployeeMentionsTable
             columns={memoizedColumns}
@@ -104,7 +107,7 @@ export default function EmployeeMentions({
         ) : (
           <>
             {renderEmptyState()}
-            <div className="mt-8 opacity-50 pointer-events-none">
+            <div className="mt-4 opacity-50 pointer-events-none">
               <EmployeeMentionsTable columns={memoizedColumns} data={[]} />
             </div>
           </>
