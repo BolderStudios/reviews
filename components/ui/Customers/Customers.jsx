@@ -8,6 +8,7 @@ import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 import { getSingleCustomerData } from "@/utils/reviews";
 import { AddCustomers } from "@/components/ui/Customers/AddCustomers";
 import { getAllCustomers } from "@/app/actions";
+import LoadingSpinner from "../LoadingSpinner";
 
 const RequestStatusBadge = ({ status }) => {
   const getStatusColor = () => {
@@ -167,7 +168,7 @@ export default function Customers({ selectedLocation }) {
 
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
-            <Loader2 className="h-8 w-8 animate-spin" />
+            <LoadingSpinner />
           </div>
         ) : customerData.length > 0 ? (
           <CustomersTable columns={columns} data={customerData} />

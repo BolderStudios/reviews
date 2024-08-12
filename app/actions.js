@@ -88,6 +88,7 @@ export async function uploadFile(
     uploadType,
     fileNamePrefix
   );
+  
   console.log(`Sanitized file name: ${sanitizedFileName}`);
 
   try {

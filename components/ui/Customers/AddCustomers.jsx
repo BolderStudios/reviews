@@ -34,6 +34,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SingleFileUploader } from "@/components/ui/Misc/SingleFileUploader";
 
 const formSchema = z.object({
   firstName: z.string().min(1, "Please enter customer's first name."),
@@ -148,7 +149,7 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
         toast.success("Customer added successfully.");
         form.reset();
 
-        //   setIsOpen(false);
+        // setIsOpen(false);
 
         router.refresh();
         refreshPage();
@@ -171,13 +172,76 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
 
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
-          <DialogTitle>Add Customers</DialogTitle>
+          <DialogTitle>Add a customer</DialogTitle>
           <DialogDescription>
-            Add customers manually or upload from a CSV file.
+            {/* Add customers manually or upload from a CSV file. */}
+            Fill in the customer's information below.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="manually" className="w-full">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleManual, (errors) => {
+              Object.values(errors).forEach((error) => {
+                toast.error(error.message);
+              });
+            })}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-primary">First name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="emailAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-primary">
+                    Email address (optional)
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="john@outlook.com" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-primary">
+                    Phone number (optional)
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="+1 234-567-8900" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? "Adding..." : "Add Customer"}
+            </Button>
+          </form>
+        </Form>
+
+        {/* <Tabs defaultValue="manually" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="manually">Add manually</TabsTrigger>
             <TabsTrigger value="upload-csv">Upload from .csv</TabsTrigger>
@@ -248,60 +312,9 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
           </TabsContent>
 
           <TabsContent value="upload-csv">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upload CSV</CardTitle>
-                <CardDescription>
-                  Upload a CSV file to add multiple customers at once.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center w-full">
-                  <label
-                    htmlFor="dropzone-file"
-                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                  >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg
-                        aria-hidden="true"
-                        className="w-10 h-10 mb-3 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        ></path>
-                      </svg>
-                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="font-semibold">Click to upload</span>{" "}
-                        or drag and drop
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        CSV file (MAX. 10MB)
-                      </p>
-                    </div>
-                    <input id="dropzone-file" type="file" className="hidden" />
-                  </label>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  onClick={() =>
-                    toast.info("CSV upload functionality coming soon!")
-                  }
-                >
-                  Upload and Process
-                </Button>
-              </CardFooter>
-            </Card>
+            <SingleFileUploader />
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
       </DialogContent>
     </Dialog>
   );

@@ -41,7 +41,12 @@ const formSchema = z.object({
   ),
 });
 
-export function SingleFileUploader() {
+export function SingleFileUploader({
+  title,
+  description,
+  buttonText,
+  handleCustomerUpload,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef();
@@ -53,9 +58,9 @@ export function SingleFileUploader() {
     },
   });
 
-  async function onSubmit(values) {
+  async function onSubmit() {
     if (files.length === 0) {
-      toast.error("Please upload at least one file");
+      toast.error("Please add a file to upload");
       return;
     }
 
