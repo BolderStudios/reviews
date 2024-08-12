@@ -76,15 +76,15 @@ export function AddCustomers({ selectedLocation, refreshPage }) {
       return;
     }
 
-    if (
-      (phoneNumber && !/^\+?[1-9]\d{1,14}$/.test(phoneNumber)) ||
-      phoneNumber.length < 10
-    ) {
-      toast.error(
-        "Invalid phone number format. Please use a valid format (e.g., +1-234-567-8900)."
-      );
-      return;
-    }
+    // if (
+    //   (phoneNumber && !/^\+?[1-9]\d{1,14}$/.test(phoneNumber)) ||
+    //   phoneNumber.length < 10
+    // ) {
+    //   toast.error(
+    //     "Invalid phone number format. Please use a valid format (e.g., +1-234-567-8900)."
+    //   );
+    //   return;
+    // }
 
     let updatedPhoneNumber = formData.phoneNumber;
 

@@ -88,7 +88,7 @@ export async function uploadFile(
     uploadType,
     fileNamePrefix
   );
-  
+
   console.log(`Sanitized file name: ${sanitizedFileName}`);
 
   try {
@@ -880,6 +880,23 @@ export async function addCustomerManually(formData, location_id) {
     return { success: true, data: customerData };
   } catch (error) {
     console.error("Error adding customer manually:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateCustomerInfo(customer_id, updated_info) {
+  try {
+    const { data: customerData, error: customerError } = await supabase
+      .from("customers")
+      .update(updated_info)
+      .eq("id", customer_id)
+      .single();
+
+    if (customerError) throw customerError;
+
+    return { success: true, data: customerData };
+  } catch (error) {
+    console.error("Error updating customer info:", error);
     return { success: false, error: error.message };
   }
 }

@@ -45,7 +45,7 @@ export default function Customers({ selectedLocation }) {
       {
         accessorKey: "actions",
         header: "Actions",
-        cell: ({ row }) => <ViewCustomer customer={row.original} />,
+        cell: ({ row }) => <ViewCustomer customer={row.original} refreshPage={refreshPage} />,
       },
       {
         accessorKey: "first_name",
