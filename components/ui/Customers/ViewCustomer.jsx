@@ -114,7 +114,23 @@ export function ViewCustomer({ customer, refreshPage }) {
       let updatedInfo;
 
       if (field === "email") {
-        updatedInfo = { email_address: newEmail.trim() || null };
+        const formatedEmail = newEmail.trim().toLowerCase();
+        let re =
+          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if (re.test(formatedEmail) === false) {
+          toast.error("Invalid email address");
+          return;
+        }
+
+        if (formatedEmail === newEmail && newEmail.length > 0) {
+          toast.warning(
+            "Email address didn't change after formatting or might be invalid."
+          );
+          return;
+        }
+
+        updatedInfo = { email_address: formatedEmail || null };
       } else {
         const formattedPhone = formatPhoneNumber(newPhone);
 
