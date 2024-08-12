@@ -324,6 +324,7 @@ export async function storeReview(
       ]);
     }
 
+    console.log("Insights: ", insights)
     console.log("Strengths: ", insights.businessInsights.strengths);
     console.log("Weaknesses: ", insights.businessInsights.weaknesses);
 
