@@ -918,3 +918,20 @@ export async function updateCustomerInfo(customer_id, updated_info) {
     return { success: false, error: error.message };
   }
 }
+
+export async function getHighlightedWords(review_id) {
+  try {
+    const { data: highlightedWordsData, error: highlightedWordsError } =
+      await supabase
+        .from("highlighted_words")
+        .select("*")
+        .eq("review_id", review_id);
+
+    if (highlightedWordsError) throw highlightedWordsError;
+    
+    return { success: true, data: highlightedWordsData };
+  } catch (error) {
+    console.error("Error fetching highlighted words:", error);
+    return { success: false, error: error.message };
+  }
+}

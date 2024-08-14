@@ -1,5 +1,6 @@
 "use client";
-import { useState, useMemo } from "react";
+
+import { useState, useEffect, useMemo } from "react";
 import { ReviewsTable } from "./ReviewsTable";
 import YelpLogo from "@/public/yelp_logo.svg";
 import GoogleLogo from "@/public/google_logo.png";
@@ -22,6 +23,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toast } from "sonner";
+import { getHighlightedWords } from "@/app/actions";
 
 const HighlightedText = ({ text, highlight }) => {
   if (!highlight.trim()) {
@@ -189,8 +192,37 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
           const [isExpanded, setIsExpanded] = useState(false);
           const filterValue =
             table.getColumn("summary")?.getFilterValue() || "";
+          const [highlightedWords, setHighlightedWords] = useState([]);
+
+          useEffect(() => {
+            const getHighlightedWordsFunc = async (review_id) => {
+              const response = await getHighlightedWords(review_id);
+              if (response.success) {
+                setHighlightedWords(response.data);
+              } else {
+                toast.error(response.message);
+                setHighlightedWords([]);
+              }
+            };
+            getHighlightedWordsFunc(row.original.id);
+          }, [row.original.id]);
+
           return (
-            <div className="w-full">
+            <div className="w-full flex flex-col space-y-2">
+              <div className="flex flex-wrap gap-1">
+                {highlightedWords?.map((word, index) => (
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors border ${
+                      word.sentiment === "positive"
+                        ? "bg-green-50 text-green-700 border-green-400 hover:bg-green-100"
+                        : "bg-red-50 text-red-700 border-red-400 hover:bg-red-100"
+                    }`}
+                    key={`${word.word}-${index}`}
+                  >
+                    {word.word}
+                  </span>
+                ))}
+              </div>
               <div className={isExpanded ? "" : "line-clamp-3"}>
                 <HighlightedText
                   text={value === null ? "No summary available." : value}
@@ -199,13 +231,13 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
               </div>
 
               {/* {value !== null && value.length > 100 && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-blue-500 hover:underline mt-1"
-            >
-              {isExpanded ? "Show less" : "Show more"}
-            </button>
-          )} */}
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="text-blue-500 hover:underline mt-1 text-sm"
+                >
+                  {isExpanded ? "Show less" : "Show more"}
+                </button>
+              )} */}
             </div>
           );
         },

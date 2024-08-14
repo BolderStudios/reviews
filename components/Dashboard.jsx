@@ -4,10 +4,7 @@ import { useState, useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { calcReviewData } from "@/utils/reviews";
 import { KpiCard } from "@/components/ui/KpiCard";
-import { SentimentDistribution } from "@/components/ui/Charts/SentimentDistribution";
 import { RatingDistributionChart } from "@/components/ui/Charts/RatingDistributionChart";
-import { EmployeeMentionsChart } from "@/components/ui/Charts/EmployeeMentionsChart";
-import { ProductFeedbackChart } from "@/components/ui/Charts/ProductFeedbackChart";
 import { UpdateLocation } from "@/components/ui/Locations/UpdateLocation";
 import {
   Star,
@@ -246,3 +243,4 @@ export default function Dashboard({
     </SignedInLayout>
   );
 }
+
