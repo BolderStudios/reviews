@@ -30,9 +30,14 @@ export default async function Page({ params }) {
     .from("reviews")
     .select("*")
     .eq("location_id", location_id)
-    .order("created_at", { ascending: false });
+    // Order by review_text that are not null
+    .order("review_text", { ascending: true });
 
   return (
-    <Reviews selectedLocation={location} isFetching={userData?.is_fetching} reviews={reviews} />
+    <Reviews
+      selectedLocation={location}
+      isFetching={userData?.is_fetching}
+      reviews={reviews}
+    />
   );
 }

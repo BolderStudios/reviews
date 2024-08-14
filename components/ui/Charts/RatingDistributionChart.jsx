@@ -68,9 +68,9 @@ export function RatingDistributionChart({ ratingDistribution }) {
   const totalReviews = chartData.reduce((sum, item) => sum + item.reviews, 0);
 
   return (
-    <Card className="flex flex-col py-4">
+    <Card className="flex flex-col py-2">
       <CardHeader className="items-center pb-0">
-        <CardTitle className="text-md">Rating Distribution</CardTitle>
+        <CardTitle className="text-lg">Rating Distribution</CardTitle>
       </CardHeader>
 
       <CardContent className="flex-1">
