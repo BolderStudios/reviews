@@ -210,11 +210,9 @@ export default function Dashboard({
             {renderKpiCards()}
 
             <div className="flex gap-4">
-              <div className="flex gap-4">
-                <RatingDistributionChart
-                  ratingDistribution={ratingDistribution}
-                />
-              </div>
+              <RatingDistributionChart
+                ratingDistribution={ratingDistribution}
+              />
 
               <div className="flex flex-col gap-4">
                 <KpiCard
@@ -243,4 +241,3 @@ export default function Dashboard({
     </SignedInLayout>
   );
 }
-
