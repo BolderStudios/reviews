@@ -3,6 +3,8 @@
 import { Pie, PieChart, Cell, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  ChartLegend,
+  ChartLegendContent,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -70,7 +72,8 @@ export function RatingDistributionChart({ ratingDistribution }) {
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-md">Rating Distribution</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+
+      <CardContent className="flex-1">
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
@@ -106,11 +109,9 @@ export function RatingDistributionChart({ ratingDistribution }) {
               ))}
             </Pie>
 
-            <Legend
-              layout="horizontal"
-              verticalAlign="bottom"
-              align="center"
-              wrapperStyle={{ paddingTop: "20px", color: "var(--text-primary)" }}
+            <ChartLegend
+              content={<ChartLegendContent nameKey="rating" />}
+              className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 p-0"
             />
           </PieChart>
         </ChartContainer>

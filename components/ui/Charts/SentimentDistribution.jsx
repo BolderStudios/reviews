@@ -1,11 +1,10 @@
 "use client";
 
-import { TrendingUp, TrendingDown, Frown, Meh, Smile } from "lucide-react";
+import { TrendingUp, Frown, Meh, Smile } from "lucide-react";
 import { Pie, PieChart, Cell } from "recharts";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
