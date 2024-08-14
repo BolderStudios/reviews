@@ -239,11 +239,7 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
 
           return (
             <div className="w-full flex flex-col">
-              <div
-                className={`${
-                  highlightedWords.length > 0 || isLoading ? "h-8" : null
-                }`}
-              >
+              <div className={`${isLoading ? "h-8" : "h-fit"} mb-[6px]`}>
                 {isLoading ? (
                   <div className="flex items-center h-full">
                     <LoadingSpinner size="sm" />
