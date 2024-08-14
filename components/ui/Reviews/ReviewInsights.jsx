@@ -236,11 +236,11 @@ function KeywordsAndSentimentSection({ reviewData, review }) {
 
 function getSentimentVariant(sentiment) {
   switch (sentiment.toLowerCase()) {
-    case "positive":
+    case "positive" || "Positive":
       return "positive";
-    case "negative":
+    case "negative" || "Negative":
       return "negative";
-    case "mixed":
+    case "mixed" || "Mixed":
       return "mixed";
     default:
       return "secondary";

@@ -253,7 +253,7 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
                         )}`}
                         key={`${word.word}-${index}`}
                       >
-                        {word.word}
+                        {word.word.toLowerCase()}
                       </span>
                     ))}
                   </div>
