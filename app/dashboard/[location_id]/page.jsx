@@ -31,6 +31,20 @@ export default async function Page({ params }) {
     .select("*")
     .eq("location_id", location_id);
 
+    const fiveStars = allReviews.filter((review) => review.rating === 5).length;
+    const fourStars = allReviews.filter((review) => review.rating === 4).length;
+    const threeStars = allReviews.filter((review) => review.rating === 3).length;
+    const twoStars = allReviews.filter((review) => review.rating === 2).length;
+    const oneStar = allReviews.filter((review) => review.rating === 1).length;
+
+    const ratingDistribution = {
+      fiveStars,
+      fourStars,
+      threeStars,
+      twoStars,
+      oneStar,
+    }
+
   const posReviewsLength = allReviews.filter(
     (review) => review.sentiment === "Positive"
   ).length;
@@ -217,6 +231,7 @@ export default async function Page({ params }) {
   return (
     <Dashboard
       selectedLocation={location}
+      ratingDistribution={ratingDistribution}
       sentimentDistribution={sentimentDistribution}
       staffChartData={staffChartData}
       staffChartConfig={staffChartConfig}

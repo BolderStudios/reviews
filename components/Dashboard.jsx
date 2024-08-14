@@ -5,6 +5,7 @@ import { Skeleton } from "./ui/skeleton";
 import { calcReviewData } from "@/utils/reviews";
 import { KpiCard } from "@/components/ui/KpiCard";
 import { SentimentDistribution } from "./ui/Charts/SentimentDistribution";
+import { RatingDistributionChart } from "./ui/Charts/RatingDistributionChart";
 import { EmployeeMentionsChart } from "./ui/Charts/EmployeeMentionsChart";
 import { ProductFeedbackChart } from "./ui/Charts/ProductFeedbackChart";
 import { UpdateLocation } from "@/components/ui/Locations/UpdateLocation";
@@ -20,6 +21,7 @@ import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 
 export default function Dashboard({
   selectedLocation,
+  ratingDistribution,
   sentimentDistribution,
   staffChartData,
   staffChartConfig,
@@ -179,17 +181,20 @@ export default function Dashboard({
             {renderKpiCards()}
 
             <div className="grid grid-cols-3 gap-6">
-              <SentimentDistribution
+              {/* <SentimentDistribution
                 sentimentDistribution={sentimentDistribution}
+              /> */}
+              <RatingDistributionChart
+                ratingDistribution={ratingDistribution}
               />
-              <EmployeeMentionsChart
+              {/* <EmployeeMentionsChart
                 staffChartData={staffChartData}
                 staffChartConfig={staffChartConfig}
               />
               <ProductFeedbackChart
                 productChartData={productChartData}
                 productChartConfig={productChartConfig}
-              />
+              /> */}
             </div>
             <YearsCalendar selectedLocation={selectedLocation} />
           </div>
