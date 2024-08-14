@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { getHighlightedWords } from "@/app/actions";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const HighlightedText = ({ text, highlight }) => {
   if (!highlight.trim()) {
@@ -193,17 +194,23 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
           const filterValue =
             table.getColumn("summary")?.getFilterValue() || "";
           const [highlightedWords, setHighlightedWords] = useState([]);
+          const [isLoading, setIsLoading] = useState(false);
 
           useEffect(() => {
             const getHighlightedWordsFunc = async (review_id) => {
+              setIsLoading(true);
               const response = await getHighlightedWords(review_id);
+
               if (response.success) {
                 setHighlightedWords(response.data);
+                setIsLoading(false);
               } else {
+                setIsLoading(false);
                 toast.error(response.message);
                 setHighlightedWords([]);
               }
             };
+
             getHighlightedWordsFunc(row.original.id);
           }, [row.original.id]);
 
@@ -223,16 +230,20 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
           return (
             <div className="w-full flex flex-col space-y-2">
               <div className="flex flex-wrap gap-1">
-                {highlightedWords?.map((word, index) => (
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors border ${getSentimentClass(
-                      word.sentiment
-                    )}`}
-                    key={`${word.word}-${index}`}
-                  >
-                    {word.word}
-                  </span>
-                ))}
+                {isLoading ? (
+                  <LoadingSpinner label={null} />
+                ) : (
+                  highlightedWords?.map((word, index) => (
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors border ${getSentimentClass(
+                        word.sentiment
+                      )}`}
+                      key={`${word.word}-${index}`}
+                    >
+                      {word.word}
+                    </span>
+                  ))
+                )}
               </div>
               <div className={isExpanded ? "" : "line-clamp-3"}>
                 <HighlightedText
