@@ -114,7 +114,7 @@ export function ReviewInsights({ review }) {
       </SheetTrigger>
       <SheetContent className="overflow-y-auto w-[95vw] max-w-[1000px]">
         <SheetHeader>
-          <SheetTitle>Detailed information about the customer</SheetTitle>
+          <SheetTitle>Review analysis</SheetTitle>
         </SheetHeader>
 
         {isLoading ? (
@@ -126,10 +126,7 @@ export function ReviewInsights({ review }) {
         ) : (
           <div className="mt-6 space-y-6">
             <CustomerInfoSection review={review} date={date} />
-            <KeywordsAndSentimentSection
-              reviewData={reviewData}
-              review={review}
-            />
+            <KeywordsAndSentimentSection reviewData={reviewData} />
             <ReviewTextSection
               review={review}
               reviewData={reviewData}
@@ -216,7 +213,7 @@ function StarRating({ rating }) {
   );
 }
 
-function KeywordsAndSentimentSection({ reviewData, review }) {
+function KeywordsAndSentimentSection({ reviewData }) {
   return (
     <div>
       <h4 className="mb-2 font-semibold">Keywords</h4>
@@ -224,7 +221,7 @@ function KeywordsAndSentimentSection({ reviewData, review }) {
         {reviewData?.keywords.map((keyword, index) => (
           <Badge
             key={`keyword-${index}`}
-            variant={getSentimentVariant(review.sentiment)}
+            variant={getSentimentVariant(keyword.sentiment)}
           >
             {keyword.name}
           </Badge>
@@ -236,11 +233,11 @@ function KeywordsAndSentimentSection({ reviewData, review }) {
 
 function getSentimentVariant(sentiment) {
   switch (sentiment.toLowerCase()) {
-    case "positive" || "Positive":
+    case "positive":
       return "positive";
-    case "negative" || "Negative":
+    case "negative":
       return "negative";
-    case "mixed" || "Mixed":
+    case "mixed":
       return "mixed";
     default:
       return "secondary";
