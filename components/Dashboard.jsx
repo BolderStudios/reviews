@@ -15,6 +15,9 @@ import {
   MessageSquareQuote,
   Smile,
   AlertCircle,
+  TrendingUp,
+  Frown,
+  Meh,
 } from "lucide-react";
 import { YearsCalendar } from "./ui/YearsCalendar";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
@@ -23,13 +26,17 @@ export default function Dashboard({
   selectedLocation,
   ratingDistribution,
   sentimentDistribution,
-  staffChartData,
-  staffChartConfig,
-  productChartData,
-  productChartConfig,
 }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
+  const [totalSentimentReviews, setTotalSentimentReviews] = useState(
+    sentimentDistribution.positive +
+      sentimentDistribution.negative +
+      sentimentDistribution.mixed
+  );
+  const [positivePercentage, setPositivePercentage] = useState(
+    ((sentimentDistribution.positive / totalSentimentReviews) * 100).toFixed(1)
+  );
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -98,8 +105,33 @@ export default function Dashboard({
     return "Below Average: Need to encourage more reviews";
   };
 
+  const getSentimentStatus = (positivePercentage) => {
+    if (positivePercentage >= 90) return "positive";
+    if (positivePercentage >= 75) return "neutral";
+    if (positivePercentage >= 50) return "mixed";
+    return "negative";
+  };
+
+  const getSentimentDescription = (positivePercentage) => {
+    if (positivePercentage >= 90)
+      return "Excellent: Overwhelmingly positive sentiment";
+    if (positivePercentage >= 75) return "Good: Strong positive sentiment";
+    if (positivePercentage >= 50) return "Average: Balanced sentiment";
+    return "Below Average: Negative sentiment dominates";
+  };
+
+  const getSentimentIcon = (positivePercentage) => {
+    if (positivePercentage >= 90)
+      return <Smile className="h-4 w-4 text-green-500" />;
+    if (positivePercentage >= 75)
+      return <TrendingUp className="h-4 w-4 text-green-400" />;
+    if (positivePercentage >= 50)
+      return <Meh className="h-4 w-4 text-yellow-500" />;
+    return <Frown className="h-4 w-4 text-red-500" />;
+  };
+
   const renderKpiCards = () => (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <KpiCard
         title="Average Rating"
         value={dashboardData?.avgRating || "0"}
@@ -177,24 +209,27 @@ export default function Dashboard({
             <Skeleton className="h-[300px] w-full" />
           </div>
         ) : dashboardData && dashboardData.totalReviewsCount > 0 ? (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {renderKpiCards()}
 
-            <div className="grid grid-cols-3 gap-6">
-              {/* <SentimentDistribution
-                sentimentDistribution={sentimentDistribution}
-              /> */}
-              <RatingDistributionChart
-                ratingDistribution={ratingDistribution}
-              />
-              {/* <EmployeeMentionsChart
-                staffChartData={staffChartData}
-                staffChartConfig={staffChartConfig}
-              />
-              <ProductFeedbackChart
-                productChartData={productChartData}
-                productChartConfig={productChartConfig}
-              /> */}
+            <div className="flex gap-4">
+              <div className="flex gap-4">
+                <RatingDistributionChart
+                  ratingDistribution={ratingDistribution}
+                />
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <KpiCard
+                  title="Sentiment Distribution"
+                  value={`${positivePercentage}% Positive`}
+                  icon={getSentimentIcon(parseFloat(positivePercentage))}
+                  status={getSentimentStatus(parseFloat(positivePercentage))}
+                  description={getSentimentDescription(
+                    parseFloat(positivePercentage)
+                  )}
+                />
+              </div>
             </div>
             <YearsCalendar selectedLocation={selectedLocation} />
           </div>
