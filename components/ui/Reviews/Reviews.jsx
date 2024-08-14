@@ -190,28 +190,38 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
         },
         cell: ({ row, table }) => {
           const value = row.getValue("summary");
-          const [isExpanded, setIsExpanded] = useState(false);
           const filterValue =
             table.getColumn("summary")?.getFilterValue() || "";
           const [highlightedWords, setHighlightedWords] = useState([]);
-          const [isLoading, setIsLoading] = useState(false);
+          const [isLoading, setIsLoading] = useState(true);
 
           useEffect(() => {
-            const getHighlightedWordsFunc = async (review_id) => {
-              setIsLoading(true);
-              const response = await getHighlightedWords(review_id);
-
-              if (response.success) {
-                setHighlightedWords(response.data);
-                setIsLoading(false);
-              } else {
-                setIsLoading(false);
-                toast.error(response.message);
-                setHighlightedWords([]);
+            let isMounted = true;
+            const getHighlightedWordsFunc = async () => {
+              try {
+                const response = await getHighlightedWords(row.original.id);
+                if (isMounted) {
+                  if (response.success) {
+                    setHighlightedWords(response.data);
+                  } else {
+                    console.error(
+                      "Failed to fetch highlighted words:",
+                      response.message
+                    );
+                  }
+                }
+              } catch (error) {
+                console.error("Error fetching highlighted words:", error);
+              } finally {
+                if (isMounted) {
+                  setIsLoading(false);
+                }
               }
             };
-
-            getHighlightedWordsFunc(row.original.id);
+            getHighlightedWordsFunc();
+            return () => {
+              isMounted = false;
+            };
           }, [row.original.id]);
 
           const getSentimentClass = (sentiment) => {
@@ -228,38 +238,37 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
           };
 
           return (
-            <div className="w-full flex flex-col space-y-2">
-              <div className="flex flex-wrap gap-1">
+            <div className="w-full flex flex-col">
+              <div
+                className={`${
+                  highlightedWords.length > 0 || isLoading ? "h-8" : null
+                }`}
+              >
                 {isLoading ? (
-                  <LoadingSpinner label={null} />
+                  <div className="flex items-center h-full">
+                    <LoadingSpinner size="sm" />
+                  </div>
                 ) : (
-                  highlightedWords?.map((word, index) => (
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors border ${getSentimentClass(
-                        word.sentiment
-                      )}`}
-                      key={`${word.word}-${index}`}
-                    >
-                      {word.word}
-                    </span>
-                  ))
+                  <div className="flex flex-wrap gap-1 overflow-hidden">
+                    {highlightedWords.map((word, index) => (
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors border ${getSentimentClass(
+                          word.sentiment
+                        )}`}
+                        key={`${word.word}-${index}`}
+                      >
+                        {word.word}
+                      </span>
+                    ))}
+                  </div>
                 )}
               </div>
-              <div className={isExpanded ? "" : "line-clamp-3"}>
+              <div className="line-clamp-3">
                 <HighlightedText
                   text={value === null ? "No summary available." : value}
                   highlight={filterValue}
                 />
               </div>
-
-              {/* {value !== null && value.length > 100 && (
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-blue-500 hover:underline mt-1 text-sm"
-                >
-                  {isExpanded ? "Show less" : "Show more"}
-                </button>
-              )} */}
             </div>
           );
         },
