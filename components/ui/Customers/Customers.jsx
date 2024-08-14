@@ -165,7 +165,7 @@ export default function Customers({ selectedLocation }) {
           <AddCustomers
             selectedLocation={selectedLocation}
             refreshPage={refreshPage}
-            disabled={isLoading || customerData.length === 0}
+            disabled={isLoading}
           />
         </div>
 
