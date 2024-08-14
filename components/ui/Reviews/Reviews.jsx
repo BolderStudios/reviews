@@ -207,16 +207,27 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
             getHighlightedWordsFunc(row.original.id);
           }, [row.original.id]);
 
+          const getSentimentClass = (sentiment) => {
+            switch (sentiment) {
+              case "Positive":
+                return "bg-green-50 text-green-700 border-green-400";
+              case "Negative":
+                return "bg-red-50 text-red-700 border-red-400";
+              case "Mixed":
+                return "bg-yellow-50 text-yellow-700 border-yellow-400";
+              default:
+                return "bg-gray-50 text-gray-700 border-gray-400";
+            }
+          };
+
           return (
             <div className="w-full flex flex-col space-y-2">
               <div className="flex flex-wrap gap-1">
                 {highlightedWords?.map((word, index) => (
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors border ${
-                      word.sentiment === "positive"
-                        ? "bg-green-50 text-green-700 border-green-400 hover:bg-green-100"
-                        : "bg-red-50 text-red-700 border-red-400 hover:bg-red-100"
-                    }`}
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors border ${getSentimentClass(
+                      word.sentiment
+                    )}`}
                     key={`${word.word}-${index}`}
                   >
                     {word.word}
