@@ -7,7 +7,7 @@ import { ThumbsUp, ThumbsDown, Frown, HeartCrack } from "lucide-react";
 
 export const MentionsDashboard = ({ customersObservations }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  let itemsPerPage = 10;
+  let itemsPerPage = 15;
 
   const tabData = [
     {
@@ -44,24 +44,7 @@ export const MentionsDashboard = ({ customersObservations }) => {
     },
   ];
 
-  const renderObservations = (observations, TabIcon, iconColor, tabId) => {
-    switch (tabId) {
-      case "customers_love":
-        itemsPerPage = 15;
-        break;
-      case "customers_dislike":
-        itemsPerPage = 12;
-        break;
-      case "customers_hate":
-        itemsPerPage = 15;
-        break;
-      case "customer_pain_points":
-        itemsPerPage = 12;
-        break;
-      default:
-        itemsPerPage = 15;
-    }
-
+  const renderObservations = (observations, TabIcon, iconColor) => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentObservations = observations.slice(startIndex, endIndex);
@@ -91,7 +74,7 @@ export const MentionsDashboard = ({ customersObservations }) => {
       {tabData.map((tab) => (
         <TabsContent key={tab.id} value={tab.id} className="">
           <CardContent className="min-h-[200px]">
-            {renderObservations(tab.data, tab.icon, tab.color, tab.id)}
+            {renderObservations(tab.data, tab.icon, tab.color)}
           </CardContent>
 
           <CardFooter className="flex justify-between mt-4 p-2">
