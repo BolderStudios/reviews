@@ -132,12 +132,12 @@ export default function Dashboard({
             {renderKpiCards()}
 
             <div className="flex flex-wrap">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-4 gap-4 w-full">
                 <RatingDistributionChart
                   ratingDistribution={ratingDistribution}
                 />
 
-                <div className="flex flex-col gap-4">
+                <div>
                   <KpiCard
                     title="Sentiment Distribution"
                     value={`${positivePercentage}% Positive`}
@@ -149,6 +149,7 @@ export default function Dashboard({
                   />
                 </div>
               </div>
+
 
               <MentionsDashboard
                 customersObservations={customersObservations}
