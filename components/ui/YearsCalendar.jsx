@@ -302,7 +302,7 @@ export function YearsCalendar({ selectedLocation }) {
   }
 
   return (
-    <div className="max-w-full mt-6">
+    <div className="max-w-full">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold mb-4">Sentiment by Day</h2>
         <div>

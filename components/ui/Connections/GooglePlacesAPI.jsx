@@ -5,9 +5,7 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-import { Input } from "../input";
 
-// Define libraries outside of the component
 const libraries = ["places"];
 
 export default function GooglePlacesAPI({
@@ -63,7 +61,7 @@ const PlacesAutocomplete = ({ setSelected, is_google_configured }) => {
       const place_id = results[0].place_id;
 
       setSelected({ lat, lng, place_id });
-      console.log("Selected Place: ", { lat, lng, place_id });
+      // console.log("Selected Place: ", { lat, lng, place_id });
     } catch (error) {
       console.error("Error: ", error);
     }
@@ -72,11 +70,13 @@ const PlacesAutocomplete = ({ setSelected, is_google_configured }) => {
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
+      
       setActiveIndex((prevIndex) =>
         prevIndex < data.length - 1 ? prevIndex + 1 : prevIndex
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
+
       setActiveIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : -1));
     } else if (e.key === "Enter" && activeIndex !== -1) {
       handleSelect(data[activeIndex].description);

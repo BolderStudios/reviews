@@ -18,11 +18,13 @@ import {
 } from "lucide-react";
 import { YearsCalendar } from "./ui/YearsCalendar";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
+import { MentionsDashboard } from "@/components/ui/MentionsDashboard";
 
 export default function Dashboard({
   selectedLocation,
   ratingDistribution,
   sentimentDistribution,
+  customersObservations,
 }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
@@ -46,86 +48,6 @@ export default function Dashboard({
 
     fetchDashboardData();
   }, [selectedLocation]);
-
-  // Determine status for each KPI
-  const getAverageRatingStatus = (rating) => {
-    if (rating >= 4.5) return "positive";
-    if (rating >= 4.0) return "neutral";
-    return "negative";
-  };
-
-  const getResponseRateStatus = (rate) => {
-    if (rate >= 80) return "positive";
-    if (rate >= 60) return "neutral";
-    return "negative";
-  };
-
-  const getAverageRatingDescription = (rating) => {
-    if (rating >= 4.5) return "Excellent: Well above industry average";
-    if (rating >= 4.0) return "Good: Above average performance";
-    if (rating >= 3.5) return "Average: Room for improvement";
-    return "Below Average: Immediate attention required";
-  };
-
-  const getTotalReviewsDescription = (count) => {
-    if (count >= 100) return "Excellent: High volume of reviews";
-    if (count >= 50) return "Good: Solid number of reviews";
-    if (count >= 25) return "Average: Growing review base";
-    return "Below Average: Need to encourage more reviews";
-  };
-
-  const getResponseRateDescription = (rate) => {
-    if (rate >= 80) return "Excellent: High engagement with customers";
-    if (rate >= 60) return "Good: Above average response rate";
-    if (rate >= 40) return "Average: Room for improvement";
-    return "Below Average: Need to increase response rate";
-  };
-
-  const getTotalReviewsStatus = (count) => {
-    if (count >= 75) return "positive";
-    if (count >= 50) return "neutral";
-    if (count >= 25) return "mixed";
-
-    return "negative";
-  };
-
-  const getFrequencyStatus = (frequency) => {
-    if (frequency >= 1.25) return "positive";
-    if (frequency >= 0.75) return "mixed";
-    return "negative";
-  };
-
-  const getFrequencyDescription = (frequency) => {
-    if (frequency >= 1.25) return "Excellent: High review frequency";
-    if (frequency >= 0.75) return "Average: Consistent review frequency";
-
-    return "Below Average: Need to encourage more reviews";
-  };
-
-  const getSentimentStatus = (positivePercentage) => {
-    if (positivePercentage >= 90) return "positive";
-    if (positivePercentage >= 75) return "neutral";
-    if (positivePercentage >= 50) return "mixed";
-    return "negative";
-  };
-
-  const getSentimentDescription = (positivePercentage) => {
-    if (positivePercentage >= 90)
-      return "Excellent: Overwhelmingly positive sentiment";
-    if (positivePercentage >= 75) return "Good: Strong positive sentiment";
-    if (positivePercentage >= 50) return "Average: Balanced sentiment";
-    return "Below Average: Negative sentiment dominates";
-  };
-
-  const getSentimentIcon = (positivePercentage) => {
-    if (positivePercentage >= 90)
-      return <Smile className="h-4 w-4 text-green-500" />;
-    if (positivePercentage >= 75)
-      return <TrendingUp className="h-4 w-4 text-green-400" />;
-    if (positivePercentage >= 50)
-      return <Meh className="h-4 w-4 text-yellow-500" />;
-    return <Frown className="h-4 w-4 text-red-500" />;
-  };
 
   const renderKpiCards = () => (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -209,22 +131,28 @@ export default function Dashboard({
           <div className="flex flex-col gap-4">
             {renderKpiCards()}
 
-            <div className="flex gap-4">
-              <RatingDistributionChart
-                ratingDistribution={ratingDistribution}
-              />
-
-              <div className="flex flex-col gap-4">
-                <KpiCard
-                  title="Sentiment Distribution"
-                  value={`${positivePercentage}% Positive`}
-                  icon={getSentimentIcon(parseFloat(positivePercentage))}
-                  status={getSentimentStatus(parseFloat(positivePercentage))}
-                  description={getSentimentDescription(
-                    parseFloat(positivePercentage)
-                  )}
+            <div className="flex flex-wrap">
+              <div className="grid grid-cols-2 gap-4">
+                <RatingDistributionChart
+                  ratingDistribution={ratingDistribution}
                 />
+
+                <div className="flex flex-col gap-4">
+                  <KpiCard
+                    title="Sentiment Distribution"
+                    value={`${positivePercentage}% Positive`}
+                    icon={getSentimentIcon(parseFloat(positivePercentage))}
+                    status={getSentimentStatus(parseFloat(positivePercentage))}
+                    description={getSentimentDescription(
+                      parseFloat(positivePercentage)
+                    )}
+                  />
+                </div>
               </div>
+
+              <MentionsDashboard
+                customersObservations={customersObservations}
+              />
             </div>
             <YearsCalendar selectedLocation={selectedLocation} />
           </div>
@@ -241,3 +169,82 @@ export default function Dashboard({
     </SignedInLayout>
   );
 }
+
+const getAverageRatingStatus = (rating) => {
+  if (rating >= 4.5) return "positive";
+  if (rating >= 4.0) return "neutral";
+  return "negative";
+};
+
+const getResponseRateStatus = (rate) => {
+  if (rate >= 80) return "positive";
+  if (rate >= 60) return "neutral";
+  return "negative";
+};
+
+const getAverageRatingDescription = (rating) => {
+  if (rating >= 4.5) return "Excellent: Well above industry average";
+  if (rating >= 4.0) return "Good: Above average performance";
+  if (rating >= 3.5) return "Average: Room for improvement";
+  return "Below Average: Immediate attention required";
+};
+
+const getTotalReviewsDescription = (count) => {
+  if (count >= 100) return "Excellent: High volume of reviews";
+  if (count >= 50) return "Good: Solid number of reviews";
+  if (count >= 25) return "Average: Growing review base";
+  return "Below Average: Need to encourage more reviews";
+};
+
+const getResponseRateDescription = (rate) => {
+  if (rate >= 80) return "Excellent: High engagement with customers";
+  if (rate >= 60) return "Good: Above average response rate";
+  if (rate >= 40) return "Average: Room for improvement";
+  return "Below Average: Need to increase response rate";
+};
+
+const getTotalReviewsStatus = (count) => {
+  if (count >= 75) return "positive";
+  if (count >= 50) return "neutral";
+  if (count >= 25) return "mixed";
+
+  return "negative";
+};
+
+const getFrequencyStatus = (frequency) => {
+  if (frequency >= 1.25) return "positive";
+  if (frequency >= 0.75) return "mixed";
+  return "negative";
+};
+
+const getFrequencyDescription = (frequency) => {
+  if (frequency >= 1.25) return "Excellent: High review frequency";
+  if (frequency >= 0.75) return "Average: Consistent review frequency";
+
+  return "Below Average: Need to encourage more reviews";
+};
+
+const getSentimentStatus = (positivePercentage) => {
+  if (positivePercentage >= 90) return "positive";
+  if (positivePercentage >= 75) return "neutral";
+  if (positivePercentage >= 50) return "mixed";
+  return "negative";
+};
+
+const getSentimentDescription = (positivePercentage) => {
+  if (positivePercentage >= 90)
+    return "Excellent: Overwhelmingly positive sentiment";
+  if (positivePercentage >= 75) return "Good: Strong positive sentiment";
+  if (positivePercentage >= 50) return "Average: Balanced sentiment";
+  return "Below Average: Negative sentiment dominates";
+};
+
+const getSentimentIcon = (positivePercentage) => {
+  if (positivePercentage >= 90)
+    return <Smile className="h-4 w-4 text-green-500" />;
+  if (positivePercentage >= 75)
+    return <TrendingUp className="h-4 w-4 text-green-400" />;
+  if (positivePercentage >= 50)
+    return <Meh className="h-4 w-4 text-yellow-500" />;
+  return <Frown className="h-4 w-4 text-red-500" />;
+};

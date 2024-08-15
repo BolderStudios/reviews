@@ -228,6 +228,34 @@ export default async function Page({ params }) {
     },
   };
 
+  const { data: peoples_pains, error: peoples_pains_error } = await supabase
+    .from("peoples_pains")
+    .select("label")
+    .eq("location_id", location_id);
+
+  const { data: people_love, error: people_love_error } = await supabase
+    .from("people_love")
+    .select("label")
+    .eq("location_id", location_id);
+
+  const { data: people_hate, error: people_hate_error } = await supabase
+    .from("people_hate")
+    .select("label")
+    .eq("location_id", location_id);
+
+  const { data: people_dont_like, error: people_dont_like_error } =
+    await supabase
+      .from("people_dont_like")
+      .select("label")
+      .eq("location_id", location_id);
+
+  const customersObservations = {
+    peoplesPains: peoples_pains,
+    peopleLove: people_love,
+    peopleHate: people_hate,
+    peopleDontLike: people_dont_like,
+  };
+
   return (
     <Dashboard
       selectedLocation={location}
@@ -237,6 +265,7 @@ export default async function Page({ params }) {
       staffChartConfig={staffChartConfig}
       productChartData={productChartData}
       productChartConfig={productChartConfig}
+      customersObservations={customersObservations}
     />
   );
 }
