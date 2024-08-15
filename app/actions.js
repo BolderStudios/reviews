@@ -928,10 +928,27 @@ export async function getHighlightedWords(review_id) {
         .eq("review_id", review_id);
 
     if (highlightedWordsError) throw highlightedWordsError;
-    
+
     return { success: true, data: highlightedWordsData };
   } catch (error) {
     console.error("Error fetching highlighted words:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getSingleReviewData(review_id) {
+  try {
+    const { data: reviewData, error: reviewError } = await supabase
+      .from("reviews")
+      .select("*")
+      .eq("id", review_id)
+      .single();
+
+    if (reviewError) throw reviewError;
+
+    return { success: true, data: reviewData };
+  } catch (error) {
+    console.error("Error fetching review data:", error);
     return { success: false, error: error.message };
   }
 }

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import {
   Sheet,
@@ -17,7 +19,6 @@ import { toast } from "sonner";
 import Link from "next/link";
 
 export function ReviewInsights({ review }) {
-  const isDisabled = review === null;
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [reviewData, setReviewData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

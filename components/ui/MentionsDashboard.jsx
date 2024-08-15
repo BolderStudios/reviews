@@ -1,13 +1,17 @@
 "use client";
-import React, { useState } from "react";
+
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/Buttons/button";
 import { ThumbsUp, ThumbsDown, Frown, HeartCrack } from "lucide-react";
+import { getSingleReviewData } from "@/app/actions";
 
 export const MentionsDashboard = ({ customersObservations }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  let itemsPerPage = 15;
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const itemsPerPage = 15;
 
   const tabData = [
     {
@@ -44,15 +48,37 @@ export const MentionsDashboard = ({ customersObservations }) => {
     },
   ];
 
+  const handleLabelClick = async (review_id) => {
+    setIsLoading(true);
+
+    try {
+      const response = await getSingleReviewData(review_id);
+      if (response.success) {
+        setSelectedReview(response.data);
+      } else {
+        console.error(response.message);
+        setSelectedReview(null);
+      }
+    } catch (error) {
+      console.error("Error fetching review:", error);
+      setSelectedReview(null);
+    }
+    setIsLoading(false);
+  };
+
   const renderObservations = (observations, TabIcon, iconColor) => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentObservations = observations.slice(startIndex, endIndex);
 
     return (
-      <div className="grid grid-cols-3 gap-4 p-2">
+      <div className="grid grid-cols-3 p-2">
         {currentObservations.map((observation, index) => (
-          <div key={index} className="flex items-center gap-2">
+          <div
+            key={`${observation.label}-${index}`}
+            className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded"
+            onMouseEnter={() => handleLabelClick(observation.review_id)}
+          >
             <TabIcon className={`h-4 w-4 ${iconColor}`} />
             <p className="text-[14px]">{observation.label}</p>
           </div>
@@ -63,7 +89,7 @@ export const MentionsDashboard = ({ customersObservations }) => {
 
   return (
     <Tabs defaultValue="customers_love" className="w-full">
-      <TabsList className="grid w-full grid-cols-2 gap-2 mt-6">
+      <TabsList className="grid w-full grid-cols-2 gap-2 mt-4">
         {tabData.map((tab) => (
           <TabsTrigger key={tab.id} value={tab.id}>
             <tab.icon className={`h-4 w-4 mr-2 ${tab.color}`} />
@@ -71,6 +97,7 @@ export const MentionsDashboard = ({ customersObservations }) => {
           </TabsTrigger>
         ))}
       </TabsList>
+
       {tabData.map((tab) => (
         <TabsContent key={tab.id} value={tab.id} className="">
           <CardContent className="min-h-[200px]">

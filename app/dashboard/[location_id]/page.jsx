@@ -230,23 +230,23 @@ export default async function Page({ params }) {
 
   const { data: peoples_pains, error: peoples_pains_error } = await supabase
     .from("peoples_pains")
-    .select("label")
+    .select("label, review_id")
     .eq("location_id", location_id);
 
   const { data: people_love, error: people_love_error } = await supabase
     .from("people_love")
-    .select("label")
+    .select("label, review_id")
     .eq("location_id", location_id);
 
   const { data: people_hate, error: people_hate_error } = await supabase
     .from("people_hate")
-    .select("label")
+    .select("label, review_id")
     .eq("location_id", location_id);
 
   const { data: people_dont_like, error: people_dont_like_error } =
     await supabase
       .from("people_dont_like")
-      .select("label")
+      .select("label, review_id")
       .eq("location_id", location_id);
 
   const customersObservations = {
