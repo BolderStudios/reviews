@@ -91,7 +91,7 @@ export const MentionsDashboard = ({ customersObservations }) => {
     <Tabs defaultValue="customers_love" className="w-full">
       <TabsList className="grid w-full grid-cols-2 gap-2 mt-4">
         {tabData.map((tab) => (
-          <TabsTrigger key={tab.id} value={tab.id}>
+          <TabsTrigger key={tab.id} value={tab.id} onClick={() => setCurrentPage(1)}>
             <tab.icon className={`h-4 w-4 mr-2 ${tab.color}`} />
             {tab.label}
           </TabsTrigger>
