@@ -134,6 +134,7 @@ export function ReviewInsights({ review }) {
               highlightText={highlightText}
             />
             <DetailedAspectsTable aspects={reviewData?.detailed_aspects} />
+            <NeedsImprovements improvements={reviewData?.needs_improvement} />
             <div className="pt-4">
               <ProductServiceFeedbackTable
                 feedback={reviewData?.product_service_feedback}
@@ -162,15 +163,18 @@ function CustomerInfoSection({ review, date }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
-        <Avatar className="h-12 w-12">
+        {/* <Avatar className="h-12 w-12">
           <AvatarFallback>
             {review.customer_name[0].toUpperCase()}
           </AvatarFallback>
-        </Avatar>
+        </Avatar> */}
 
-        <div>
+        <div className="text-sm">
           <div className="flex gap-1 items-center">
-            <span className="font-semibold">{review.customer_name}</span>
+            <div className="flex gap-[6px]">
+              <span className="text-muted-foreground">Customer name:</span>
+              <span className="font-semibold">{review.customer_name}</span>
+            </div>
             <Link
               target="_blank"
               href={
@@ -183,7 +187,10 @@ function CustomerInfoSection({ review, date }) {
             </Link>
           </div>
 
-          <p className="text-sm text-muted-foreground">{`${month}-${day}-${year}`}</p>
+          <div className="flex gap-[6px]">
+            <span className="text-muted-foreground">Review date:</span>
+            <span>{`${month}-${day}-${year}`}</span>
+          </div>
         </div>
       </div>
 
@@ -266,6 +273,38 @@ function ReviewTextSection({ review, reviewData, highlightText }) {
   );
 }
 
+function NeedsImprovements({ improvements }) {
+  if (!improvements || improvements.length === 0) return null;
+
+  return (
+    <div>
+      <h4 className="mb-2 font-semibold">Needed Improvements</h4>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left py-2 font-semibold">Name</th>
+              <th className="text-left p-2 font-semibold">Summary</th>
+              <th className="text-left p-2 font-semibold">
+                Improvement Suggestion
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {improvements.map((improvement, index) => (
+              <tr key={`improvement-${index}`} className="border-b">
+                <td className="py-2">{improvement.label}</td>
+                <td className="py-2 pl-2">{improvement.summary}</td>
+                <td className="py-2 pl-2">{improvement.suggestion}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function DetailedAspectsTable({ aspects }) {
   if (!aspects || aspects.length === 0) return null;
 
@@ -280,9 +319,9 @@ function DetailedAspectsTable({ aspects }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b">
-              <th className="text-left py-2">Aspect</th>
-              <th className="text-left p-2">Sentiment</th>
-              <th className="text-left p-2">Context</th>
+              <th className="text-left py-2 font-semibold">Aspect</th>
+              <th className="text-left p-2 font-semibold">Sentiment</th>
+              <th className="text-left p-2 font-semibold">Context</th>
             </tr>
           </thead>
           <tbody>
@@ -319,14 +358,20 @@ function ProductServiceFeedbackTable({ feedback }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b">
-              <th className="text-left py-2">Product/Service</th>
-              <th className="text-left py-2">Feedback</th>
+              <th className="text-left py-2 font-semibold">Product/Service</th>
+              <th className="text-left py-2 pl-2 font-semibold">Sentiment</th>
+              <th className="text-left py-2 font-semibold">Feedback</th>
             </tr>
           </thead>
           <tbody>
             {feedback.map((item, index) => (
               <tr key={`feedback-${index}`} className="border-b">
                 <td className="py-2">{item.item}</td>
+                <td className="p-2">
+                  <Badge variant={getSentimentVariant(item.sentiment)}>
+                    {item.sentiment}
+                  </Badge>
+                </td>
                 <td className="py-2">{item.feedback}</td>
               </tr>
             ))}
