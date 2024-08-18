@@ -270,8 +270,6 @@ export default function SidebarNavigation({
                       ? `/${href}/${locationId}`
                       : `/${href}`;
 
-                  // console.log(`Link ${label}: ${fullHref}`);
-
                   return (
                     <Link
                       key={href}
@@ -279,7 +277,7 @@ export default function SidebarNavigation({
                       href={fullHref}
                       className={cn(
                         activeLinkClass(`/${href}`),
-                        isLoading && "pointer-events-none opacity-50"
+                         currentPathname === href ? "pointer-events-none" : isLoading ? "pointer-events-none opacity-50" : "cursor-pointer"
                       )}
                       onClick={(e) => {
                         if (isNavigating || isLoading) {
