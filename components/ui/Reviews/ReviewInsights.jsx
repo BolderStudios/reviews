@@ -134,7 +134,7 @@ export function ReviewInsights({ review }) {
               highlightText={highlightText}
             />
             <DetailedAspectsTable aspects={reviewData?.detailed_aspects} />
-            {/* <NeedsImprovements improvements={reviewData?.needs_improvement} /> */}
+            <NeedsImprovements improvements={reviewData?.needs_improvement} />
             <div className="pt-4">
               {/* <ProductServiceFeedbackTable
                 feedback={reviewData?.product_service_feedback}
@@ -278,7 +278,7 @@ function NeedsImprovements({ improvements }) {
 
   return (
     <div>
-      <h4 className="mb-2 font-semibold">Needed Improvements</h4>
+      <h4 className="mb-2 font-semibold">Possible Improvements</h4>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
