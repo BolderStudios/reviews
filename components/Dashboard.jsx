@@ -140,7 +140,7 @@ export default function Dashboard({
                     ratingDistribution={ratingDistribution}
                   />
 
-                  <div className="grid grid-cols-1 justify-between gap-4">
+                  <div className="grid grid-cols-1 grid-rows-2 justify-between gap-4">
                     <KpiCard
                       title="Sentiment Distribution"
                       className="h-full"
@@ -166,6 +166,7 @@ export default function Dashboard({
                       description={getSentimentDescription(
                         parseFloat(positivePercentage)
                       )}
+                      empty={true}
                     />
                   </div>
                 </div>
@@ -179,6 +180,7 @@ export default function Dashboard({
                   description={getSentimentDescription(
                     parseFloat(positivePercentage)
                   )}
+                  empty={true}
                 />
               </div>
 
@@ -220,24 +222,24 @@ const getResponseRateStatus = (rate) => {
 };
 
 const getAverageRatingDescription = (rating) => {
-  if (rating >= 4.5) return "Excellent: Well above industry average";
-  if (rating >= 4.0) return "Good: Above average performance";
-  if (rating >= 3.5) return "Average: Room for improvement";
-  return "Below Average: Immediate attention required";
+  if (rating >= 4.5) return "Well above industry average";
+  if (rating >= 4.0) return "Above average performance";
+  if (rating >= 3.5) return "Room for improvement";
+  return "Immediate attention required";
 };
 
 const getTotalReviewsDescription = (count) => {
-  if (count >= 100) return "Excellent: High volume of reviews";
-  if (count >= 50) return "Good: Solid number of reviews";
-  if (count >= 25) return "Average: Growing review base";
-  return "Below Average: Need to encourage more reviews";
+  if (count >= 100) return "High volume of reviews";
+  if (count >= 50) return "Solid number of reviews";
+  if (count >= 25) return "Growing review base";
+  return "Need to encourage more reviews";
 };
 
 const getResponseRateDescription = (rate) => {
-  if (rate >= 80) return "Excellent: High engagement with customers";
-  if (rate >= 60) return "Good: Above average response rate";
-  if (rate >= 40) return "Average: Room for improvement";
-  return "Below Average: Need to increase response rate";
+  if (rate >= 80) return "High engagement with customers";
+  if (rate >= 60) return "Above average response rate";
+  if (rate >= 40) return "Room for improvement";
+  return "Need to increase response rate";
 };
 
 const getTotalReviewsStatus = (count) => {
@@ -258,7 +260,7 @@ const getFrequencyDescription = (frequency) => {
   if (frequency >= 1.25) return "Excellent: High review frequency";
   if (frequency >= 0.75) return "Average: Consistent review frequency";
 
-  return "Below Average: Need to encourage more reviews";
+  return "Need to encourage more reviews";
 };
 
 const getSentimentStatus = (positivePercentage) => {
@@ -273,7 +275,7 @@ const getSentimentDescription = (positivePercentage) => {
     return "Excellent: Overwhelmingly positive sentiment";
   if (positivePercentage >= 75) return "Good: Strong positive sentiment";
   if (positivePercentage >= 50) return "Average: Balanced sentiment";
-  return "Below Average: Negative sentiment dominates";
+  return "Negative sentiment dominates";
 };
 
 const getSentimentIcon = (positivePercentage) => {
