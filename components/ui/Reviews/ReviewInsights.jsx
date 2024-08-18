@@ -134,11 +134,11 @@ export function ReviewInsights({ review }) {
               highlightText={highlightText}
             />
             <DetailedAspectsTable aspects={reviewData?.detailed_aspects} />
-            <NeedsImprovements improvements={reviewData?.needs_improvement} />
+            {/* <NeedsImprovements improvements={reviewData?.needs_improvement} /> */}
             <div className="pt-4">
-              <ProductServiceFeedbackTable
+              {/* <ProductServiceFeedbackTable
                 feedback={reviewData?.product_service_feedback}
-              />
+              /> */}
 
               <div className="mt-6 space-y-6">
                 <GeneratedResponseSection

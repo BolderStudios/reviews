@@ -311,9 +311,7 @@ export default function Reviews({ selectedLocation, isFetching, reviews }) {
     <SignedInLayout>
       <div className="px-4 mt-3">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="font-bold text-2xl">
-            Customer Reviews ({reviews.length})
-          </h2>
+          <h2 className="font-bold text-2xl">Reviews ({reviews.length})</h2>
         </div>
 
         {reviews.length > 0 ? (
