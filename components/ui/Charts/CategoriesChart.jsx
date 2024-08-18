@@ -33,7 +33,7 @@ export function CategoriesChart({ categoriesChartData, categoriesCharConfig }) {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={categoriesChartData}
-                margin={{ top: 20, right: 20, left: 20, bottom: 62.5 }}
+                margin={{ top: 20, right: 20, left: 20, bottom: 70 }}
               >
                 <CartesianGrid vertical={false} />
                 <XAxis
