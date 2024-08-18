@@ -216,14 +216,98 @@ export async function addLocationFunc(formData, currentPath) {
         {
           user_id: userData[0].id,
           clerk_id: userId,
-          organization_name: fetchedLocationData.title,
           name_of_contact: formData.nameOfContact,
           position_of_contact: formData.positionOfContact,
           is_primary: false,
+          organization_name: fetchedLocationData?.title,
+          address: fetchedLocationData?.address,
+          business_url: fetchedLocationData?.url,
+          business_phone_number: fetchedLocationData?.phone
+            .split("+1")
+            .join(" "),
+          google_maps_url: fetchedLocationData?.check_url,
+          last_updated_date_time:
+            fetchedLocationData?.last_updated_time.split(" ")[0] +
+            " " +
+            fetchedLocationData?.last_updated_time.split(" ")[1],
+          cid: fetchedLocationData?.cid,
+          google_maps_category: fetchedLocationData?.category,
+          google_maps_main_image_url: fetchedLocationData?.main_image,
+          domain_name: fetchedLocationData?.domain,
         },
       ])
       .select()
       .single();
+
+    const categoryIds = fetchedLocationData?.category_ids;
+
+    if (categoryIds) {
+      categoryIds.forEach(async (category_name) => {
+        const { data, error } = await supabase
+          .from("category_ids")
+          .insert([
+            {
+              location_id: newLocation.id,
+              category_name: category_name.split("_").join(" "),
+            },
+          ])
+          .select();
+      });
+    }
+
+    const additionalCategories = fetchedLocationData?.additional_categories;
+
+    if (additionalCategories) {
+      additionalCategories.forEach(async (category) => {
+        const { data, error } = await supabase
+          .from("additional_categories")
+          .insert([
+            {
+              location_id: newLocation.id,
+              category_name: category,
+            },
+          ])
+          .select();
+      });
+    }
+
+    const placeTopics = fetchedLocationData?.place_topics;
+
+    if (placeTopics) {
+      Object.keys(placeTopics).forEach(async (topic_name) => {
+        const { data, error } = await supabase
+          .from("place_topics")
+          .insert([
+            {
+              location_id: newLocation.id,
+              topic: topic_name,
+              count: placeTopics[topic_name],
+            },
+          ])
+          .select();
+      });
+    }
+
+    const peopleAlsoSearch = fetchedLocationData?.people_also_search;
+
+    if (peopleAlsoSearch) {
+      peopleAlsoSearch.forEach(async (search) => {
+        const { data, error } = await supabase
+          .from("people_also_search")
+          .insert([
+            {
+              location_id: newLocation.id,
+              search_term: search.title,
+              cid: search.cid,
+              google_rating:
+                search.rating && typeof search.rating.value !== "undefined"
+                  ? search.rating.value
+                  : null,
+            },
+          ])
+          .select();
+      });
+    }
 
     const { data, error } = await supabase
       .from("users")

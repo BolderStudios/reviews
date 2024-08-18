@@ -173,7 +173,7 @@ function CustomerInfoSection({ review, date }) {
           <div className="flex gap-1 items-center">
             <div className="flex gap-[6px]">
               <span className="text-muted-foreground">Customer name:</span>
-              <span className="font-semibold">{review.customer_name}</span>
+              <span>{review.customer_name}</span>
             </div>
             <Link
               target="_blank"
