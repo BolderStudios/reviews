@@ -9,6 +9,35 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      additional_categories: {
+        Row: {
+          category_name: string | null
+          created_at: string
+          id: string
+          location_id: string | null
+        }
+        Insert: {
+          category_name?: string | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+        }
+        Update: {
+          category_name?: string | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_additional_categories_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_categories: {
         Row: {
           context: string | null
@@ -102,6 +131,35 @@ export type Database = {
           },
         ]
       }
+      category_ids: {
+        Row: {
+          category_name: string | null
+          created_at: string
+          id: string
+          location_id: string | null
+        }
+        Insert: {
+          category_name?: string | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+        }
+        Update: {
+          category_name?: string | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_category_ids_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           clerk_id: string | null
@@ -184,6 +242,41 @@ export type Database = {
             columns: ["review_id"]
             isOneToOne: false
             referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grouped_mentions: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          location_id: string | null
+          supabase_attribute: string | null
+          total_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          supabase_attribute?: string | null
+          total_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          supabase_attribute?: string | null
+          total_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_grouped_mentions_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
         ]
@@ -284,14 +377,23 @@ export type Database = {
       }
       locations: {
         Row: {
+          address: string | null
+          business_phone_number: string | null
+          business_url: string | null
+          cid: string | null
           clerk_id: string
           created_at: string
+          domain_name: string | null
+          google_maps_category: string | null
+          google_maps_main_image_url: string | null
+          google_maps_url: string | null
           google_place_coordinates: string | null
           google_place_id: string | null
           id: string
           is_google_configured: boolean
           is_primary: boolean
           is_yelp_configured: boolean
+          last_updated_date_time: string | null
           name_of_contact: string
           organization_name: string
           position_of_contact: string
@@ -299,14 +401,23 @@ export type Database = {
           yelp_profile_url: string | null
         }
         Insert: {
+          address?: string | null
+          business_phone_number?: string | null
+          business_url?: string | null
+          cid?: string | null
           clerk_id: string
           created_at?: string
+          domain_name?: string | null
+          google_maps_category?: string | null
+          google_maps_main_image_url?: string | null
+          google_maps_url?: string | null
           google_place_coordinates?: string | null
           google_place_id?: string | null
           id?: string
           is_google_configured?: boolean
           is_primary?: boolean
           is_yelp_configured?: boolean
+          last_updated_date_time?: string | null
           name_of_contact: string
           organization_name: string
           position_of_contact: string
@@ -314,14 +425,23 @@ export type Database = {
           yelp_profile_url?: string | null
         }
         Update: {
+          address?: string | null
+          business_phone_number?: string | null
+          business_url?: string | null
+          cid?: string | null
           clerk_id?: string
           created_at?: string
+          domain_name?: string | null
+          google_maps_category?: string | null
+          google_maps_main_image_url?: string | null
+          google_maps_url?: string | null
           google_place_coordinates?: string | null
           google_place_id?: string | null
           id?: string
           is_google_configured?: boolean
           is_primary?: boolean
           is_yelp_configured?: boolean
+          last_updated_date_time?: string | null
           name_of_contact?: string
           organization_name?: string
           position_of_contact?: string
@@ -382,6 +502,41 @@ export type Database = {
             columns: ["review_id"]
             isOneToOne: false
             referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      people_also_search: {
+        Row: {
+          cid: string | null
+          created_at: string
+          google_rating: number | null
+          id: string
+          location_id: string | null
+          search_term: string | null
+        }
+        Insert: {
+          cid?: string | null
+          created_at?: string
+          google_rating?: number | null
+          id?: string
+          location_id?: string | null
+          search_term?: string | null
+        }
+        Update: {
+          cid?: string | null
+          created_at?: string
+          google_rating?: number | null
+          id?: string
+          location_id?: string | null
+          search_term?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_people_also_search_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
         ]
@@ -542,6 +697,38 @@ export type Database = {
           },
         ]
       }
+      place_topics: {
+        Row: {
+          count: number | null
+          created_at: string
+          id: string
+          location_id: string | null
+          topic: string | null
+        }
+        Insert: {
+          count?: number | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          topic?: string | null
+        }
+        Update: {
+          count?: number | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_place_topics_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_service_feedback: {
         Row: {
           created_at: string
@@ -652,6 +839,41 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_images: {
+        Row: {
+          all_images_url: string | null
+          alt_text: string | null
+          created_at: string
+          id: string
+          review_id: string | null
+          single_image_url: string | null
+        }
+        Insert: {
+          all_images_url?: string | null
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          review_id?: string | null
+          single_image_url?: string | null
+        }
+        Update: {
+          all_images_url?: string | null
+          alt_text?: string | null
+          created_at?: string
+          id?: string
+          review_id?: string | null
+          single_image_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_review_images_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]

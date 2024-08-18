@@ -23,9 +23,6 @@ export default async function Page({ params }) {
       .select("item, sentiment")
       .eq("location_id", location_id);
 
-  // console.log("All product mentions: ", allProductMentions);
-  // console.log("All product mentions length: ", allProductMentions.length);
-
   const { data: allReviews, error: allReviewsError } = await supabase
     .from("reviews")
     .select("*")
@@ -148,7 +145,11 @@ export default async function Page({ params }) {
       .select("*")
       .eq("location_id", location_id);
 
-  // console.log("Product feedback mentions: ", productFeedbackMentions);
+  const { data: businessCategories, error: businessCategoriesError } =
+    await supabase
+      .from("business_categories")
+      .select("*")
+      .eq("location_id", location_id);
 
   if (productFeedbackMentionsError) {
     console.error(
@@ -158,7 +159,44 @@ export default async function Page({ params }) {
     // Handle the error appropriately
   }
 
-  // Process the product/service feedback data
+  // Process the business categories data
+  const categoriesData = businessCategories.reduce((data, category) => {
+    const categoryName = category.name;
+    const countPositives = category.positive_mentions;
+    const countNegatives = category.negative_mentions;
+    const countMixed = category.mixed_mentions;
+
+    if (!data[categoryName]) {
+      data[categoryName] = { count: 0, positive: 0, negative: 0, mixed: 0 };
+    }
+
+    data[categoryName].count++;
+    data[categoryName].positive += countPositives;
+    data[categoryName].negative += countNegatives;
+    data[categoryName].mixed += countMixed;
+
+    return data;
+  }, {});
+
+  const categoriesChartData = Object.entries(categoriesData)
+    .map(([category, data]) => ({ category, ...data }))
+    .sort((a, b) => b.count - a.count);
+
+  const categoriesCharConfig = {
+    positive: {
+      label: "Positive",
+      color: "hsl(var(--positive))",
+    },
+    negative: {
+      label: "Negative",
+      color: "hsl(var(--negative))",
+    },
+    mixed: {
+      label: "Mixed",
+      color: "hsl(var(--warning))",
+    },
+  };
+
   const productData = productFeedbackMentions.reduce((data, feedback) => {
     const itemName = feedback.item;
     const sentiment = feedback?.sentiment?.toLowerCase();
@@ -266,6 +304,8 @@ export default async function Page({ params }) {
       productChartData={productChartData}
       productChartConfig={productChartConfig}
       customersObservations={customersObservations}
+      categoriesChartData={categoriesChartData}
+      categoriesCharConfig={categoriesCharConfig}
     />
   );
 }

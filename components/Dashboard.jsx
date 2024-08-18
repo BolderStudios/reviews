@@ -19,12 +19,15 @@ import {
 import { YearsCalendar } from "./ui/YearsCalendar";
 import { SignedInLayout } from "@/app/layouts/SignedInLayout";
 import { MentionsDashboard } from "@/components/ui/MentionsDashboard";
+import { CategoriesChart } from "./ui/Charts/CategoriesChart";
 
 export default function Dashboard({
   selectedLocation,
   ratingDistribution,
   sentimentDistribution,
   customersObservations,
+  categoriesChartData,
+  categoriesCharConfig,
 }) {
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
@@ -120,7 +123,6 @@ export default function Dashboard({
           <h2 className="font-bold text-2xl">Dashboard</h2>
           <UpdateLocation selectedLocation={selectedLocation} />
         </div>
-
         {isPageLoading ? (
           <div className="mt-6 space-y-6">
             <Skeleton className="h-[200px] w-full" />
@@ -131,30 +133,64 @@ export default function Dashboard({
           <div className="flex flex-col gap-4">
             {renderKpiCards()}
 
-            <div className="flex flex-wrap">
-              <div className="grid grid-cols-4 gap-4 w-full">
-                <RatingDistributionChart
-                  ratingDistribution={ratingDistribution}
-                />
-
-                <div>
-                  <KpiCard
-                    title="Sentiment Distribution"
-                    value={`${positivePercentage}% Positive`}
-                    icon={getSentimentIcon(parseFloat(positivePercentage))}
-                    status={getSentimentStatus(parseFloat(positivePercentage))}
-                    description={getSentimentDescription(
-                      parseFloat(positivePercentage)
-                    )}
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="w-full lg:w-[50%] space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <RatingDistributionChart
+                    ratingDistribution={ratingDistribution}
                   />
+
+                  <div className="grid grid-cols-1 justify-between gap-4">
+                    <KpiCard
+                      title="Sentiment Distribution"
+                      className="h-full"
+                      value={`${positivePercentage}% Positive`}
+                      icon={getSentimentIcon(parseFloat(positivePercentage))}
+                      status={getSentimentStatus(
+                        parseFloat(positivePercentage)
+                      )}
+                      description={getSentimentDescription(
+                        parseFloat(positivePercentage)
+                      )}
+                    />
+
+                    {/* Empty Fake Card */}
+                    <KpiCard
+                      title="Sentiment Distribution"
+                      className="h-full"
+                      value={`${positivePercentage}% Positive`}
+                      icon={getSentimentIcon(parseFloat(positivePercentage))}
+                      status={getSentimentStatus(
+                        parseFloat(positivePercentage)
+                      )}
+                      description={getSentimentDescription(
+                        parseFloat(positivePercentage)
+                      )}
+                    />
+                  </div>
                 </div>
+
+                {/* Empty Fake Card */}
+                <KpiCard
+                  title="Sentiment Distribution"
+                  value={`${positivePercentage}% Positive`}
+                  icon={getSentimentIcon(parseFloat(positivePercentage))}
+                  status={getSentimentStatus(parseFloat(positivePercentage))}
+                  description={getSentimentDescription(
+                    parseFloat(positivePercentage)
+                  )}
+                />
               </div>
 
-
-              <MentionsDashboard
-                customersObservations={customersObservations}
-              />
+              <div className="w-full lg:w-[50%]">
+                <CategoriesChart
+                  categoriesChartData={categoriesChartData}
+                  categoriesCharConfig={categoriesCharConfig}
+                />
+              </div>
             </div>
+
+            <MentionsDashboard customersObservations={customersObservations} />
             <YearsCalendar selectedLocation={selectedLocation} />
           </div>
         ) : (
