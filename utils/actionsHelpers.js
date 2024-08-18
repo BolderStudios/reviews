@@ -234,6 +234,54 @@ export async function storeReview(
       console.log("Inserted Review -> ", inserted_review);
     }
 
+    if (source === "yelp") {
+      const reviewImages = review?.review_images;
+
+      if (reviewImages && reviewImages.length > 0) {
+        for (const image of reviewImages) {
+          const { data: inserted_image, error: inserted_image_error } =
+            await supabase
+              .from("review_images")
+              .insert([
+                {
+                  review_id: inserted_review[0].id,
+                  single_image_url: image,
+                  alt_text: null,
+                  all_images_url: null,
+                },
+              ])
+              .select("*");
+
+          if (inserted_image_error) throw inserted_image_error;
+
+          console.log("Inserted Image -> ", inserted_image);
+        }
+      }
+    } else {
+      const reviewImages = review?.images;
+
+      if (reviewImages && reviewImages.length > 0) {
+        for (const image of reviewImages) {
+          const { data: inserted_image, error: inserted_image_error } =
+            await supabase
+              .from("review_images")
+              .insert([
+                {
+                  review_id: inserted_review[0].id,
+                  single_image_url: image.image_url,
+                  alt_text: image.alt,
+                  all_images_url: image.url,
+                },
+              ])
+              .select("*");
+
+          if (inserted_image_error) throw inserted_image_error;
+
+          console.log("Inserted Image -> ", inserted_image);
+        }
+      }
+    }
+
     // Process businessSpecificCategories
     if (
       insights.businessSpecificCategories &&
