@@ -257,8 +257,8 @@ const getFrequencyStatus = (frequency) => {
 };
 
 const getFrequencyDescription = (frequency) => {
-  if (frequency >= 1.25) return "Excellent: High review frequency";
-  if (frequency >= 0.75) return "Average: Consistent review frequency";
+  if (frequency >= 1.25) return "High review frequency";
+  if (frequency >= 0.75) return "Consistent review frequency";
 
   return "Need to encourage more reviews";
 };
@@ -272,9 +272,9 @@ const getSentimentStatus = (positivePercentage) => {
 
 const getSentimentDescription = (positivePercentage) => {
   if (positivePercentage >= 90)
-    return "Excellent: Overwhelmingly positive sentiment";
-  if (positivePercentage >= 75) return "Good: Strong positive sentiment";
-  if (positivePercentage >= 50) return "Average: Balanced sentiment";
+    return "Overwhelmingly positive sentiment";
+  if (positivePercentage >= 75) return "Strong positive sentiment";
+  if (positivePercentage >= 50) return "Balanced sentiment";
   return "Negative sentiment dominates";
 };
 

@@ -28,7 +28,7 @@ export function KpiCard({
         <div className="text-2xl font-bold">&nbsp;</div>
       </CardHeader>
 
-      <p className="text-xs text-muted-foreground mt-2">&nbsp;</p>
+      <p className="text-xs text-muted-foreground mt-2">Empty card for now.</p>
     </Card>
   ) : (
     <Card className="w-full flex flex-col justify-between px-3 py-2">
