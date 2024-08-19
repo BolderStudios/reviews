@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, MapPin, Phone, Globe } from "lucide-react";
 import {
   deleteLocationFunc,
   updateLocationFunc,
@@ -43,6 +43,8 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import Link from "next/link";
 
 const positions = [
   { value: "owner", label: "Owner" },
@@ -63,6 +65,8 @@ export function UpdateLocation({ selectedLocation }) {
   const [openPosition, setOpenPosition] = useState(false);
   const [locationData, setLocationData] = useState(null);
   const router = useRouter();
+
+  console.log("selectedLocation", selectedLocation);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -171,13 +175,42 @@ export function UpdateLocation({ selectedLocation }) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[550px]">
+      <DialogContent className="sm:max-w-[550px] h-fit">
+        <div>
+          <img
+            src={selectedLocation.google_maps_main_image_url}
+            alt="Google Business Profile Image"
+            className="max-w-full h-40 w-full object-cover rounded-lg"
+          />
+        </div>
         <DialogHeader>
-          <DialogTitle>Manage {locationData?.organization_name}</DialogTitle>
-          <DialogDescription>
-            Update details or delete this location.
+          <DialogTitle className="mb-3">
+            {locationData?.organization_name}
+          </DialogTitle>
+          <DialogDescription className="flex flex-col gap-2">
+            <div className="flex items-center gap-[6px]">
+              <MapPin size={16} />
+              <span>{locationData?.address}</span>
+            </div>
+
+            <div className="flex items-center gap-[6px]">
+              <Phone size={16} />
+              <span>+1 {locationData?.business_phone_number}</span>
+            </div>
+
+            <div className="flex items-center gap-[6px]">
+              <Globe size={16} />
+              <Link className="text-blue-500" href={locationData?.business_url}>
+                {locationData?.business_url.split("/")[2]}
+              </Link>
+            </div>
           </DialogDescription>
         </DialogHeader>
+
+        <div>
+
+        </div>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleUpdate)}
@@ -321,6 +354,7 @@ export function UpdateLocation({ selectedLocation }) {
                   "Update Location"
                 )}
               </Button>
+
               <Button
                 size="lg"
                 variant="destructive"
