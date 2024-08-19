@@ -580,7 +580,8 @@ async function fetchGoogleReviewsLogic(
   clerkId
 ) {
   console.log("Starting fetchGoogleReviewsLogic");
-  const initialDepth = 10;
+  const initialDepth = 50;
+  // const initialDepth = 10;
 
   try {
     console.log("Posting initial Google review task");
@@ -610,52 +611,52 @@ async function fetchGoogleReviewsLogic(
       initialResults.totalReviews || initialResults.reviews.length;
     console.log(`Total reviews found: ${totalReviews}`);
 
-    if (totalReviews > initialDepth) {
-      console.log(`Fetching all ${totalReviews} reviews`);
+    // if (totalReviews > initialDepth) {
+    //   console.log(`Fetching all ${totalReviews} reviews`);
 
-      const fullTaskId = await postGoogleReviewTask(
-        googlePlaceId,
-        coordinates,
-        totalReviews
-      );
+    //   const fullTaskId = await postGoogleReviewTask(
+    //     googlePlaceId,
+    //     coordinates,
+    //     totalReviews
+    //   );
 
-      console.log(`Full task ID: ${fullTaskId}`);
+    //   console.log(`Full task ID: ${fullTaskId}`);
 
-      console.log("Polling for all reviews");
-      const allReviews = await pollGoogleResults(fullTaskId);
+    //   console.log("Polling for all reviews");
+    //   const allReviews = await pollGoogleResults(fullTaskId);
 
-      if (!allReviews.success) {
-        console.error(`Full polling failed: ${allReviews.message}`);
-        throw new Error(allReviews.message);
-      }
+    //   if (!allReviews.success) {
+    //     console.error(`Full polling failed: ${allReviews.message}`);
+    //     throw new Error(allReviews.message);
+    //   }
 
-      console.log("All reviews results:", JSON.stringify(allReviews, null, 2));
+    //   console.log("All reviews results:", JSON.stringify(allReviews, null, 2));
 
-      if (!allReviews.reviews || !Array.isArray(allReviews.reviews)) {
-        console.error(
-          "All reviews results do not contain a valid reviews array"
-        );
-        throw new Error(
-          "Invalid reviews data structure in all reviews results"
-        );
-      }
+    //   if (!allReviews.reviews || !Array.isArray(allReviews.reviews)) {
+    //     console.error(
+    //       "All reviews results do not contain a valid reviews array"
+    //     );
+    //     throw new Error(
+    //       "Invalid reviews data structure in all reviews results"
+    //     );
+    //   }
 
-      // De-duplicate reviews here
-      const uniqueReviews = Array.from(
-        new Map(
-          allReviews.reviews.map((review) => [review.review_id, review])
-        ).values()
-      );
+    //   // De-duplicate reviews here
+    //   const uniqueReviews = Array.from(
+    //     new Map(
+    //       allReviews.reviews.map((review) => [review.review_id, review])
+    //     ).values()
+    //   );
 
-      console.log(
-        `Successfully fetched ${allReviews.reviews.length} reviews, Unique reviews: ${uniqueReviews.length}`
-      );
-      return {
-        success: true,
-        reviews: uniqueReviews,
-        totalReviews: uniqueReviews.length,
-      };
-    }
+    //   console.log(
+    //     `Successfully fetched ${allReviews.reviews.length} reviews, Unique reviews: ${uniqueReviews.length}`
+    //   );
+    //   return {
+    //     success: true,
+    //     reviews: uniqueReviews,
+    //     totalReviews: uniqueReviews.length,
+    //   };
+    // }
 
     console.log(`Returning initial ${initialResults.reviews.length} reviews`);
     // De-duplicate initial reviews as well
