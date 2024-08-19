@@ -201,9 +201,12 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
   const alias = yelpBusinessLink.split("/").pop();
   console.log(`Extracted alias: ${alias}`);
 
+  const initialDepth = 50;
+  // const initialDepth = 10;
+
   try {
     console.log("Posting initial Yelp review task");
-    const initialResponse = await postYelpReviewTask(alias, 10);
+    const initialResponse = await postYelpReviewTask(alias, initialDepth);
 
     if (!initialResponse.tasks || initialResponse.tasks.length === 0) {
       console.error("No tasks found in initial response");
@@ -224,36 +227,37 @@ async function fetchYelpReviewsLogic(yelpBusinessLink, locationId, clerkId) {
     const totalReviews = initialResults.totalReviews;
     console.log(`Total reviews found: ${totalReviews}`);
 
-    if (totalReviews > 10) {
-      console.log(`Fetching all ${totalReviews} reviews`);
-      const fullResponse = await postYelpReviewTask(alias, totalReviews);
-      const fullTaskId = fullResponse.tasks[0].id;
-      console.log(`Full task ID: ${fullTaskId}`);
+    // Commenting out to avoid fetching all reviews: limiter is set to 50
+    // if (totalReviews > initialDepth) {
+    //   console.log(`Fetching all ${totalReviews} reviews`);
+    //   const fullResponse = await postYelpReviewTask(alias, totalReviews);
+    //   const fullTaskId = fullResponse.tasks[0].id;
+    //   console.log(`Full task ID: ${fullTaskId}`);
 
-      console.log("Polling for all reviews");
-      const allReviews = await pollYelpResults(fullTaskId);
+    //   console.log("Polling for all reviews");
+    //   const allReviews = await pollYelpResults(fullTaskId);
 
-      if (!allReviews.success) {
-        console.error(`Full polling failed: ${allReviews.message}`);
-        throw new Error(allReviews.message);
-      }
+    //   if (!allReviews.success) {
+    //     console.error(`Full polling failed: ${allReviews.message}`);
+    //     throw new Error(allReviews.message);
+    //   }
 
-      // De-duplicate reviews here
-      const uniqueReviews = Array.from(
-        new Map(
-          allReviews.reviews.map((review) => [review.review_id, review])
-        ).values()
-      );
+    //   // De-duplicate reviews here
+    //   const uniqueReviews = Array.from(
+    //     new Map(
+    //       allReviews.reviews.map((review) => [review.review_id, review])
+    //     ).values()
+    //   );
 
-      console.log(
-        `Successfully fetched ${allReviews.reviews.length} reviews, Unique reviews: ${uniqueReviews.length}`
-      );
-      return {
-        success: true,
-        reviews: uniqueReviews,
-        totalReviews: uniqueReviews.length,
-      };
-    }
+    //   console.log(
+    //     `Successfully fetched ${allReviews.reviews.length} reviews, Unique reviews: ${uniqueReviews.length}`
+    //   );
+    //   return {
+    //     success: true,
+    //     reviews: uniqueReviews,
+    //     totalReviews: uniqueReviews.length,
+    //   };
+    // }
 
     console.log(`Returning initial ${initialResults.reviews.length} reviews`);
     // De-duplicate initial reviews as well
@@ -611,6 +615,7 @@ async function fetchGoogleReviewsLogic(
       initialResults.totalReviews || initialResults.reviews.length;
     console.log(`Total reviews found: ${totalReviews}`);
 
+    // Commenting out to avoid fetching all reviews: limiter is set to 50
     // if (totalReviews > initialDepth) {
     //   console.log(`Fetching all ${totalReviews} reviews`);
 
