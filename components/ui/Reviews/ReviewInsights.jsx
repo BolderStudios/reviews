@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/Buttons/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Star, MousePointerClick } from "lucide-react";
+import { Star, MousePointerClick, Focus, X } from "lucide-react";
 import { getAllReviewData } from "@/utils/reviews";
 import { Copy, ArrowUpRightIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export function ReviewInsights({ review }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -160,20 +160,58 @@ export function ReviewInsights({ review }) {
 }
 
 function ReviewImages({ images }) {
-  console.log("Images", images);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [hoveredId, setHoveredId] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <div className="relative">
       <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
         {images.map((image) => (
-          <div key={image.id} className="relative w-48 h-32 flex-shrink-0">
-            <Image
-              src={image.single_image_url}
-              alt="Review image"
-              layout="fill"
-              objectFit="cover"
-              className="rounded-md"
-            />
-          </div>
+          <Dialog key={image.id} open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <div
+                className={`relative w-48 h-32 flex-shrink-0 hover:cursor-pointer overflow-hidden rounded-md group`}
+                onMouseEnter={() => setHoveredId(image.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                onClick={() => {
+                  setSelectedImage(image);
+                  setIsOpen(true);
+                }}
+              >
+                <Image
+                  src={image.single_image_url}
+                  alt="Review image"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-md transition-opacity duration-300 group-hover:opacity-75"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {hoveredId === image.id && (
+                  <div className="absolute top-2 right-2 bg-white/80 rounded-full p-2 shadow-lg transform translate-y-1 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
+                    <Focus className="h-5 w-5 text-gray-800" />
+                  </div>
+                )}
+              </div>
+            </DialogTrigger>
+            <DialogContent
+              removeCloseButton={true}
+              className="p-0 bg-transparent border-none shadow-none w-screen h-screen"
+            >
+              {selectedImage && (
+                <div className="w-full h-full">
+                  <Image
+                    src={selectedImage.single_image_url}
+                    alt="Enlarged review image"
+                    layout="fill"
+                    objectFit="contain"
+                  />
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
         ))}
       </div>
 
@@ -192,12 +230,6 @@ function CustomerInfoSection({ review, date }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
-        {/* <Avatar className="h-12 w-12">
-          <AvatarFallback>
-            {review.customer_name[0].toUpperCase()}
-          </AvatarFallback>
-        </Avatar> */}
-
         <div className="text-sm">
           <div className="flex gap-1 items-center">
             <div className="flex gap-[6px]">
