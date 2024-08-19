@@ -196,6 +196,7 @@ function ReviewImages({ images }) {
                 )}
               </div>
             </DialogTrigger>
+            
             <DialogContent
               removeCloseButton={true}
               className="p-0 bg-transparent border-none shadow-none w-screen h-screen"
