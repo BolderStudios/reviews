@@ -17,6 +17,7 @@ import { Copy, ArrowUpRightIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
 
 export function ReviewInsights({ review }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -133,6 +134,9 @@ export function ReviewInsights({ review }) {
               reviewData={reviewData}
               highlightText={highlightText}
             />
+            {reviewData.review_images.length > 0 && (
+              <ReviewImages images={reviewData?.review_images} />
+            )}
             <DetailedAspectsTable aspects={reviewData?.detailed_aspects} />
             <NeedsImprovements improvements={reviewData?.needs_improvement} />
             <div className="pt-4">
@@ -152,6 +156,31 @@ export function ReviewInsights({ review }) {
         )}
       </SheetContent>
     </Sheet>
+  );
+}
+
+function ReviewImages({ images }) {
+  console.log("Images", images);
+  return (
+    <div className="relative">
+      <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+        {images.map((image) => (
+          <div key={image.id} className="relative w-48 h-32 flex-shrink-0">
+            <Image
+              src={image.single_image_url}
+              alt="Review image"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-md"
+            />
+          </div>
+        ))}
+      </div>
+
+      {images.length > 3 && (
+        <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+      )}
+    </div>
   );
 }
 

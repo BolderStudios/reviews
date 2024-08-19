@@ -29,6 +29,7 @@ export async function getAllReviewData(reviewId) {
   await fetchData("product_service_feedback", "product_service_feedback");
   await fetchData("keywords", "keywords");
   await fetchData("needs_improvement", "needs_improvement");
+  await fetchData("review_images", "review_images");
 
   //   await fetchData("business_categories", "business_categories");
   //   await fetchData("staff_mentions", "staff_mentions");
