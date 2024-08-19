@@ -66,8 +66,6 @@ export function UpdateLocation({ selectedLocation }) {
   const [locationData, setLocationData] = useState(null);
   const router = useRouter();
 
-  console.log("selectedLocation", selectedLocation);
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -177,39 +175,50 @@ export function UpdateLocation({ selectedLocation }) {
 
       <DialogContent className="sm:max-w-[550px] h-fit">
         <div>
-          <img
-            src={selectedLocation.google_maps_main_image_url}
-            alt="Google Business Profile Image"
-            className="max-w-full h-40 w-full object-cover rounded-lg"
-          />
+          {selectedLocation.google_maps_main_image_url === null ? (
+            <div className="max-w-full h-40 w-full rounded-lg flex items-center justify-center border">
+              <p className="text-sm text-stone-500 text-center px-24">
+                Missing Main Profile Image. Update your Google Business Profile.
+              </p>
+            </div>
+          ) : (
+            <img
+              src={selectedLocation.google_maps_main_image_url}
+              alt="Google Business Profile Image"
+              className="max-w-full h-40 w-full object-cover rounded-lg"
+            />
+          )}
         </div>
         <DialogHeader>
-          <DialogTitle className="mb-3">
-            {locationData?.organization_name}
-          </DialogTitle>
-          <DialogDescription className="flex flex-col gap-2">
-            <div className="flex items-center gap-[6px]">
-              <MapPin size={16} />
-              <span>{locationData?.address}</span>
-            </div>
+          {selectedLocation.google_maps_main_image_url === null ? null : (
+            <>
+              <DialogTitle className="mb-3">
+                {locationData?.organization_name}
+              </DialogTitle>
+              <DialogDescription className="flex flex-col gap-2">
+                <div className="flex items-center gap-[6px]">
+                  <MapPin size={16} />
+                  <span>{locationData?.address}</span>
+                </div>
 
-            <div className="flex items-center gap-[6px]">
-              <Phone size={16} />
-              <span>+1 {locationData?.business_phone_number}</span>
-            </div>
+                <div className="flex items-center gap-[6px]">
+                  <Phone size={16} />
+                  <span>+1 {locationData?.business_phone_number}</span>
+                </div>
 
-            <div className="flex items-center gap-[6px]">
-              <Globe size={16} />
-              <Link className="text-blue-500" href={locationData?.business_url}>
-                {locationData?.business_url.split("/")[2]}
-              </Link>
-            </div>
-          </DialogDescription>
+                <div className="flex items-center gap-[6px]">
+                  <Globe size={16} />
+                  <Link
+                    className="text-blue-500"
+                    href={locationData?.business_url}
+                  >
+                    {locationData?.business_url.split("/")[2]}
+                  </Link>
+                </div>
+              </DialogDescription>
+            </>
+          )}
         </DialogHeader>
-
-        <div>
-
-        </div>
 
         <Form {...form}>
           <form
