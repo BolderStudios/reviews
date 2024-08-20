@@ -6,6 +6,7 @@ import { Inter as FontSans } from "next/font/google";
 import { cn } from "../lib/utils";
 import { Toaster } from "sonner";
 import SignedInPages from "@/components/SignedInPages";
+import { Analytics } from '@vercel/analytics/react';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -31,11 +32,15 @@ export default async function RootLayout({ children }) {
           <main className="h-screen flex flex-col relative overflow-y-hidden">
             <SignedIn>
               {children}
+              <Analytics />
               {/* <SignedInPages>{children}</SignedInPages> */}
             </SignedIn>
 
             <SignedOut>
-              <div className="flex-grow relative">{children}</div>
+              <div className="flex-grow relative">
+                {children}
+                <Analytics />
+              </div>
             </SignedOut>
 
             <Toaster richColors />

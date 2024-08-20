@@ -128,50 +128,53 @@ export function AddEmailTemplate() {
 
                         <div>
                             {/* Step 1 */}
-                            <div className="flex flex-col gap-6 mt-4">
-                                <DialogTitle className="text-xl font-semibold">Pick a template or write a message</DialogTitle>
+                            <div>
+                                <div className="flex flex-col gap-6 mt-4">
+                                    <DialogTitle className="text-xl font-semibold">Pick a template or write a message</DialogTitle>
 
-                                {/* Select Templates */}
-                                <div>
-                                    <p className="text-sm text-stone-600 font-medium">Select a template</p>
+                                    {/* Select Templates */}
+                                    <div>
+                                        <p className="text-sm text-stone-600 font-medium">Select a template</p>
 
-                                    {/* List of tempaltes */}
-                                    <div className="flex items-center gap-3 mt-2 text-stone-500 text-sm group">
-                                        <div onClick={() => handleTemplateChange(0)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Default" ? "bg-stone-100 text-blue-500" : ""}`}>
-                                            <span>Default</span >
+                                        {/* List of tempaltes */}
+                                        <div className="flex items-center gap-3 mt-2 text-stone-500 text-sm group">
+                                            <div onClick={() => handleTemplateChange(0)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Default" ? "bg-stone-100 text-blue-500" : ""}`}>
+                                                <span>Default</span >
+                                            </div>
+                                            <div onClick={() => handleTemplateChange(1)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Short" ? "bg-stone-100 text-blue-500" : ""}`}>
+                                                <span>Short</span>
+                                            </div>
+                                            <div onClick={() => handleTemplateChange(2)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Friendly" ? "bg-stone-100 text-blue-500" : ""}`}>
+                                                <span>Friendly</span>
+                                            </div>
+                                            <div onClick={() => handleTemplateChange(3)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Formal" ? "bg-stone-100 text-blue-500" : ""}`}>
+                                                <span>Formal</span>
+                                            </div>
                                         </div>
-                                        <div onClick={() => handleTemplateChange(1)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Short" ? "bg-stone-100 text-blue-500" : ""}`}>
-                                            <span>Short</span>
+                                    </div>
+
+                                    {/* Form to Add Subject and Body Message */}
+                                    <div className="flex flex-col gap-6">
+                                        <div className="flex flex-col gap-3">
+                                            <Label htmlFor="subject">Subject</Label>
+                                            <Input id="subject" type="text" placeholder="Enter subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
                                         </div>
-                                        <div onClick={() => handleTemplateChange(2)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Friendly" ? "bg-stone-100 text-blue-500" : ""}`}>
-                                            <span>Friendly</span>
-                                        </div>
-                                        <div onClick={() => handleTemplateChange(3)} className={`px-4 py-2 cursor-pointer rounded-md border border-stone-200 font-medium ${currentTemplate?.name === "Formal" ? "bg-stone-100 text-blue-500" : ""}`}>
-                                            <span>Formal</span>
+
+                                        <div className="flex flex-col gap-3">
+                                            <Label htmlFor="message">Message</Label>
+                                            <Textarea className="min-h-[200px]" id="message" placeholder="Enter message" value={message} onChange={(e) => setMessage(e.target.value)} />
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Form to Add Subject and Body Message */}
-                                <div className="flex flex-col gap-6">
-                                    <div className="flex flex-col gap-3">
-                                        <Label htmlFor="subject">Subject</Label>
-                                        <Input id="subject" type="text" placeholder="Enter subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
-                                    </div>
-
-                                    <div className="flex flex-col gap-3">
-                                        <Label htmlFor="message">Message</Label>
-                                        <Textarea className="min-h-[200px]" id="message" placeholder="Enter message" value={message} onChange={(e) => setMessage(e.target.value)} />
-                                    </div>
+                                {/* Supported variables */}
+                                <div className="mt-1">
+                                    <span className="text-sm text-stone-600 font-medium">
+                                        Supported variables: <span className="text-blue-500 font-medium">name</span>, <span className="text-blue-500 font-medium">first_name</span>.
+                                    </span>
                                 </div>
                             </div>
 
-                            {/* Supported variables */}
-                            <div className="mt-1">
-                                <span className="text-sm text-stone-600 font-medium">
-                                    Supported variables: <span className="text-blue-500 font-medium">name</span>, <span className="text-blue-500 font-medium">first_name</span>.
-                                </span>
-                            </div>
 
                             {/* Move Forward Button */}
                             <DialogFooter className="mt-6">
@@ -211,8 +214,8 @@ export function AddEmailTemplate() {
                             </div>
 
                             {/* Email body */}
-                            <div className="bg-stone-100 px-12 py-16 h-full rounded-b-lg">
-                                <div className="flex flex-col items-center justify-center p-6 border rounded-lg">
+                            <div className="bg-stone-50 px-12 py-16 h-full rounded-b-lg">
+                                <div className="flex flex-col items-center justify-center p-6 border rounded-lg bg-white">
                                     {/* Message must have indentation */}
                                     <p className="text-sm text-stone-950 font-sm whitespace-pre-wrap font-medium" style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>
                                         {message.split('\n').map((line, index) => (
