@@ -16,6 +16,7 @@ import {
   Users,
   ArrowLeft,
   Loader,
+  Text,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Buttons/button";
@@ -108,10 +109,9 @@ export default function SidebarNavigation({
 
   const activeLinkClass = useCallback(
     (href) =>
-      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${
-        currentPathname === href.split("/")[1]
-          ? "bg-muted text-primary"
-          : "text-muted-foreground"
+      `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${currentPathname === href.split("/")[1]
+        ? "bg-muted text-primary"
+        : "text-muted-foreground"
       } group`,
     [currentPathname]
   );
@@ -152,7 +152,7 @@ export default function SidebarNavigation({
         label: "Product Feedback",
         hasLocationId: true,
       },
-      { href: "funnels", icon: Star, label: "Funnels", hasLocationId: true },
+      { href: "web-forms", icon: Text, label: "Forms", hasLocationId: true },
       {
         href: "customers",
         icon: Users,
@@ -277,7 +277,7 @@ export default function SidebarNavigation({
                       href={fullHref}
                       className={cn(
                         activeLinkClass(`/${href}`),
-                         currentPathname === href ? "pointer-events-none" : isLoading ? "pointer-events-none opacity-50" : "cursor-pointer"
+                        currentPathname === href ? "pointer-events-none" : isLoading ? "pointer-events-none opacity-50" : "cursor-pointer"
                       )}
                       onClick={(e) => {
                         if (isNavigating || isLoading) {

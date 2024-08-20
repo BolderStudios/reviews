@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Card,
   CardDescription,
@@ -17,6 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AddEmailTemplate } from "@/components/ui/WebForms/AddEmailTemplate";
 
 export default function Funnels({ selectedLocation, isFetching }) {
   let subdomain;
@@ -59,7 +59,8 @@ export default function Funnels({ selectedLocation, isFetching }) {
     <SignedInLayout>
       <div className="px-4 mt-3">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="font-bold text-2xl">Templates</h2>
+          <h2 className="font-bold text-2xl">Forms</h2>
+          <AddEmailTemplate />
         </div>
 
         <div className="flex items-center gap-4 flex-wrap">

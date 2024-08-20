@@ -43,7 +43,6 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import Link from "next/link";
 
 const positions = [
@@ -360,7 +359,7 @@ export function UpdateLocation({ selectedLocation }) {
                     Updating...
                   </>
                 ) : (
-                  "Update Location"
+                  "Update Organization"
                 )}
               </Button>
 
@@ -395,7 +394,7 @@ export function UpdateLocation({ selectedLocation }) {
                     Deleting...
                   </>
                 ) : (
-                  "Delete Location"
+                  "Delete Organization"
                 )}
               </Button>
             </div>

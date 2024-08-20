@@ -31,9 +31,9 @@ const DialogOverlay = React.forwardRef(
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef(
-  ({ className, children, removeCloseButton = false, ...props }, ref) => (
+  ({ className, children, removeCloseButton = false, removeOverlay = false, ...props }, ref) => (
     <DialogPortal>
-      <DialogOverlay lightOverlay={removeCloseButton} />
+      {removeOverlay ? null : <DialogOverlay lightOverlay={removeCloseButton} />}
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
@@ -51,7 +51,7 @@ const DialogContent = React.forwardRef(
         >
           <X
             className={`h-4 w-4 ${
-              removeCloseButton ? "text-stone-800" : "text-white"
+              removeCloseButton ? "text-white" : "text-black"
             }`}
           />
           <span className="sr-only">Close</span>

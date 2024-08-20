@@ -323,7 +323,7 @@ export async function addLocationFunc(formData, currentPath) {
       case "dashboard":
       case "keywords":
       case "employee_mentions":
-      case "funnels":
+      case "web-forms":
       case "customers":
       case "product_feedback":
       case "review_us_page":

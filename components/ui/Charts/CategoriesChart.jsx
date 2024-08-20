@@ -27,7 +27,7 @@ export function CategoriesChart({ categoriesChartData, categoriesCharConfig }) {
       <CardContent className="flex-grow flex flex-col p-0 overflow-hidden">
         <ChartContainer
           config={categoriesCharConfig}
-          className="flex-grow overflow-x-auto"
+          className="flex-grow overflow-x-auto scrollbar-hide"
         >
           <div style={{ width: chartWidth, height: "100%" }}>
             <ResponsiveContainer width="100%" height="100%">
