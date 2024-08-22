@@ -26,20 +26,22 @@ import ReactMarkdown from 'react-markdown'
 import { UploadLogo } from "@/components/ui/WebForms/UploadLogo"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import defaultLogo from "@/public/logoBlack.png";
 
 const form_details = {
     title: "Share a testimonial!",
     intro: "Do you love using our product? We'd love to hear about it!\n\n" +
         "- Share your experience with a quick video or testimonial\n" +
         "- Recording a video? Don't forget to smile 😊",
-    logoUrl: "https://pextrfkqkyzhumavhpqd.supabase.co/storage/v1/object/public/logos/public/default/logo.png?t=2024-08-22T05%3A59%3A29.786Z"
+    logoUrl: process.env.NEXT_PUBLIC_REDIRECT_URL.startsWith("localhost") ? "http://127.0.0.1:54321/storage/v1/object/public/logos/public/default/default_logo.png?t=2024-08-22T02%3A53%3A54.780Z"
+        : "https://pextrfkqkyzhumavhpqd.supabase.co/storage/v1/object/public/logos/public/default/logo.png?t=2024-08-22T05%3A59%3A29.786Z"
 }
 
 export function AddWebForm({ selectedLocation }) {
     const router = useRouter();
     const [welcomePageTitle, setWelcomePageTitle] = useState(form_details.title)
     const [welcomePageIntro, setWelcomePageIntro] = useState(form_details.intro)
-    const [logoUrl, setLogoUrl] = useState(selectedLocation?.stored_logo_url || form_details.logoUrl)
+    const [logoUrl, setLogoUrl] = useState(selectedLocation?.stored_logo_url === null || selectedLocation?.stored_logo_url === undefined ? defaultLogo : selectedLocation?.stored_logo_url)
 
     useEffect(() => {
         router.refresh();
@@ -126,7 +128,9 @@ export function AddWebForm({ selectedLocation }) {
                     <div className="w-1/2 bg-gray-100 flex items-center justify-center h-full p-6">
                         <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-md">
                             <div className="flex items-center justify-start mb-4">
-                                <img src={logoUrl} alt="Company Logo" className="w-14 h-full object-cover" />
+                                <Image src={logoUrl} alt="Company Logo" width={99}
+                                    height={10}
+                                    priority />
                             </div>
 
                             <h3 className="text-xl font-semibold mb-4">{welcomePageTitle}</h3>
