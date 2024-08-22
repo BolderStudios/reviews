@@ -194,7 +194,7 @@ export function UpdateLocation({ selectedLocation }) {
               <DialogTitle className="mb-3">
                 {locationData?.organization_name}
               </DialogTitle>
-              <DialogDescription className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 text-sm text-stone-600 group">
                 <div className="flex items-center gap-[6px]">
                   <MapPin size={16} />
                   <span>{locationData?.address}</span>
@@ -214,7 +214,7 @@ export function UpdateLocation({ selectedLocation }) {
                     {locationData?.business_url.split("/")[2]}
                   </Link>
                 </div>
-              </DialogDescription>
+              </div>
             </>
           )}
         </DialogHeader>
