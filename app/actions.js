@@ -50,21 +50,82 @@ function sanitizeFileName(
   fileNamePrefix
 ) {
   const formattedDate = formatDate(new Date());
-  const baseName = fileName.replace(/\.[^/.]+$/, ""); // Remove extension
-  const extension = fileName.split(".").pop(); // Get extension
+  const extension = fileName.split(".").pop();
 
   if (uploadType === "multiple") {
     const uniqueSuffix = uuidv4();
     if (index !== null) {
-      return `${label}/${userId}/${fileNamePrefix}_${
-        index + 1
-      }_${formattedDate}_${uniqueSuffix}.${extension}`;
+      return `${label}/${userId}/${fileNamePrefix}_${index + 1
+        }_${formattedDate}_${uniqueSuffix}.${extension}`;
     }
     return `${label}/${userId}/${fileNamePrefix}_${formattedDate}.${extension}`;
   }
 
   // For single file uploads
   return `${label}/${userId}/${fileNamePrefix}_${formattedDate}.${extension}`;
+}
+
+function sanitizeLogoName(folderName, dbFileName, fileName, userId) {
+  const formattedDate = formatDate(new Date());
+  const extension = fileName.split(".").pop();
+
+  return `${folderName}/${userId}/${dbFileName}_${formattedDate}.${extension}`;
+}
+
+export async function uploadLogo(formData, locationId) {
+  const { userId } = await auth();
+
+
+  const file = formData.get("file");
+  const sanitizedFileName = sanitizeLogoName(
+    "logos",
+    "company_logo",
+    file.name,
+    userId,
+  );
+
+  try {
+    // Use upsert instead of upload
+    const { data, error } = await supabase.storage
+      .from("logos")
+      .upload(`public/${sanitizedFileName}`, file, { upsert: true });
+
+    if (error) {
+      console.error(`Upload error: ${error.message}`);
+      return { message: "Failed to upload file", success: false };
+    }
+
+    console.log("File uploaded successfully");
+
+    // Get the URL of the uploaded logo
+    const { data: logoData, error: logoError } = await supabase.storage
+      .from("logos")
+      .getPublicUrl(`public/${sanitizedFileName}`);
+
+    console.log("logoData —> ", logoData.publicUrl)
+
+    const { data: updateLocation, error: updateLocationError } = await supabase.from("locations").update({ stored_logo_url: logoData.publicUrl }).eq("id", locationId)
+
+    if (updateLocationError) {
+      console.error(`Error updating location: ${updateLocationError.message}`);
+      return { message: "Failed to update location", success: false, error: updateLocationError.message };
+    }
+
+    if (logoError) {
+      console.error(`Error getting public URL: ${logoError.message}`);
+      return { message: "Failed to get public URL", success: false, error: logoError.message };
+    }
+
+    return {
+      message: "Uploaded file successfully",
+      success: true,
+      file_name: file.name,
+      logo_url: logoData.publicUrl,
+    };
+  } catch (e) {
+    console.error(`Exception: ${e.message}`);
+    return { message: "Failed to upload file", success: false, error: e.message };
+  }
 }
 
 export async function uploadFile(

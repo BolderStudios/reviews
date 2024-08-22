@@ -246,41 +246,6 @@ export type Database = {
           },
         ]
       }
-      grouped_mentions: {
-        Row: {
-          created_at: string
-          id: string
-          label: string | null
-          location_id: string | null
-          supabase_attribute: string | null
-          total_count: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          label?: string | null
-          location_id?: string | null
-          supabase_attribute?: string | null
-          total_count?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string | null
-          location_id?: string | null
-          supabase_attribute?: string | null
-          total_count?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_grouped_mentions_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       highlighted_words: {
         Row: {
           created_at: string
@@ -397,6 +362,7 @@ export type Database = {
           name_of_contact: string
           organization_name: string
           position_of_contact: string
+          stored_logo_url: string | null
           user_id: string
           yelp_profile_url: string | null
         }
@@ -421,6 +387,7 @@ export type Database = {
           name_of_contact: string
           organization_name: string
           position_of_contact: string
+          stored_logo_url?: string | null
           user_id: string
           yelp_profile_url?: string | null
         }
@@ -445,6 +412,7 @@ export type Database = {
           name_of_contact?: string
           organization_name?: string
           position_of_contact?: string
+          stored_logo_url?: string | null
           user_id?: string
           yelp_profile_url?: string | null
         }
@@ -1135,6 +1103,121 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      templates_email: {
+        Row: {
+          company_logo_url: string | null
+          created_at: string
+          id: string
+          location_id: string | null
+          message: string | null
+          subject_line: string | null
+          testimonial_page_url: string | null
+        }
+        Insert: {
+          company_logo_url?: string | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          message?: string | null
+          subject_line?: string | null
+          testimonial_page_url?: string | null
+        }
+        Update: {
+          company_logo_url?: string | null
+          created_at?: string
+          id?: string
+          location_id?: string | null
+          message?: string | null
+          subject_line?: string | null
+          testimonial_page_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_email_templates_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      templates_web: {
+        Row: {
+          background_color: string | null
+          can_redirect: boolean | null
+          created_at: string
+          customer_name: string | null
+          email_address: string | null
+          id: string
+          is_collecting_email: boolean | null
+          is_collecting_phone: boolean | null
+          is_email_address_required: boolean | null
+          is_existing_customer: boolean | null
+          is_phone_number_required: boolean | null
+          location_id: string | null
+          phone_number: string | null
+          primary_color: string | null
+          redirect_link: string | null
+          response_page_prompt: string | null
+          response_page_title: string | null
+          template_id: string | null
+          welcome_page_intro_message: string | null
+          welcome_page_title: string | null
+        }
+        Insert: {
+          background_color?: string | null
+          can_redirect?: boolean | null
+          created_at?: string
+          customer_name?: string | null
+          email_address?: string | null
+          id?: string
+          is_collecting_email?: boolean | null
+          is_collecting_phone?: boolean | null
+          is_email_address_required?: boolean | null
+          is_existing_customer?: boolean | null
+          is_phone_number_required?: boolean | null
+          location_id?: string | null
+          phone_number?: string | null
+          primary_color?: string | null
+          redirect_link?: string | null
+          response_page_prompt?: string | null
+          response_page_title?: string | null
+          template_id?: string | null
+          welcome_page_intro_message?: string | null
+          welcome_page_title?: string | null
+        }
+        Update: {
+          background_color?: string | null
+          can_redirect?: boolean | null
+          created_at?: string
+          customer_name?: string | null
+          email_address?: string | null
+          id?: string
+          is_collecting_email?: boolean | null
+          is_collecting_phone?: boolean | null
+          is_email_address_required?: boolean | null
+          is_existing_customer?: boolean | null
+          is_phone_number_required?: boolean | null
+          location_id?: string | null
+          phone_number?: string | null
+          primary_color?: string | null
+          redirect_link?: string | null
+          response_page_prompt?: string | null
+          response_page_title?: string | null
+          template_id?: string | null
+          welcome_page_intro_message?: string | null
+          welcome_page_title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_web_templates_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
             referencedColumns: ["id"]
           },
         ]

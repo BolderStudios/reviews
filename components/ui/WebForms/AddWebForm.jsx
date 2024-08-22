@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/Buttons/button"
-import { PlusIcon, PaintBucket, Hand } from "lucide-react"
+import { PlusIcon, PaintBucket, Hand, PenLine } from "lucide-react"
 import { Card } from "@/components/ui/card";
 import {
     Accordion,
@@ -23,17 +23,30 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import ReactMarkdown from 'react-markdown'
+import { UploadLogo } from "@/components/ui/WebForms/UploadLogo"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 const form_details = {
     title: "Share a testimonial!",
     intro: "Do you love using our product? We'd love to hear about it!\n\n" +
-           "- Share your experience with a quick video or testimonial\n" +
-           "- Recording a video? Don't forget to smile 😊",
+        "- Share your experience with a quick video or testimonial\n" +
+        "- Recording a video? Don't forget to smile 😊",
+    logoUrl: "http://127.0.0.1:54321/storage/v1/object/public/logos/public/default/default_logo.png?t=2024-08-22T02%3A53%3A54.780Z"
 }
 
-export function AddWebForm() {
+export function AddWebForm({ selectedLocation }) {
+    const router = useRouter();
     const [welcomePageTitle, setWelcomePageTitle] = useState(form_details.title)
     const [welcomePageIntro, setWelcomePageIntro] = useState(form_details.intro)
+    const [logoUrl, setLogoUrl] = useState(selectedLocation?.stored_logo_url || form_details.logoUrl)
+
+    console.log("logoUrl —> ", logoUrl)
+    console.log("selectedLocation —> ", selectedLocation)
+
+    useEffect(() => {
+        router.refresh();
+    }, [logoUrl])
 
     return (
         <Dialog>
@@ -62,8 +75,12 @@ export function AddWebForm() {
                                             <span>Design</span>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent>
-                                        Yes. It adheres to the WAI-ARIA design pattern.
+                                    <AccordionContent className="flex flex-col gap-4 p-1">
+                                        {/* Upload logo */}
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="text-sm font-medium text-stone-600">Logo</Label>
+                                            <UploadLogo setLogoUrl={setLogoUrl} locationId={selectedLocation.id} />
+                                        </div>
                                     </AccordionContent>
                                 </AccordionItem>
 
@@ -111,22 +128,31 @@ export function AddWebForm() {
                     {/* Preview Section */}
                     <div className="w-1/2 bg-gray-100 flex items-center justify-center h-full p-6">
                         <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-md">
+                            <div className="flex items-center justify-start mb-4">
+                                <Image src={logoUrl} alt="Logo" width={45} height={100} />
+                            </div>
+
                             <h3 className="text-xl font-semibold mb-4">{welcomePageTitle}</h3>
-                            
-                            <ReactMarkdown 
-                                className="prose prose-sm max-w-none text-stone-600 break-words"
+
+                            <ReactMarkdown
+                                className="prose prose-sm max-w-none text-stone-600 break-words text-[14px]"
                                 components={{
-                                    p: ({node, ...props}) => <p className="mb-4 last:mb-0 whitespace-pre-wrap" {...props} />,
-                                    h1: ({node, ...props}) => <h1 className="text-lg font-semibold mt-4 mb-2" {...props} />,
-                                    h2: ({node, ...props}) => <h2 className="text-md font-semibold mt-3 mb-2" {...props} />,
-                                    ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4" {...props} />,
-                                    ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-4" {...props} />,
-                                    li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                                    a: ({node, ...props}) => <a className="text-blue-600 hover:underline" {...props} />,
+                                    p: ({ node, ...props }) => <p className="mb-4 last:mb-0 whitespace-pre-wrap" {...props} />,
+                                    h1: ({ node, ...props }) => <h1 className="text-lg font-semibold mt-4 mb-2" {...props} />,
+                                    h2: ({ node, ...props }) => <h2 className="text-md font-semibold mt-3 mb-2" {...props} />,
+                                    ul: ({ node, ...props }) => <ul className="list-disc pl-5 mb-4" {...props} />,
+                                    ol: ({ node, ...props }) => <ol className="list-decimal pl-5 mb-4" {...props} />,
+                                    li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+                                    a: ({ node, ...props }) => <a className="text-blue-600 hover:underline" {...props} />,
                                 }}
                             >
                                 {welcomePageIntro}
                             </ReactMarkdown>
+
+                            <Button className="flex items-center gap-2 mt-6 w-full justify-center">
+                                <PenLine className="w-4 h-4" />
+                                <span>Write a testimonial</span>
+                            </Button>
                         </div>
                     </div>
                 </div>

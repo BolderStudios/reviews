@@ -136,7 +136,7 @@ export default function Funnels({ selectedLocation, isFetching }) {
               </CardHeader>
             </Card>
 
-            <AddEmailTemplate />
+            <AddEmailTemplate selectedLocation={selectedLocation} />
           </div>
         </div>
 
@@ -145,7 +145,7 @@ export default function Funnels({ selectedLocation, isFetching }) {
           <h2 className="font-bold text-2xl">Web Forms</h2>
 
           <div className="grid grid-cols-4 gap-4">
-            <AddWebForm />
+            <AddWebForm selectedLocation={selectedLocation} />
           </div>
         </div>
       </div>
