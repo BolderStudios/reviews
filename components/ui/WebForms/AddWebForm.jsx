@@ -41,9 +41,6 @@ export function AddWebForm({ selectedLocation }) {
     const [welcomePageIntro, setWelcomePageIntro] = useState(form_details.intro)
     const [logoUrl, setLogoUrl] = useState(selectedLocation?.stored_logo_url || form_details.logoUrl)
 
-    console.log("logoUrl —> ", logoUrl)
-    console.log("selectedLocation —> ", selectedLocation)
-
     useEffect(() => {
         router.refresh();
     }, [logoUrl])
@@ -129,7 +126,7 @@ export function AddWebForm({ selectedLocation }) {
                     <div className="w-1/2 bg-gray-100 flex items-center justify-center h-full p-6">
                         <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-md">
                             <div className="flex items-center justify-start mb-4">
-                                <Image src={logoUrl} alt="Logo" width={45} height={100} />
+                                <img src={logoUrl} alt="Company Logo" className="w-14 h-full object-cover" />
                             </div>
 
                             <h3 className="text-xl font-semibold mb-4">{welcomePageTitle}</h3>
