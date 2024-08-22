@@ -14,21 +14,27 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/Buttons/button"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, PaintBucket, Hand } from "lucide-react"
+import { Card } from "@/components/ui/card";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-    Card,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
+import ReactMarkdown from 'react-markdown'
+
+const form_details = {
+    title: "Share a testimonial!",
+    intro: "Do you love using our product? We'd love to hear about it!\n\n" +
+           "- Share your experience with a quick video or testimonial\n" +
+           "- Recording a video? Don't forget to smile 😊",
+}
 
 export function AddWebForm() {
+    const [welcomePageTitle, setWelcomePageTitle] = useState(form_details.title)
+    const [welcomePageIntro, setWelcomePageIntro] = useState(form_details.intro)
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -39,13 +45,89 @@ export function AddWebForm() {
                     </div>
                 </Card>
             </DialogTrigger>
+
             <DialogContent removeOverlay={true} className="w-screen h-screen max-w-full p-0 sm:rounded-none">
                 <div className="flex h-full">
-                    <div className="w-1/2 p-6 overflow-y-auto"></div>
+                    <div className="w-1/2 p-6">
+                        <DialogTitle>Testimonial Form</DialogTitle>
+
+                        {/* Form creation fields */}
+                        <div className="mt-6">
+                            <Accordion type="single" collapsible className="w-full">
+                                {/* Design */}
+                                <AccordionItem value="design">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-4">
+                                            <PaintBucket className="w-4 h-4" />
+                                            <span>Design</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        Yes. It adheres to the WAI-ARIA design pattern.
+                                    </AccordionContent>
+                                </AccordionItem>
+
+                                {/* Welcome Page */}
+                                <AccordionItem value="welcome_page">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-4">
+                                            <Hand className="w-4 h-4" />
+                                            <span>Welcome Page</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="flex flex-col gap-4 p-1">
+                                        {/* Title input */}
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="text-sm font-medium text-stone-600">Welcome Page Title</Label>
+                                            <Input type="text" placeholder="Enter title" value={welcomePageTitle} onChange={(e) => setWelcomePageTitle(e.target.value)} />
+                                        </div>
+
+                                        {/* Intro input */}
+                                        <div className="flex flex-col gap-2">
+                                            <Label className="text-sm font-medium text-stone-600">Introductory Message</Label>
+                                            <Textarea placeholder="Enter intro" value={welcomePageIntro} onChange={(e) => setWelcomePageIntro(e.target.value)} className="min-h-[200px]" />
+                                            <span className="text-xs text-stone-600 font-medium">Markdown supported</span>
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+
+                                {/* Response Page */}
+                                <AccordionItem value="response_page">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-4">
+                                            <PaintBucket className="w-4 h-4" />
+                                            <span>Response Page</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                        Yes. It&apos;s animated by default, but you can disable it if you
+                                        prefer.
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </div>
+                    </div>
 
                     {/* Preview Section */}
-                    <div className="w-1/2 bg-gray-100 p-6 flex flex-col justify-between">
-                        <h3 className="text-lg font-semibold mb-4">Preview</h3>
+                    <div className="w-1/2 bg-gray-100 flex items-center justify-center h-full p-6">
+                        <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-md">
+                            <h3 className="text-xl font-semibold mb-4">{welcomePageTitle}</h3>
+                            
+                            <ReactMarkdown 
+                                className="prose prose-sm max-w-none text-stone-600 break-words"
+                                components={{
+                                    p: ({node, ...props}) => <p className="mb-4 last:mb-0 whitespace-pre-wrap" {...props} />,
+                                    h1: ({node, ...props}) => <h1 className="text-lg font-semibold mt-4 mb-2" {...props} />,
+                                    h2: ({node, ...props}) => <h2 className="text-md font-semibold mt-3 mb-2" {...props} />,
+                                    ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4" {...props} />,
+                                    ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-4" {...props} />,
+                                    li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                                    a: ({node, ...props}) => <a className="text-blue-600 hover:underline" {...props} />,
+                                }}
+                            >
+                                {welcomePageIntro}
+                            </ReactMarkdown>
+                        </div>
                     </div>
                 </div>
             </DialogContent>
