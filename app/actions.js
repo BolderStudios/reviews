@@ -75,11 +75,11 @@ function sanitizeLogoName(folderName, dbFileName, fileName, userId) {
 export async function uploadLogo(formData, locationId) {
   const { userId } = await auth();
 
-
   const file = formData.get("file");
+  const timestamp = Date.now(); // Add a timestamp
   const sanitizedFileName = sanitizeLogoName(
     "logos",
-    "company_logo",
+    `company_logo_${timestamp}`, // Add timestamp to file name
     file.name,
     userId,
   );
@@ -104,7 +104,13 @@ export async function uploadLogo(formData, locationId) {
 
     console.log("logoData —> ", logoData.publicUrl)
 
-    const { data: updateLocation, error: updateLocationError } = await supabase.from("locations").update({ stored_logo_url: logoData.publicUrl }).eq("id", locationId)
+    // Update the location with the new logo URL
+    const { data: updateLocation, error: updateLocationError } = await supabase
+      .from("locations")
+      .update({ 
+        stored_logo_url: logoData.publicUrl,
+      })
+      .eq("id", locationId);
 
     if (updateLocationError) {
       console.error(`Error updating location: ${updateLocationError.message}`);
