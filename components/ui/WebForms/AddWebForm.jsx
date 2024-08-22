@@ -32,8 +32,7 @@ const form_details = {
     intro: "Do you love using our product? We'd love to hear about it!\n\n" +
         "- Share your experience with a quick video or testimonial\n" +
         "- Recording a video? Don't forget to smile 😊",
-    logoUrl: process.env.NEXT_PUBLIC_REDIRECT_URL.startsWith("localhost") ? "http://127.0.0.1:54321/storage/v1/object/public/logos/public/default/default_logo.png?t=2024-08-22T02%3A53%3A54.780Z"
-        : "https://pextrfkqkyzhumavhpqd.supabase.co/storage/v1/object/public/logos/public/default/logo.png?t=2024-08-22T05%3A59%3A29.786Z"
+    logoUrl: "https://pextrfkqkyzhumavhpqd.supabase.co/storage/v1/object/public/logos/public/default/logo.png?t=2024-08-22T05%3A59%3A29.786Z"
 }
 
 export function AddWebForm({ selectedLocation }) {
