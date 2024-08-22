@@ -128,9 +128,9 @@ export function AddWebForm({ selectedLocation }) {
                     <div className="w-1/2 bg-gray-100 flex items-center justify-center h-full p-6">
                         <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-md">
                             <div className="flex items-center justify-start mb-4">
-                                <Image src={logoUrl} alt="Company Logo" width={99}
+                                {selectedLocation?.stored_logo_url === null || selectedLocation?.stored_logo_url === undefined ? <Image src={logoUrl} alt="Company Logo" width={99}
                                     height={10}
-                                    priority />
+                                    priority /> : <img src={selectedLocation?.stored_logo_url} alt="Company Logo" className="w-14 h-full object-cover" />}
                             </div>
 
                             <h3 className="text-xl font-semibold mb-4">{welcomePageTitle}</h3>
