@@ -32,7 +32,8 @@ const form_details = {
     intro: "Do you love using our product? We'd love to hear about it!\n\n" +
         "- Share your experience with a quick video or testimonial\n" +
         "- Recording a video? Don't forget to smile 😊",
-    logoUrl: "http://127.0.0.1:54321/storage/v1/object/public/logos/public/default/default_logo.png?t=2024-08-22T02%3A53%3A54.780Z"
+    logoUrl: process.env.NEXT_PUBLIC_REDIRECT_URL.startsWith("localhost") ? "http://127.0.0.1:54321/storage/v1/object/public/logos/public/default/default_logo.png?t=2024-08-22T02%3A53%3A54.780Z"
+        : "https://pextrfkqkyzhumavhpqd.supabase.co/storage/v1/object/public/logos/public/default/logo.png?t=2024-08-22T05%3A59%3A29.786Z"
 }
 
 export function AddWebForm({ selectedLocation }) {
@@ -74,7 +75,7 @@ export function AddWebForm({ selectedLocation }) {
                                     </AccordionTrigger>
                                     <AccordionContent className="flex flex-col gap-4 p-1">
                                         {/* Upload logo */}
-                                        <div className="flex flex-col gap-2">
+                                        <div className="flex flex-col gap-2 pb-3">
                                             <Label className="text-sm font-medium text-stone-600">Logo</Label>
                                             <UploadLogo setLogoUrl={setLogoUrl} locationId={selectedLocation.id} />
                                         </div>
@@ -89,7 +90,7 @@ export function AddWebForm({ selectedLocation }) {
                                             <span>Welcome Page</span>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent className="flex flex-col gap-4 p-1">
+                                    <AccordionContent className="flex flex-col gap-4 px-1">
                                         {/* Title input */}
                                         <div className="flex flex-col gap-2">
                                             <Label className="text-sm font-medium text-stone-600">Welcome Page Title</Label>

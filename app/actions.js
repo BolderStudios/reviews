@@ -107,7 +107,7 @@ export async function uploadLogo(formData, locationId) {
     // Update the location with the new logo URL
     const { data: updateLocation, error: updateLocationError } = await supabase
       .from("locations")
-      .update({ 
+      .update({
         stored_logo_url: logoData.publicUrl,
       })
       .eq("id", locationId);
