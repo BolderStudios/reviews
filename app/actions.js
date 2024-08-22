@@ -687,6 +687,8 @@ export async function fetchSidebarLocations() {
   try {
     const { userId } = await auth();
 
+    console.log("User ID:", userId);
+
     const { data, error } = await supabase
       .from("users")
       .select("selected_location_id")

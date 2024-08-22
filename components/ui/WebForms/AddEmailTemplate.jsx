@@ -20,7 +20,13 @@ import {
     BreadcrumbList,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, PlusIcon } from "lucide-react";
+import {
+    Card,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 const templates = [
     {
@@ -101,7 +107,12 @@ export function AddEmailTemplate() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">Add Email Template</Button>
+                {/* <Button variant="outline">Add Email Template</Button> */}
+                <Card className="flex items-center justify-center w-full h-full cursor-pointer">
+                    <div className="flex items-center gap-2 border border-stone-200 rounded-2xl p-2">
+                        <PlusIcon className="w-4 h-4" />
+                    </div>
+                </Card>
             </DialogTrigger>
             <DialogContent removeOverlay={true} className="w-screen h-screen max-w-full p-0 sm:rounded-none">
                 <div className="flex h-full">

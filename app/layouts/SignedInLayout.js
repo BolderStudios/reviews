@@ -20,6 +20,7 @@ export function SignedInLayout({ children }) {
 
   const checkOnboardingStatus = useCallback(async () => {
     setLoading(true);
+    
     try {
       const onboardingData = await isOnboardingCompleteFunc();
 
