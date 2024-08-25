@@ -4,9 +4,6 @@ import React, { useState, useEffect } from "react"
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
@@ -42,10 +39,13 @@ export function AddWebForm({ selectedLocation }) {
     const [welcomePageTitle, setWelcomePageTitle] = useState(form_details.title)
     const [welcomePageIntro, setWelcomePageIntro] = useState(form_details.intro)
     const [logoUrl, setLogoUrl] = useState(selectedLocation?.stored_logo_url === null || selectedLocation?.stored_logo_url === undefined ? defaultLogo : selectedLocation?.stored_logo_url)
+    const [whatToShow, setWhatToShow] = useState("welcome_page")
 
     useEffect(() => {
         router.refresh();
     }, [logoUrl])
+
+
 
     return (
         <Dialog>
@@ -84,7 +84,7 @@ export function AddWebForm({ selectedLocation }) {
                                 </AccordionItem>
 
                                 {/* Welcome Page */}
-                                <AccordionItem value="welcome_page">
+                                <AccordionItem value="welcome_page" onClick={() => setWhatToShow("welcome_page")}>
                                     <AccordionTrigger>
                                         <div className="flex items-center gap-4">
                                             <Hand className="w-4 h-4" />
@@ -108,7 +108,7 @@ export function AddWebForm({ selectedLocation }) {
                                 </AccordionItem>
 
                                 {/* Response Page */}
-                                <AccordionItem value="response_page">
+                                <AccordionItem value="response_page" onClick={() => setWhatToShow("response_page")}>
                                     <AccordionTrigger>
                                         <div className="flex items-center gap-4">
                                             <PaintBucket className="w-4 h-4" />
@@ -125,7 +125,8 @@ export function AddWebForm({ selectedLocation }) {
                     </div>
 
                     {/* Preview Section */}
-                    <div className="w-1/2 bg-gray-100 flex items-center justify-center h-full p-6">
+                    {whatToShow === "response_page" && <h1>Response Page</h1>}
+                    {whatToShow === "welcome_page" && (<div className="w-1/2 bg-gray-100 flex items-center justify-center h-full p-6">
                         <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-md">
                             <div className="flex items-center justify-start mb-4">
                                 {selectedLocation?.stored_logo_url === null || selectedLocation?.stored_logo_url === undefined ? <Image src={logoUrl} alt="Company Logo" width={99}
@@ -155,7 +156,7 @@ export function AddWebForm({ selectedLocation }) {
                                 <span>Write a testimonial</span>
                             </Button>
                         </div>
-                    </div>
+                    </div>)}
                 </div>
             </DialogContent>
         </Dialog>
