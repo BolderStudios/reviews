@@ -95,8 +95,7 @@ export default clerkMiddleware(async (auth, req) => {
 
       if (!userId) {
         console.log("No user ID, redirecting to sign-in");
-        // I want to redirect to the main site url and not admin.localhost:3000
-        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/login`);
+        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/sign-in`);
       }
 
       // Add any additional admin-specific checks here if needed
