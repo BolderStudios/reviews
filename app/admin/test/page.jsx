@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 export default function Page() {
-  return <h1>Test Page</h1>;
+  return notFound();
 }

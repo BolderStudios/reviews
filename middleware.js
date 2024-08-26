@@ -22,8 +22,11 @@ const isProtectedRoute = createRouteMatcher([
 const isMainSite = (hostname) => {
   return (
     hostname === "localhost:3000" ||
+    hostname === "admin.localhost:3000" ||
     hostname === process.env.NEXT_PUBLIC_SITE_URL ||
+    hostname === `admin.${process.env.NEXT_PUBLIC_REDIRECT_URL}` ||
     hostname === "www.getbrandarmor.com" ||
+    hostname === "admin.getbrandarmor.com" ||
     hostname === "getbrandarmor.com"
   );
 };
