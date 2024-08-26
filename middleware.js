@@ -22,11 +22,8 @@ const isProtectedRoute = createRouteMatcher([
 const isMainSite = (hostname) => {
   return (
     hostname === "localhost:3000" ||
-    hostname === "admin.localhost:3000" ||
     hostname === process.env.NEXT_PUBLIC_SITE_URL ||
-    hostname === `admin.${process.env.NEXT_PUBLIC_REDIRECT_URL}` ||
     hostname === "www.getbrandarmor.com" ||
-    hostname === "admin.getbrandarmor.com" ||
     hostname === "getbrandarmor.com"
   );
 };
@@ -36,9 +33,8 @@ export default clerkMiddleware(async (auth, req) => {
     const url = req.nextUrl;
     let hostname = req.headers.get("host") || "";
     const searchParams = url.searchParams.toString();
-    const path = `${url.pathname}${
-      searchParams.length > 0 ? `?${searchParams}` : ""
-    }`;
+    const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ""
+      }`;
 
     // Check if it's an ngrok URL
     if (hostname.includes("ngrok-free.app")) {
@@ -87,21 +83,8 @@ export default clerkMiddleware(async (auth, req) => {
       } else {
         console.log("Non-protected route");
       }
-      
+
       return NextResponse.next();
-    }
-
-    // For subdomains, check if it's an admin subdomain
-    if (hostname.startsWith("admin.")) {
-      const { userId } = await auth();
-      console.log("protected admin route");
-
-      if (!userId) {
-        console.log("No user ID, redirecting to sign-in");
-        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/sign-in`);
-      }
-
-      // Add any additional admin-specific checks here if needed
     }
 
     // For other subdomains, rewrite to the dynamic route
