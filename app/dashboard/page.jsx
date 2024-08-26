@@ -1,35 +1,50 @@
-// @/app/dashboard/page.js
+'use client';
 
-import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 import supabase from "@/utils/supabaseClient";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
-export default async function Page({ params }) {
-  console.log("Dashboard page params:", params);
+export default function Page() {
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const { userId } = useAuth();
 
-  const { userId } = await auth();
+  console.log("userId", userId);
 
-  if (!userId) {
-    console.log("No userId, redirecting to sign-in");
-    redirect("/sign-in");
-  }
+  useEffect(() => {
+    async function checkUserAndRedirect() {
+      if (!userId) {
+        console.log("No userId, redirecting to sign-in");
+        router.push('/sign-in');
+        return;
+      }
 
-  const { data, error } = await supabase
-    .from("users")
-    .select("selected_location_id")
-    .eq("clerk_id", userId)
-    .single();
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("selected_location_id")
+          .eq("clerk_id", userId)
+          .single();
 
-  if (error) {
-    console.error("Error fetching user data:", error);
-    redirect("/error");
-  }
+        if (error) throw error;
 
-  if (!data || !data.selected_location_id) {
-    console.log("No selected location, redirecting to select-location");
-    redirect("/select-location");
-  }
+        if (!data || !data.selected_location_id) {
+          console.log("No selected location, redirecting to select-location");
+          // router.push('/select-location');
+        } else {
+          console.log("Redirecting to:", `/dashboard/${data.selected_location_id}`);
+          router.push(`/dashboard/${data.selected_location_id}`);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        // router.push('/error');
+      }
+    }
 
-  console.log("Redirecting to:", `/dashboard/${data.selected_location_id}`);
-  redirect(`/dashboard/${data.selected_location_id}`);
+    checkUserAndRedirect();
+  }, [userId, router]);
+
+  return <LoadingSpinner />;
 }
