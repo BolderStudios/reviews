@@ -51,9 +51,10 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.next();
     }
 
+
     // Check if it's localhost or the main site
     if (isMainSite(hostname)) {
-      if (isProtectedRoute(req)) {
+      if (isProtectedRoute(req) || hostname.startsWith("admin.")) {
         const { userId } = await auth();
 
         if (!userId) {
@@ -83,10 +84,25 @@ export default clerkMiddleware(async (auth, req) => {
       } else {
         console.log("Non-protected route");
       }
+      
       return NextResponse.next();
     }
 
-    // For subdomains, rewrite to the dynamic route
+    // For subdomains, check if it's an admin subdomain
+    if (hostname.startsWith("admin.")) {
+      const { userId } = await auth();
+      console.log("protected admin route");
+
+      if (!userId) {
+        console.log("No user ID, redirecting to sign-in");
+        // I want to redirect to the main site url and not admin.localhost:3000
+        return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/login`);
+      }
+
+      // Add any additional admin-specific checks here if needed
+    }
+
+    // For other subdomains, rewrite to the dynamic route
     console.log(`Rewriting to dynamic route: /${hostname}${path}`);
     return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
   } catch (error) {
