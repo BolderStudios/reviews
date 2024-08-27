@@ -24,7 +24,7 @@ export default function MainPage() {
                             </h1>
                         </div>
 
-                        <p className="text-stone-300 text-sm sm:text-base md:text-lg sm:px-16 md:px-24 lg:px-32 text-center leading-tight max-w-xs md:max-w-xl lg:max-w-2xl mx-auto line-clamp-2">
+                        <p className="text-stone-300 text-sm sm:text-base md:text-lg pl-[12px] pr-[12px] md:px-24 lg:px-32 text-center leading-tight max-w-xs md:max-w-xl lg:max-w-2xl mx-auto xs:line-clamp-2">
                             Secure loyal customers and increase revenue by offering prepaid credits
                         </p>
 
