@@ -29,7 +29,7 @@ export default async function RootLayout({ children }) {
             fontSans.variable
           )}
         >
-          <main className="h-screen flex flex-col relative overflow-y-hidden">
+          <main>
             <SignedIn>
               {children}
               <Analytics />
@@ -37,7 +37,7 @@ export default async function RootLayout({ children }) {
             </SignedIn>
 
             <SignedOut>
-              <div className="flex-grow relative">
+              <div>
                 {children}
                 <Analytics />
               </div>

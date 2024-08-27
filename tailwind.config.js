@@ -79,14 +79,19 @@ module.exports = {
           from: { transform: "translateY(8px)", opacity: "0" },
           to: { transform: "translateY(0px)", opacity: "1" },
         },
+        "zoom-in": {
+          from: { transform: "scale(1.2)", opacity: "0" },
+          to: { transform: "scale(1)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "file-add-up": "file-add-up 0.3s ease-out",
+        "zoom-in": "zoom-in 2s cubic-bezier(0.16, 1, 0.3, 1)",
       },
     },
   },
-  plugins: [require("tailwindcss-animate"),  require('tailwind-scrollbar-hide')],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 };

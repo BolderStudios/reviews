@@ -7,7 +7,6 @@ import supabase from "@/utils/supabaseClient";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function Page() {
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { userId } = useAuth();
 
