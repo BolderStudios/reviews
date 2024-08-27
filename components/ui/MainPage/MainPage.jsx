@@ -103,7 +103,7 @@ export default function MainPage() {
             </div>
 
             {/* Rest of the page content */}
-            {/* <div className="bg-white">
+            <div className="bg-white">
                 <div className="container mx-auto px-4 py-8">
                     <section className="my-8">
                         <h2 className="text-3xl font-bold mb-4">Mission Statement</h2>
@@ -112,7 +112,7 @@ export default function MainPage() {
                         </p>
                     </section>
                 </div>
-            </div> */}
+            </div>
         </div>
     )
 }
