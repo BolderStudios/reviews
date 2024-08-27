@@ -17,7 +17,7 @@ export default function MainPage() {
     const screenWidth = size.width;
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col bg-blue-50">
             {/* Hero section */}
             <div className="w-full relative min-h-[90vh] sm:min-h-screen overflow-hidden">
                 <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
@@ -99,7 +99,7 @@ export default function MainPage() {
             </div>
 
             {/* Rest of the page content */}
-            {/* <div className="bg-white">
+            <div>
                 <div className="container mx-auto px-4">
                     <section>
                         <h2 className="text-3xl font-bold mb-4">Mission Statement</h2>
@@ -108,7 +108,7 @@ export default function MainPage() {
                         </p>
                     </section>
                 </div>
-            </div> */}
+            </div>
         </div>
     )
 }
