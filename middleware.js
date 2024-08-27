@@ -53,7 +53,7 @@ export default clerkMiddleware(async (auth, req) => {
 
     // Check if it's localhost or the main site
     if (isMainSite(hostname)) {
-      if (isProtectedRoute(req) || hostname.startsWith("admin.")) {
+      if (isProtectedRoute(req)) {
         const { userId } = await auth();
 
         if (!userId) {
