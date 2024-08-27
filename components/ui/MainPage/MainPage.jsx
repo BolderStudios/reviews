@@ -19,7 +19,7 @@ export default function MainPage() {
     return (
         <div className="flex flex-col">
             {/* Hero section */}
-            <div className="w-full relative zoom-in h-[80vh] sm:h-screen overflow-hidden">
+            <div className="w-full relative zoom-in h-[90vh] sm:h-screen overflow-hidden">
                 <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
