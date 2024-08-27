@@ -64,6 +64,10 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        'logo-cloud': {
+       from: { transform: 'translateX(0)' },
+       to: { transform: 'translateX(calc(-100% - 4rem))' },
+     },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -91,6 +95,7 @@ module.exports = {
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "file-add-up": "file-add-up 0.3s ease-out",
         "zoom-in": "zoom-in 2s cubic-bezier(0.16, 1, 0.3, 1)",
+        'logo-cloud': 'logo-cloud 30s linear infinite',
       },
     },
   },
