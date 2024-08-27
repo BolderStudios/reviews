@@ -18,10 +18,10 @@ export default function MainPage() {
                 <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-                <div className="absolute inset-0 flex flex-col items-center justify-between px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col items-center justify-between px-4 sm:px-6 lg:px-8">
                     <div className="pt-4 flex items-center justify-between w-full z-10">
                         <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
-                        <Button variant="customOutline" className="h-[35px] px-2 border border-stone-300">
+                        <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300">
                             Get started
                         </Button>
                     </div>
