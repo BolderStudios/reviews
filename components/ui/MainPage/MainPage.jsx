@@ -12,9 +12,9 @@ export default function MainPage() {
                 <img src="/hero/hero-image-21.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-                <div className="absolute inset-0 flex flex-col items-center justify-between px-4 sm:px-6 lg:px-8 sm:gap-14">
+                <div className="absolute inset-0 flex flex-col items-center justify-between px-4 sm:px-6 lg:px-8">
                     <div className="pt-4">
-                        <img src="/logoWhite.png" alt="logo" className="w-16 h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
+                        <img src="/logoWhite.png" alt="logo" className="w-[72px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
                     </div>
 
                     <div className="h-full flex flex-col justify-center items-center">
