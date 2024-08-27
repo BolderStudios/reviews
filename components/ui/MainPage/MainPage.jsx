@@ -31,31 +31,31 @@ export default function MainPage() {
                     </div>
 
                     <div className="absolute inset-0 flex flex-col justify-center items-center">
-                        <div className="mb-4 flex items-center gap-3">
+                        <div className="mb-6 sm:mb-8 flex items-center justify-center gap-4">
                             <div className="flex -space-x-2">
-                                <Avatar className="w-8 h-8 border-2 border-white">
-                                    <AvatarImage src="/avatar1.jpg" alt="Avatar 1" />
+                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                    <AvatarImage src="/avatars/avatar1.jpg" className="object-cover" alt="Avatar 1" />
                                     <AvatarFallback>A1</AvatarFallback>
                                 </Avatar>
-                                <Avatar className="w-8 h-8 border-2 border-white">
-                                    <AvatarImage src="/avatar2.jpg" alt="Avatar 2" />
+                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                    <AvatarImage src="/avatars/avatar2.jpg" className="object-cover" alt="Avatar 2" />
                                     <AvatarFallback>A2</AvatarFallback>
                                 </Avatar>
-                                <Avatar className="w-8 h-8 border-2 border-white">
-                                    <AvatarImage src="/avatar3.jpg" alt="Avatar 3" />
+                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                    <AvatarImage src="/avatars/avatar3.jpg" className="object-cover" alt="Avatar 3" />
                                     <AvatarFallback>A3</AvatarFallback>
                                 </Avatar>
-                                <Avatar className="w-8 h-8 border-2 border-white">
-                                    <AvatarImage src="/avatar4.jpg" alt="Avatar 4" />
+                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                    <AvatarImage src="/avatars/avatar4.jpg" className="object-cover" alt="Avatar 4" />
                                     <AvatarFallback>A4</AvatarFallback>
                                 </Avatar>
-                                <Avatar className="w-8 h-8 border-2 border-white hidden sm:block">
-                                    <AvatarImage src="/avatar5.jpg" alt="Avatar 5" />
+                                <Avatar className={`w-8 h-8 sm:w-11 sm:h-11 ${screenWidth >= 400 ? "block" : "hidden"}`}>
+                                    <AvatarImage src="/avatars/avatar5.jpg" className="object-cover" alt="Avatar 5" />
                                     <AvatarFallback>A5</AvatarFallback>
                                 </Avatar>
                             </div>
 
-                            <div className="flex flex-col items-start">
+                            <div className="flex flex-col items-start justify-center gap-1">
                                 <div className="flex items-center justify-center">
                                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
                                     <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
@@ -65,7 +65,7 @@ export default function MainPage() {
                                 </div>
 
                                 <p className={`text-stone-300 font-medium ${screenWidth <= 700 ? "text-xs" : "text-sm"}`}>
-                                    loved by founders worldwide
+                                    loved by businesses nationwide
                                 </p>
                             </div>
                         </div>
