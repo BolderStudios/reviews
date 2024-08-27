@@ -90,8 +90,9 @@ export default function MainPage() {
                             </div>
                         </div>
 
-                        <div className='absolute bottom-0'>
-                            <AnimatedLogoCloud />
+                        <div className='absolute bottom-0 flex flex-col items-center justify-center gap-2'>
+                            <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>This model is trusted by the most popular brands</p>
+                            <AnimatedLogoCloud/>
                         </div>
                     </div>
                 </div>
