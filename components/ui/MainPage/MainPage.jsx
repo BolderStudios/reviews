@@ -7,95 +7,145 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
-
 import { ArrowRight, Star } from "lucide-react"
 import { useWindowSize } from "@uidotdev/usehooks";
 import AnimatedLogoCloud from './AnimatedLogoCloud';
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function MainPage() {
     const size = useWindowSize();
     const screenWidth = size.width;
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        setIsLoaded(true);
+    }, []);
 
     return (
         <div className="flex flex-col bg-blue-50">
             {/* Hero section */}
             <div className="w-full relative min-h-[90vh] sm:min-h-screen overflow-hidden">
-                <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+                <AnimatePresence>
+                    {isLoaded && (
+                        <>
+                            <motion.img 
+                                src="/hero/hero-image-14.png" 
+                                alt="hero-image" 
+                                className="absolute left-0 top-0 w-full h-full object-cover"
+                                initial={{ scale: 1.1 }}
+                                animate={{ scale: 1 }}
+                                transition={{ duration: 2 }}
+                            />
+                            <div 
+                                className="absolute inset-0 bg-black bg-opacity-50"
+                            />
 
-                <div className="absolute inset-0 flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-8">
-                    <div className="flex items-center justify-between w-full z-10">
-                        <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
-                        <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300">
-                            Get started
-                        </Button>
-                    </div>
+                            <motion.div 
+                                className="absolute inset-0 flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-8"
+                            >
+                                <motion.div 
+                                    className="flex items-center justify-between w-full z-10"
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.6 }}
+                                >
+                                    <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
+                                    <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300">
+                                        Get started
+                                    </Button>
+                                </motion.div>
 
-                    <div className="flex-grow flex flex-col justify-center items-center">
-                        <div className='flex flex-col justify-center items-center'>
-                            <div className="mb-6 sm:mb-8 flex items-center justify-center gap-4">
-                                <div className="flex -space-x-2">
-                                    <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                        <AvatarImage src="/avatars/avatar1.jpg" className="object-cover" alt="Avatar 1" />
-                                        <AvatarFallback>A1</AvatarFallback>
-                                    </Avatar>
-                                    <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                        <AvatarImage src="/avatars/avatar2.jpg" className="object-cover" alt="Avatar 2" />
-                                        <AvatarFallback>A2</AvatarFallback>
-                                    </Avatar>
-                                    <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                        <AvatarImage src="/avatars/avatar3.jpg" className="object-cover" alt="Avatar 3" />
-                                        <AvatarFallback>A3</AvatarFallback>
-                                    </Avatar>
-                                    <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                        <AvatarImage src="/avatars/avatar4.jpg" className="object-cover" alt="Avatar 4" />
-                                        <AvatarFallback>A4</AvatarFallback>
-                                    </Avatar>
-                                    <Avatar className={`w-8 h-8 sm:w-11 sm:h-11 ${screenWidth >= 400 ? "block" : "hidden"}`}>
-                                        <AvatarImage src="/avatars/avatar5.jpg" className="object-cover" alt="Avatar 5" />
-                                        <AvatarFallback>A5</AvatarFallback>
-                                    </Avatar>
+                                <div className="flex-grow flex flex-col justify-center items-center">
+                                    <motion.div 
+                                        className='flex flex-col justify-center items-center'
+                                        // initial={{ opacity: 0, y: 20 }}
+                                        // animate={{ opacity: 1, y: 0 }}
+                                        // transition={{ duration: 0.5, delay: 2 }}
+                                    >
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, delay: 1.5 }}
+                                            className="mb-6 sm:mb-8 flex items-center justify-center gap-4"
+                                        >
+                                            <div className="flex -space-x-2">
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar1.jpg" className="object-cover" alt="Avatar 1" />
+                                                    <AvatarFallback>A1</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar2.jpg" className="object-cover" alt="Avatar 2" />
+                                                    <AvatarFallback>A2</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar3.jpg" className="object-cover" alt="Avatar 3" />
+                                                    <AvatarFallback>A3</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar4.jpg" className="object-cover" alt="Avatar 4" />
+                                                    <AvatarFallback>A4</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className={`w-8 h-8 sm:w-11 sm:h-11 ${screenWidth >= 400 ? "block" : "hidden"}`}>
+                                                    <AvatarImage src="/avatars/avatar5.jpg" className="object-cover" alt="Avatar 5" />
+                                                    <AvatarFallback>A5</AvatarFallback>
+                                                </Avatar>
+                                            </div>
+
+                                            <div className="flex flex-col items-start justify-center gap-1">
+                                                <div className="flex items-center justify-center">
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                </div>
+
+                                                <p className={`text-stone-300 font-medium ${screenWidth <= 700 ? "text-xs" : "text-sm"} text-left`}>
+                                                    loved by businesses nationwide
+                                                </p>
+                                            </div>
+                                        </motion.div>
+
+                                        <motion.div initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, delay: 1.75 }}
+                                            className="flex flex-col items-center text-center max-w-4xl"
+                                        >
+                                            <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
+                                                Get up to $5,000 in extra revenue this month
+                                            </h1>
+                                        </motion.div>
+
+                                        <motion.p initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, delay: 1.9 }} className={`text-stone-300 font-medium ${screenWidth <= 300 ? "text-sm" : "text-base"} md:text-lg pl-[12px] pr-[12px] md:px-24 lg:px-32 text-center leading-normal max-w-xs md:max-w-xl lg:max-w-2xl mx-auto xs:line-clamp-2`}>
+                                            Secure loyal customers and increase revenue by offering prepaid credits
+                                        </motion.p>
+
+                                        <motion.div initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, delay: 2 }} className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
+                                            <Button variant="primary" className="h-[40px] px-4 md:h-[48px] md:px-6">
+                                                Start today. It's free!
+                                                <ArrowRight className="ml-2 h-4 w-4" />
+                                            </Button>
+                                        </motion.div>
+                                    </motion.div>
                                 </div>
 
-                                <div className="flex flex-col items-start justify-center gap-1">
-                                    <div className="flex items-center justify-center">
-                                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                    </div>
-
-                                    <p className={`text-stone-300 font-medium ${screenWidth <= 700 ? "text-xs" : "text-sm"} text-left`}>
-                                        loved by businesses nationwide
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col items-center text-center max-w-4xl">
-                                <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
-                                    Get up to $5,000 in extra revenue this month
-                                </h1>
-                            </div>
-
-                            <p className={`text-stone-300 font-medium ${screenWidth <= 300 ? "text-sm" : "text-base"} md:text-lg pl-[12px] pr-[12px] md:px-24 lg:px-32 text-center leading-normal max-w-xs md:max-w-xl lg:max-w-2xl mx-auto xs:line-clamp-2`}>
-                                Secure loyal customers and increase revenue by offering prepaid credits
-                            </p>
-
-                            <div className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
-                                <Button variant="primary" className="h-[40px] px-4 md:h-[48px] md:px-6">
-                                    Start today. It's free!
-                                    <ArrowRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            </div>
-                        </div>
-
-                    </div>
-                        <div className='mt-auto flex flex-col items-center justify-center'>
-                            <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>This model is trusted by the most popular brands</p>
-                            <AnimatedLogoCloud/>
-                        </div>
-                </div>
+                                <motion.div 
+                                    className='mt-auto flex flex-col items-center justify-center'
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.5, delay: 1 }}
+                                >
+                                    <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>This model is trusted by the most popular brands</p>
+                                    <AnimatedLogoCloud/>
+                                </motion.div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Rest of the page content */}
