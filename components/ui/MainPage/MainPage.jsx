@@ -1,9 +1,13 @@
 'use client';
 
 import { Button } from "@/components/ui/Buttons/button"
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
 
-import { ArrowRight } from "lucide-react"
-
+import { ArrowRight, Star } from "lucide-react"
 import { useWindowSize } from "@uidotdev/usehooks";
 
 
@@ -18,8 +22,8 @@ export default function MainPage() {
                 <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-                <div className="flex flex-col items-center justify-between px-4 sm:px-6 lg:px-8">
-                    <div className="pt-4 flex items-center justify-between w-full z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-between px-4 sm:px-6 lg:px-8 pt-4">
+                    <div className="flex items-center justify-between w-full z-10">
                         <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
                         <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300">
                             Get started
@@ -27,6 +31,45 @@ export default function MainPage() {
                     </div>
 
                     <div className="absolute inset-0 flex flex-col justify-center items-center">
+                        <div className="mb-4 flex items-center gap-3">
+                            <div className="flex -space-x-2">
+                                <Avatar className="w-8 h-8 border-2 border-white">
+                                    <AvatarImage src="/avatar1.jpg" alt="Avatar 1" />
+                                    <AvatarFallback>A1</AvatarFallback>
+                                </Avatar>
+                                <Avatar className="w-8 h-8 border-2 border-white">
+                                    <AvatarImage src="/avatar2.jpg" alt="Avatar 2" />
+                                    <AvatarFallback>A2</AvatarFallback>
+                                </Avatar>
+                                <Avatar className="w-8 h-8 border-2 border-white">
+                                    <AvatarImage src="/avatar3.jpg" alt="Avatar 3" />
+                                    <AvatarFallback>A3</AvatarFallback>
+                                </Avatar>
+                                <Avatar className="w-8 h-8 border-2 border-white">
+                                    <AvatarImage src="/avatar4.jpg" alt="Avatar 4" />
+                                    <AvatarFallback>A4</AvatarFallback>
+                                </Avatar>
+                                <Avatar className="w-8 h-8 border-2 border-white hidden sm:block">
+                                    <AvatarImage src="/avatar5.jpg" alt="Avatar 5" />
+                                    <AvatarFallback>A5</AvatarFallback>
+                                </Avatar>
+                            </div>
+
+                            <div className="flex flex-col items-start">
+                                <div className="flex items-center justify-center">
+                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                </div>
+
+                                <p className={`text-stone-300 font-medium ${screenWidth <= 700 ? "text-xs" : "text-sm"}`}>
+                                    loved by founders worldwide
+                                </p>
+                            </div>
+                        </div>
+
                         <div className="flex flex-col items-center text-center max-w-4xl">
                             <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
                                 Get up to $5,000 in extra revenue this month

@@ -1,4 +1,0 @@
-name = "fetch-yelp-reviews"
-main = "src/worker.js"
-compatibility_date = "2024-07-05"
-workers_dev = true
