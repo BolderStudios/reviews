@@ -14,41 +14,36 @@
 
 const logos = [
     {
-      name: 'Vercel',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715881430/vercel_wordmark_dark_mhv8u8.svg',
+      name: 'Solita',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724800337/tsb3wr1vhbo6sgshmqyp.svg',
     },
     {
-      name: 'Nextjs',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715881475/nextjs_logo_dark_gfkf8m.svg',
+      name: 'Else',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724800346/kcor7d92ayz0c8ig7oxz.png',
     },
     {
-      name: 'Prime',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715276558/logos/t2awrrfzdvmg1chnzyfr.svg',
+      name: 'El torito',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724800492/ijglxm0axeftejigap5k.svg',
     },
     {
-      name: 'Trustpilot',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715276558/logos/tkfspxqmjflfllbuqxsi.svg',
+      name: 'Calmex',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724800755/bya3htzjrpakqcpy45tw.svg',
     },
     {
-      name: 'Webflow',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715276560/logos/nymiivu48d5lywhf9rpf.svg',
-    },
-  
-    {
-      name: 'Airbnb',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715276558/logos/pmblusboe7vkw8vxdknx.svg',
+      name: 'Prince St. Pizza',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724800888/aaz1jxcqkjvyoxd7ae0p.webp',
     },
     {
-      name: 'Tina',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715276560/logos/afqhiygywyphuou6xtxc.svg',
+      name: 'Katsuya',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724801051/izpg9nc3vhj3he9i2mht.svg',
     },
     {
-      name: 'Stackoverflow',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715276558/logos/ts1j4mkooxqmscgptafa.svg',
+      name: 'Tacos 1986',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724801107/rlruhmmi9sa0f2aursba.png',
     },
     {
-      name: 'mistral',
-      url: 'https://res.cloudinary.com/dfhp33ufc/image/upload/v1715276558/logos/tyos2ayezryjskox3wzs.svg',
+      name: 'Tokyo Fried Chicken',
+      url: 'https://res.cloudinary.com/drzscdhyn/image/upload/v1724801410/bvzjhzofcvgfowkbkozf.png',
     },
   ]
   
@@ -74,7 +69,7 @@ const logos = [
                     <img
                       key={key}
                       src={logo.url}
-                      className="h-10 w-28 px-2 brightness-0  dark:invert"
+                      className="h-10 w-28 px-2 brightness-0  dark:invert object-contain"
                       alt={`${logo.name}`}
                     />
                   ))}

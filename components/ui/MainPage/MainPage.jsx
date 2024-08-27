@@ -37,7 +37,7 @@ export default function MainPage() {
                                 transition={{ duration: 2 }}
                             />
                             <div 
-                                className="absolute inset-0 bg-black bg-opacity-50"
+                                className="absolute inset-0 bg-black bg-opacity-35"
                             />
 
                             <motion.div 
@@ -139,7 +139,7 @@ export default function MainPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.5, delay: 1 }}
                                 >
-                                    <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>This model is trusted by the most popular brands</p>
+                                    <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>Our approach is trusted by the most popular brands</p>
                                     <AnimatedLogoCloud/>
                                 </motion.div>
                             </motion.div>
