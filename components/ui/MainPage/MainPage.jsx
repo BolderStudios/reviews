@@ -90,7 +90,7 @@ export default function MainPage() {
                             </div>
                         </div>
 
-                        <div className='absolute bottom-0 flex flex-col items-center justify-center gap-2'>
+                        <div className='absolute bottom-0 flex flex-col items-center justify-center'>
                             <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>This model is trusted by the most popular brands</p>
                             <AnimatedLogoCloud/>
                         </div>
@@ -99,7 +99,7 @@ export default function MainPage() {
             </div>
 
             {/* Rest of the page content */}
-            <div className="bg-white">
+            {/* <div className="bg-white">
                 <div className="container mx-auto px-4">
                     <section>
                         <h2 className="text-3xl font-bold mb-4">Mission Statement</h2>
@@ -108,7 +108,7 @@ export default function MainPage() {
                         </p>
                     </section>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

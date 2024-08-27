@@ -54,10 +54,10 @@ const logos = [
   
   const AnimatedLogoCloud = () => {
     return (
-      <div className="w-full pb-12">
+      <div className="w-full pb-8">
         <div className="mx-auto w-full px-4 md:px-8">
           <div
-            className="group relative mt-4 flex gap-6 overflow-hidden p-2"
+            className="group relative mt-8 flex gap-6 overflow-hidden p-2"
             style={{
               maskImage:
                 'linear-gradient(to left, transparent 0%, black 20%, black 80%, transparent 95%)',
