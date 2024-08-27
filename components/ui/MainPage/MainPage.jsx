@@ -28,22 +28,22 @@ export default function MainPage() {
                 <AnimatePresence>
                     {isLoaded && (
                         <>
-                            <motion.img 
-                                src="/hero/hero-image-14.png" 
-                                alt="hero-image" 
+                            <motion.img
+                                src="/hero/hero-image-14.png"
+                                alt="hero-image"
                                 className="absolute left-0 top-0 w-full h-full object-cover"
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 2 }}
                             />
-                            <div 
+                            <div
                                 className="absolute inset-0 bg-black bg-opacity-35"
                             />
 
-                            <motion.div 
+                            <motion.div
                                 className="absolute inset-0 flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-8"
                             >
-                                <motion.div 
+                                <motion.div
                                     className="flex items-center justify-between w-full z-10"
                                     initial={{ opacity: 0, y: -20 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -56,13 +56,13 @@ export default function MainPage() {
                                 </motion.div>
 
                                 <div className="flex-grow flex flex-col justify-center items-center">
-                                    <motion.div 
+                                    <motion.div
                                         className='flex flex-col justify-center items-center'
-                                        // initial={{ opacity: 0, y: 20 }}
-                                        // animate={{ opacity: 1, y: 0 }}
-                                        // transition={{ duration: 0.5, delay: 2 }}
+                                    // initial={{ opacity: 0, y: 20 }}
+                                    // animate={{ opacity: 1, y: 0 }}
+                                    // transition={{ duration: 0.5, delay: 2 }}
                                     >
-                                        <motion.div 
+                                        <motion.div
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: 1.5 }}
@@ -112,7 +112,7 @@ export default function MainPage() {
                                             className="flex flex-col items-center text-center max-w-4xl"
                                         >
                                             <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
-                                                Get up to $5,000 in extra revenue this month
+                                                Get up to <span className='-skew-x-[15deg] font-medium inline-block'>$5,000</span> in extra revenue this month
                                             </h1>
                                         </motion.div>
 
@@ -133,14 +133,14 @@ export default function MainPage() {
                                     </motion.div>
                                 </div>
 
-                                <motion.div 
+                                <motion.div
                                     className='mt-auto flex flex-col items-center justify-center'
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.5, delay: 1 }}
                                 >
                                     <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>Our approach is trusted by the most popular brands</p>
-                                    <AnimatedLogoCloud/>
+                                    <AnimatedLogoCloud />
                                 </motion.div>
                             </motion.div>
                         </>
