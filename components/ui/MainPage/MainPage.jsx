@@ -19,11 +19,11 @@ export default function MainPage() {
     return (
         <div className="flex flex-col">
             {/* Hero section */}
-            <div className="w-full relative zoom-in h-[95vh] sm:h-screen overflow-hidden">
+            <div className="w-full relative min-h-[90vh] sm:min-h-screen overflow-hidden">
                 <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-                <div className="absolute inset-0 flex flex-col px-4 sm:px-6 lg:px-8 pt-4">
+                <div className="absolute inset-0 flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-8">
                     <div className="flex items-center justify-between w-full z-10">
                         <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
                         <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300">
@@ -31,7 +31,7 @@ export default function MainPage() {
                         </Button>
                     </div>
 
-                    <div className="absolute inset-0 flex flex-col justify-center items-center">
+                    <div className="flex-grow flex flex-col justify-center items-center">
                         <div className='flex flex-col justify-center items-center'>
                             <div className="mb-6 sm:mb-8 flex items-center justify-center gap-4">
                                 <div className="flex -space-x-2">
@@ -90,11 +90,11 @@ export default function MainPage() {
                             </div>
                         </div>
 
-                        <div className='absolute bottom-0 flex flex-col items-center justify-center'>
+                    </div>
+                        <div className='mt-auto flex flex-col items-center justify-center'>
                             <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>This model is trusted by the most popular brands</p>
                             <AnimatedLogoCloud/>
                         </div>
-                    </div>
                 </div>
             </div>
 
