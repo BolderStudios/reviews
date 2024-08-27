@@ -104,8 +104,8 @@ export default function MainPage() {
 
             {/* Rest of the page content */}
             <div className="bg-white">
-                <div className="container mx-auto px-4 py-8">
-                    <section className="my-8">
+                <div className="container mx-auto px-4">
+                    <section>
                         <h2 className="text-3xl font-bold mb-4">Mission Statement</h2>
                         <p className="text-lg">
                             Our mission is to [Your mission statement here]. We strive to [Additional details about your mission].
