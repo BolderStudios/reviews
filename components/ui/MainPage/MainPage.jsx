@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/Buttons/button"
 import {
     Avatar,
@@ -10,15 +11,26 @@ import {
 import { ArrowRight, Star } from "lucide-react"
 import { useWindowSize } from "@uidotdev/usehooks";
 
-
 export default function MainPage() {
     const size = useWindowSize();
     const screenWidth = size.width;
+    const [viewportHeight, setViewportHeight] = useState('100vh');
+
+    useEffect(() => {
+        const updateViewportHeight = () => {
+            setViewportHeight(`${window.innerHeight}px`);
+        };
+
+        updateViewportHeight();
+        window.addEventListener('resize', updateViewportHeight);
+
+        return () => window.removeEventListener('resize', updateViewportHeight);
+    }, []);
 
     return (
         <div className="flex flex-col">
             {/* Hero section */}
-            <div className="h-screen w-full relative zoom-in">
+            <div className="w-full relative zoom-in" style={{ height: viewportHeight }}>
                 <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
