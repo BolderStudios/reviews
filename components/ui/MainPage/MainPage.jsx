@@ -1,30 +1,39 @@
 'use client';
 
 import { Button } from "@/components/ui/Buttons/button"
+
 import { ArrowRight } from "lucide-react"
+
+import { useWindowSize } from "@uidotdev/usehooks";
 
 
 export default function MainPage() {
+    const size = useWindowSize();
+    const screenWidth = size.width;
+
     return (
         <div className="flex flex-col">
             {/* Hero section */}
             <div className="h-screen w-full relative zoom-in">
-                <img src="/hero/hero-image-21.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
+                <img src="/hero/hero-image-14.png" alt="hero-image" className="animate-zoom-in absolute left-0 top-0 w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-between px-4 sm:px-6 lg:px-8">
-                    <div className="pt-4">
-                        <img src="/logoWhite.png" alt="logo" className="w-[72px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
+                    <div className="pt-4 flex items-center justify-between w-full z-10">
+                        <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
+                        <Button variant="customOutline" className="h-[35px] px-2 border border-stone-300">
+                            Get started
+                        </Button>
                     </div>
 
-                    <div className="h-full flex flex-col justify-center items-center">
+                    <div className="absolute inset-0 flex flex-col justify-center items-center">
                         <div className="flex flex-col items-center text-center max-w-4xl">
-                            <h1 className="text-stone-50 mb-2 md:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight tracking-tight max-w-[20ch] mx-auto line-clamp-2">
-                                Get up to $5,000 in extra cash this month
+                            <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
+                                Get up to $5,000 in extra revenue this month
                             </h1>
                         </div>
 
-                        <p className="text-stone-300 text-sm sm:text-base md:text-lg pl-[12px] pr-[12px] md:px-24 lg:px-32 text-center leading-tight max-w-xs md:max-w-xl lg:max-w-2xl mx-auto xs:line-clamp-2">
+                        <p className={`text-stone-300 font-medium ${screenWidth <= 300 ? "text-sm" : "text-base"} md:text-lg pl-[12px] pr-[12px] md:px-24 lg:px-32 text-center leading-normal max-w-xs md:max-w-xl lg:max-w-2xl mx-auto xs:line-clamp-2`}>
                             Secure loyal customers and increase revenue by offering prepaid credits
                         </p>
 
