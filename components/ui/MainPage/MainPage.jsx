@@ -25,7 +25,7 @@ export default function MainPage() {
     }, []);
 
     return (
-        <div className="flex flex-col bg-gainsboro-2">
+        <div className="flex flex-col bg-ghost-white-3">
             <style jsx global>{`
                 ::selection {
                     background-color: #5fafe5;

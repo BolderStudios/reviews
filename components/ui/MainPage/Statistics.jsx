@@ -25,7 +25,7 @@ export default function Statistics() {
         {
             icon: <Shield size={24} />,
             title: "100% Risk-Free",
-            description: "Unlike other loyalty programs, we don't take any fees. Instead, we grow your business without any financial risk."
+            description: "Unlike other loyalty programs, we don't take any fees. Instead, we charge a monthly fee only when you make a sale."
         }
     ];
 
