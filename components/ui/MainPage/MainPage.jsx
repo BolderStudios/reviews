@@ -43,7 +43,7 @@ export default function MainPage() {
                             <motion.img
                                 src="/hero/hero-image-40.png"
                                 alt="hero-image"
-                                className="absolute left-0 top-0 w-full h-full object-cover object-[-200px] sm:object-cover"
+                                className="absolute left-0 top-0 w-full h-full object-cover object-[-200px] sm:object-cover sm:object-[0px]"
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 2, ease: customEasing }}
@@ -123,7 +123,7 @@ export default function MainPage() {
                                             transition={{ duration: 0.5, delay: 1.75, ease: customEasing }}
                                             className="flex flex-col items-center text-center max-w-4xl"
                                         >
-                                            <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
+                                            <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-tight tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
                                                 Get up to $5,000 in extra revenue this month
                                                 {/* <span className='-skew-x-[15deg] font-medium inline-block'>$5,000</span> */}
                                             </h1>
