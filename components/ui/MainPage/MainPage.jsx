@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/avatar"
 import { ArrowRight, Star } from "lucide-react"
 import { useWindowSize } from "@uidotdev/usehooks";
-import AnimatedLogoCloud from './AnimatedLogoCloud';
+import AnimatedLogoCloud from "@/components/ui/MainPage/AnimatedLogoCloud"
 import { motion, AnimatePresence } from "framer-motion";
+import TextScroll from "@/components/ui/MainPage/TextScroll";
 
 export default function MainPage() {
     const size = useWindowSize();
@@ -112,7 +113,8 @@ export default function MainPage() {
                                             className="flex flex-col items-center text-center max-w-4xl"
                                         >
                                             <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
-                                                Get up to <span className='-skew-x-[15deg] font-medium inline-block'>$5,000</span> in extra revenue this month
+                                                Get up to $5,000 in extra revenue this month
+                                                {/* <span className='-skew-x-[15deg] font-medium inline-block'>$5,000</span> */}
                                             </h1>
                                         </motion.div>
 
@@ -139,7 +141,8 @@ export default function MainPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.5, delay: 1 }}
                                 >
-                                    <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center'>Our approach is trusted by the most popular brands</p>
+                                    <p className='text-stone-300 font-medium text-xs text-center uppercase'>trusted by the most popular brands</p>
+                                    {/* <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center uppercase'>Our approach is trusted by the most popular brands</p> */}
                                     <AnimatedLogoCloud />
                                 </motion.div>
                             </motion.div>
@@ -148,17 +151,7 @@ export default function MainPage() {
                 </AnimatePresence>
             </div>
 
-            {/* Rest of the page content */}
-            <div>
-                <div className="container mx-auto px-4">
-                    <section>
-                        <h2 className="text-3xl font-bold mb-4">Mission Statement</h2>
-                        <p className="text-lg">
-                            Our mission is to [Your mission statement here]. We strive to [Additional details about your mission].
-                        </p>
-                    </section>
-                </div>
-            </div>
+            <TextScroll />
         </div>
     )
 }

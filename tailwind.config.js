@@ -88,6 +88,16 @@ module.exports = {
           from: { transform: "scale(1.2)", opacity: "0" },
           to: { transform: "scale(1)", opacity: "1" },
         },
+        "text-gradient": {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -96,6 +106,7 @@ module.exports = {
         "file-add-up": "file-add-up 0.3s ease-out",
         "zoom-in": "zoom-in 2s cubic-bezier(0.16, 1, 0.3, 1)",
         'logo-cloud': 'logo-cloud 30s linear infinite',
+        'text-gradient': 'textGradient 5s ease infinite',
       },
     },
   },
