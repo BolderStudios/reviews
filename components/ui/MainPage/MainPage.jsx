@@ -2,18 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/Buttons/button"
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
-import { ArrowRight, Star } from "lucide-react"
+import { ArrowRight, Calendar } from "lucide-react"
 import { useWindowSize } from "@uidotdev/usehooks";
 import AnimatedLogoCloud from "@/components/ui/MainPage/AnimatedLogoCloud"
 import { motion, AnimatePresence } from "framer-motion";
 import TextScroll from "@/components/ui/MainPage/TextScroll";
 import Statistics from "@/components/ui/MainPage/Statistics";
 import HowItWorks from "@/components/ui/MainPage/HowItWorks";
+import Comparison from "@/components/ui/MainPage/Comparison";
 
 export default function MainPage() {
     const size = useWindowSize();
@@ -27,7 +23,7 @@ export default function MainPage() {
     }, []);
 
     return (
-        <div className="flex flex-col bg-ghost-white-3">
+        <div className="flex flex-col bg-gradient-to-b from-[#076585] via-[#eef3fe] to-[#fff]">
             <style jsx global>{`
                 ::selection {
                     background-color: #5fafe5;
@@ -138,9 +134,11 @@ export default function MainPage() {
                                         <motion.div initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: 2, ease: customEasing }} className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
-                                            <Button variant="primary" className="h-[40px] px-4 md:h-[48px] md:px-6">
-                                                Start today. It's free!
-                                                <ArrowRight className="ml-2 h-4 w-4" />
+                                            <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6">
+                                                {/* Start today. It's free! */}
+                                                <Calendar className='mr-2' size={16} />
+                                                <span>Talk to a human</span>
+                                                {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
                                             </Button>
                                         </motion.div>
                                     </motion.div>
@@ -165,6 +163,7 @@ export default function MainPage() {
             <TextScroll />
             <Statistics />
             <HowItWorks />
+            <Comparison />
         </div>
     )
 }

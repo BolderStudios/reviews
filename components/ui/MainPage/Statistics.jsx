@@ -34,7 +34,7 @@ export default function Statistics() {
             <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 md:gap-16 lg:gap-20 max-w-7xl mx-auto`}>
                 {stats.map((stat, index) => (
                     <div key={index} className="flex flex-col items-start gap-2">
-                        <div className="text-stone-600 mb-2">{stat.icon}</div>
+                        <div className="text-[var(--button-primary)] mb-2">{stat.icon}</div>
                         <p className="text-xl font-medium tracking-tight leading-normal">{stat.title}</p>
                         <p className="text-sm text-stone-600 tracking-tight leading-normal">{stat.description}</p>
                     </div>
