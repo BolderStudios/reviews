@@ -12,6 +12,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import AnimatedLogoCloud from "@/components/ui/MainPage/AnimatedLogoCloud"
 import { motion, AnimatePresence } from "framer-motion";
 import TextScroll from "@/components/ui/MainPage/TextScroll";
+import Statistics from "@/components/ui/MainPage/Statistics";
 
 export default function MainPage() {
     const size = useWindowSize();
@@ -160,10 +161,11 @@ export default function MainPage() {
             </div>
 
             <TextScroll />
+            <Statistics />
 
-            <div className='flex flex-col items-center justify-center h-[5000px]'>
+            {/* <div className='flex flex-col items-center justify-center h-[5000px]'>
                 <h2 className='text-4xl font-medium'>How it works</h2>
-            </div>
+            </div> */}
         </div>
     )
 }
