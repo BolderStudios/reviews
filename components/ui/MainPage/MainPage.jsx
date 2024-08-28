@@ -43,7 +43,7 @@ export default function MainPage() {
                             <motion.img
                                 src="/hero/hero-image-40.png"
                                 alt="hero-image"
-                                className="absolute left-0 top-0 w-full h-full object-cover object-[-50px] sm:object-cover"
+                                className="absolute left-0 top-0 w-full h-full object-cover object-[-220px] sm:object-cover"
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 2, ease: customEasing }}
