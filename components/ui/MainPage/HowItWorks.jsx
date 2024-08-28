@@ -22,10 +22,11 @@ export default function HowItWorks() {
                     </div>
 
                     <div className="bg-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg">
-                        <h3 className="text-lg font-medium text-[#f15a2b] mb-2">Connect your calendar.</h3>
-                        <p className="text-stone-700 text-base tracking-tight">You can also add Circleback to a meeting with a link, hit record on your phone or laptop, or import a recording.</p>
+                        <h3 className="text-lg font-medium text-[#f15a2b] mb-1">Give us a call. <span className="text-stone-900 text-lg tracking-tight leading-tight font-medium">We'll discuss your goals, assess your business, and tailor our services to maximize your revenue.</span></h3>
                     </div>
                 </div>
+
+                {/* Card */}
                 <div className="flex items-start gap-3 sm:gap-4">
                     <div className="flex flex-col items-center gap-4 self-stretch">
                         <div className="flex-shrink-0">
@@ -35,8 +36,7 @@ export default function HowItWorks() {
                     </div>
 
                     <div className="bg-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg">
-                        <h3 className="text-lg font-medium text-[#f15a2b] mb-2">Connect your calendar.</h3>
-                        <p className="text-stone-700 text-base tracking-tight">You can also add Circleback to a meeting with a link, hit record on your phone or laptop, or import a recording.</p>
+                        <h3 className="text-lg font-medium text-[#f15a2b] mb-1">Customize your program. <span className="text-stone-900 text-lg tracking-tight leading-tight font-medium">Together, we'll set up prepaid credits, discounts, referral rates, and gift cards that work best for your business.</span></h3>
                     </div>
                 </div>
 
@@ -50,8 +50,7 @@ export default function HowItWorks() {
                     </div>
 
                     <div className="bg-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg">
-                        <h3 className="text-lg font-medium text-[#f15a2b] mb-2">Connect your calendar.</h3>
-                        <p className="text-stone-700 text-base tracking-tight">You can also add Circleback to a meeting with a link, hit record on your phone or laptop, or import a recording.</p>
+                        <h3 className="text-lg font-medium text-[#f15a2b] mb-1">Get equipped. <span className="text-stone-900 text-lg tracking-tight leading-tight font-medium">Receive free promotional materials and custom gift cards. We'll train you on how to use them effectively.</span></h3>
                     </div>
                 </div>
 
@@ -64,8 +63,7 @@ export default function HowItWorks() {
                     </div>
 
                     <div className="bg-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg">
-                        <h3 className="text-lg font-medium text-[#f15a2b] mb-2">Connect your calendar.</h3>
-                        <p className="text-stone-700 text-base tracking-tight">You can also add Circleback to a meeting with a link, hit record on your phone or laptop, or import a recording.</p>
+                        <h3 className="text-lg font-medium text-[#f15a2b] mb-1">Launch and grow. <span className="text-stone-900 text-lg tracking-tight leading-tight font-medium">Your team starts offering these services to customers, they save money, earn rewards, and you get more repeat customers. It's a win-win.</span></h3>
                     </div>
                 </div>
             </div>
