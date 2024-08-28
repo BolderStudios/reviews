@@ -13,10 +13,12 @@ import AnimatedLogoCloud from "@/components/ui/MainPage/AnimatedLogoCloud"
 import { motion, AnimatePresence } from "framer-motion";
 import TextScroll from "@/components/ui/MainPage/TextScroll";
 import Statistics from "@/components/ui/MainPage/Statistics";
+import HowItWorks from "@/components/ui/MainPage/HowItWorks";
 
 export default function MainPage() {
     const size = useWindowSize();
     const screenWidth = size.width;
+
     const [isLoaded, setIsLoaded] = useState(false);
     const customEasing = [0.215, 0.61, 0.355, 1];
 
@@ -39,9 +41,9 @@ export default function MainPage() {
                     {isLoaded && (
                         <>
                             <motion.img
-                                src="/hero/hero-image-14.png"
+                                src="/hero/hero-image-40.png"
                                 alt="hero-image"
-                                className="absolute left-0 top-0 w-full h-full object-cover"
+                                className="absolute left-0 top-0 w-full h-full object-cover object-[-50px] sm:object-cover"
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 2, ease: customEasing }}
@@ -72,7 +74,7 @@ export default function MainPage() {
                                     // animate={{ opacity: 1, y: 0 }}
                                     // transition={{ duration: 0.5, delay: 2 }}
                                     >
-                                        <motion.div
+                                        {/* <motion.div
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: 1.5, ease: customEasing }}
@@ -114,7 +116,7 @@ export default function MainPage() {
                                                     loved by businesses nationwide
                                                 </p>
                                             </div>
-                                        </motion.div>
+                                        </motion.div> */}
 
                                         <motion.div initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
@@ -162,10 +164,7 @@ export default function MainPage() {
 
             <TextScroll />
             <Statistics />
-
-            {/* <div className='flex flex-col items-center justify-center h-[5000px]'>
-                <h2 className='text-4xl font-medium'>How it works</h2>
-            </div> */}
+            <HowItWorks />
         </div>
     )
 }

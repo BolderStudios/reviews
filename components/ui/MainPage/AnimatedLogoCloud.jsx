@@ -55,7 +55,8 @@ const AnimatedLogoCloud = () => {
                   <img
                     key={logo.name}
                     src={logo.url}
-                    className="h-10 w-28 px-2 brightness-0 dark:invert object-contain"
+                    className="h-10 w-28 px-2 brightness-0 opacity-60 invert object-contain"
+                    // className="h-10 w-28 px-2 brightness-0 dark:invert object-contain"
                     alt={logo.name}
                   />
                 ))}
