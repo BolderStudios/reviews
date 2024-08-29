@@ -40,7 +40,7 @@ export default function MainPage() {
                     {isLoaded && (
                         <>
                             <motion.img
-                                src="/hero/hero-image-42.png"
+                                src="/hero/hero-image-43.png"
                                 alt="hero-image"
                                 className="absolute left-0 top-0 w-full h-full object-cover object-center"
                                 initial={{ scale: 1.1 }}
@@ -49,7 +49,7 @@ export default function MainPage() {
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-35" />
 
-                            <motion.div className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-4 pb-8 md:h-full">
+                            <motion.div className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-4 pb-8 h-[calc(100vh-50px)] md:h-full">
                                 <motion.div
                                     className="flex items-center justify-between w-full z-10"
                                     initial={{ opacity: 0, y: -20 }}
@@ -62,7 +62,7 @@ export default function MainPage() {
                                     </Button>
                                 </motion.div>
 
-                                <div className="flex-grow flex flex-col justify-center items-center py-16 md:py-24 lg:py-0">
+                                <div className="flex-grow flex flex-col justify-end mb-16 md:md-32 items-center py-16 md:py-24">
                                     <motion.div
                                         className='flex flex-col justify-center items-center'
                                     // initial={{ opacity: 0, y: 20 }}
