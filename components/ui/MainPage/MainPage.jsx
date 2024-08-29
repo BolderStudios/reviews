@@ -49,7 +49,7 @@ export default function MainPage() {
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-35" />
 
-                            <motion.div className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-4 pb-8 min-h-screen">
+                            <motion.div className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-4 pb-8 min-h-[100svh]">
                                 <motion.div
                                     className="flex items-center justify-between w-full z-10"
                                     initial={{ opacity: 0, y: -20 }}
