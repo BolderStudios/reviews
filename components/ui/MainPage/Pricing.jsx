@@ -25,12 +25,9 @@ export default function Pricing() {
                     {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
                 </Button>
 
-                <div>
-                    <p className="text-stone-500 text-xs">
-                        $0 today. 5% + 80¢ per transaction. Cap at $49 / month.
-                    </p>
-                    <p className="text-blue-500 text-xs text-center mt-1 font-medium">
-                        Call to learn if you qualify for volume pricing.
+                <div className="flex flex-col items-center justify-center">
+                    <p className="text-blue-500 text-xs text-center max-w-[30ch] leading-normal">
+                        $0 today. 5% + 80¢ per transaction. Cap at $49 per month.
                     </p>
                 </div>
             </div>
