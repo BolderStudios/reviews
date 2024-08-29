@@ -38,7 +38,7 @@ export default function MainPage() {
             {/* Hero section */}
             <div className="w-full relative overflow-hidden md:min-h-screen">
                 <img
-                    src="https://asset.cloudinary.com/drzscdhyn/b485ef7af4899a48eff934dd1acf5698"
+                    src="https://res.cloudinary.com/drzscdhyn/image/upload/v1724964726/hero-image-43_r2codo.png"
                     alt="hero-image"
                     className="absolute left-0 top-0 w-full h-full object-cover object-center"
                 />
