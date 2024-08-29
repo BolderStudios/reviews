@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/Buttons/button"
-import { Calendar } from "lucide-react"
+import { ArrowRight, Calendar } from "lucide-react"
 import { useWindowSize } from "@uidotdev/usehooks";
 import AnimatedLogoCloud from "@/components/ui/MainPage/AnimatedLogoCloud"
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,43 +19,23 @@ export default function MainPage() {
     const screenWidth = size.width;
 
     const [isLoaded, setIsLoaded] = useState(false);
-    const [viewportHeight, setViewportHeight] = useState('100vh');
     const customEasing = [0.215, 0.61, 0.355, 1];
 
     useEffect(() => {
         setIsLoaded(true);
-
-        const setVH = () => {
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-            setViewportHeight(`${window.innerHeight}px`);
-        };
-
-        setVH();
-        window.addEventListener('resize', setVH);
-        window.addEventListener('orientationchange', setVH);
-
-        return () => {
-            window.removeEventListener('resize', setVH);
-            window.removeEventListener('orientationchange', setVH);
-        };
     }, []);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col" >
             <style jsx global>{`
                 ::selection {
                     background-color: #5fafe5;
                     color: white;
                 }
-                .use-viewport-height {
-                    height: ${viewportHeight};
-                    height: calc(var(--vh, 1vh) * 100);
-                }
             `}</style>
 
             {/* Hero section */}
-            <div className="w-full relative use-viewport-height overflow-hidden">
+            <div className="w-full relative min-h-[90vh] sm:min-h-screen overflow-hidden">
                 <AnimatePresence>
                     {isLoaded && (
                         <>
@@ -89,7 +69,54 @@ export default function MainPage() {
                                 <div className="flex-grow flex flex-col justify-center items-center">
                                     <motion.div
                                         className='flex flex-col justify-center items-center'
+                                    // initial={{ opacity: 0, y: 20 }}
+                                    // animate={{ opacity: 1, y: 0 }}
+                                    // transition={{ duration: 0.5, delay: 2 }}
                                     >
+                                        {/* <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, delay: 1.5, ease: customEasing }}
+                                            className="mb-6 sm:mb-8 flex items-center justify-center gap-4"
+                                        >
+                                            <div className="flex -space-x-2">
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar1.jpg" className="object-cover" alt="Avatar 1" />
+                                                    <AvatarFallback>A1</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar2.jpg" className="object-cover" alt="Avatar 2" />
+                                                    <AvatarFallback>A2</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar3.jpg" className="object-cover" alt="Avatar 3" />
+                                                    <AvatarFallback>A3</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+                                                    <AvatarImage src="/avatars/avatar4.jpg" className="object-cover" alt="Avatar 4" />
+                                                    <AvatarFallback>A4</AvatarFallback>
+                                                </Avatar>
+                                                <Avatar className={`w-8 h-8 sm:w-11 sm:h-11 ${screenWidth >= 400 ? "block" : "hidden"}`}>
+                                                    <AvatarImage src="/avatars/avatar5.jpg" className="object-cover" alt="Avatar 5" />
+                                                    <AvatarFallback>A5</AvatarFallback>
+                                                </Avatar>
+                                            </div>
+
+                                            <div className="flex flex-col items-start justify-center gap-1">
+                                                <div className="flex items-center justify-center">
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+                                                </div>
+
+                                                <p className={`text-stone-300 font-medium ${screenWidth <= 700 ? "text-xs" : "text-sm"} text-left`}>
+                                                    loved by businesses nationwide
+                                                </p>
+                                            </div>
+                                        </motion.div> */}
+
                                         <motion.div initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: 1.75, ease: customEasing }}
@@ -97,6 +124,7 @@ export default function MainPage() {
                                         >
                                             <h1 className={`text-stone-50 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-tight tracking-tighter max-w-[20ch] mx-auto xs:line-clamp-2`}>
                                                 Get up to $5,000 in extra revenue this month
+                                                {/* <span className='-skew-x-[15deg] font-medium inline-block'>$5,000</span> */}
                                             </h1>
                                         </motion.div>
 
@@ -110,8 +138,10 @@ export default function MainPage() {
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.5, delay: 2, ease: customEasing }} className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
                                             <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6">
+                                                {/* Start today. It's free! */}
                                                 <Calendar className='mr-2' size={16} />
                                                 <span>Talk to a human</span>
+                                                {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
                                             </Button>
                                         </motion.div>
                                     </motion.div>
@@ -124,6 +154,7 @@ export default function MainPage() {
                                     transition={{ duration: 0.5, delay: 1, ease: customEasing }}
                                 >
                                     <p className='text-stone-300 font-medium text-xs text-center uppercase'>trusted by the most popular brands</p>
+                                    {/* <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center uppercase'>Our approach is trusted by the most popular brands</p> */}
                                     <AnimatedLogoCloud />
                                 </motion.div>
                             </motion.div>
@@ -137,6 +168,7 @@ export default function MainPage() {
                 <Comparison />
                 <Statistics />
             </div>
+
 
             <div className='bg-gradient-to-b from-[#eef3fe] to-[#E3FDF5]'>
                 <HowItWorks />

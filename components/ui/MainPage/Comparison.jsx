@@ -9,7 +9,7 @@ export default function Comparison() {
   const size = useWindowSize();
   const screenWidth = size.width;
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.15 });
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
 
   const containerVariants = {
     hidden: {},

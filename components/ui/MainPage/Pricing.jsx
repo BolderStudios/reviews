@@ -11,8 +11,8 @@ export default function Pricing() {
     const screenWidth = size.width;
     const titleRef = useRef(null);
     const contentRef = useRef(null);
-    const isTitleInView = useInView(titleRef, { once: true, amount: 0.25 });
-    const isContentInView = useInView(contentRef, { once: true, amount: 0.15 });
+    const isTitleInView = useInView(titleRef, { once: true, amount: 0.5 });
+    const isContentInView = useInView(contentRef, { once: true, amount: 0.5 });
 
     const titleVariants = {
         hidden: { opacity: 0, y: 20 },

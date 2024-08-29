@@ -25,7 +25,6 @@ export default function Footer() {
                     <div className="flex mb-2 gap-4 text-sm text-muted-foreground underline underline-offset-4 md:mb-0 md:flex-row">
                         <Link href="/privacy-policy">Privacy Policy</Link>
                         <Link href="/terms-of-service">Terms of Service</Link>
-                        {/* <Link href="/cookie-policy">Cookie Policy</Link> */}
                     </div>
                     <p className="text-muted-foreground text-xs ">
                         ©{" "}
