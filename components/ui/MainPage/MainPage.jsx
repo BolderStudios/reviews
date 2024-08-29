@@ -22,7 +22,9 @@ export default function MainPage() {
     const customEasing = [0.215, 0.61, 0.355, 1];
 
     useEffect(() => {
-        setIsHeroLoaded(true);
+        setTimeout(() => {
+            setIsHeroLoaded(true);
+        }, 100);
     }, []);
 
     return (
