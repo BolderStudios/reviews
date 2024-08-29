@@ -10,6 +10,7 @@ import TextScroll from "@/components/ui/MainPage/TextScroll";
 import Statistics from "@/components/ui/MainPage/Statistics";
 import HowItWorks from "@/components/ui/MainPage/HowItWorks";
 import Comparison from "@/components/ui/MainPage/Comparison";
+import Pricing from "@/components/ui/MainPage/Pricing";
 
 export default function MainPage() {
     const size = useWindowSize();
@@ -164,6 +165,7 @@ export default function MainPage() {
             <Comparison />
             <Statistics />
             <HowItWorks />
+            <Pricing />
         </div>
     )
 }

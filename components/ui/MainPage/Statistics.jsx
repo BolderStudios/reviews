@@ -30,7 +30,7 @@ export default function Statistics() {
     ];
 
     return (
-        <div className="px-4 px-[1.6rem] mt-[1.5rem] mb-[4.8rem]">
+        <div className="px-[1.6rem] mt-[1.5rem] mb-[4.8rem]">
             <h1 className={`text-center text-stone-900 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto`}>
                 More opportunities
             </h1>

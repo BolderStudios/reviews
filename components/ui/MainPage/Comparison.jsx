@@ -47,7 +47,7 @@ function ComparisonCard({ title, items, icon: Icon, iconBgColor, iconColor, scre
     return (
         <div className={`flex flex-col items-start justify-start h-full ${className}`}>
             <h2 className={`text-center mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-2xl" : "text-3xl"} lg:text-4xl xl:text-5xl leading-none tracking-tighter max-w-[20ch] mx-auto ${title === "The new way"
-                    ? "bg-gradient-to-r from-[#f97316] via-[#fb923c] to-[#fde047] text-transparent bg-clip-text"
+                    ? "bg-gradient-to-r from-[#f97316] via-[#fb923c] to-[#fde047] text-transparent bg-clip-text pb-[3px]"
                     : "text-stone-900"
                 }`}>
                 {title}
