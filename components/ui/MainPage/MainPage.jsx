@@ -79,7 +79,7 @@ export default function MainPage() {
 
                                     <motion.p initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.5, delay: 1.9, ease: customEasing }} className={`text-stone-300 font-medium ${screenWidth <= 300 ? "text-sm" : "text-base"} md:text-lg px-4 md:px-24 lg:px-32 text-center leading-normal max-w-xs md:max-w-xl lg:max-w-2xl mx-auto`}>
+                                        transition={{ duration: 0.5, delay: 1.9, ease: customEasing }} className={`text-stone-300 font-medium text-sm sm:text-base md:text-lg px-4 md:px-24 lg:px-32 text-center leading-normal max-w-xs md:max-w-xl lg:max-w-2xl mx-auto`}>
                                         Secure loyal customers and increase revenue by offering prepaid credits
                                     </motion.p>
 
