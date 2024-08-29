@@ -39,18 +39,14 @@ export default function MainPage() {
                 <AnimatePresence>
                     {isLoaded && (
                         <>
-                            <motion.div
-                                className="absolute inset-0"
-                                initial={{ scale: 1.1 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 2, ease: customEasing }}
-                            >
-                                <img
-                                    src="/hero/hero-image-43.png"
-                                    alt="hero-image"
-                                    className="w-full h-full object-cover object-center"
-                                />
-                            </motion.div>
+                            <img
+                                src="/hero/hero-image-43.png"
+                                alt="hero-image"
+                                className="absolute left-0 top-0 w-full h-full object-cover object-center bg-center"
+                                // initial={{ scale: 1.1 }}
+                                // animate={{ scale: 1 }}
+                                // transition={{ duration: 2, ease: customEasing }}
+                            />
                             <div className="absolute inset-0 bg-black bg-opacity-35" />
 
                             <motion.div className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-4 pb-8 min-h-[100svh]">
