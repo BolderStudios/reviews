@@ -6,7 +6,7 @@ import Logo from "@/public/logoBlack.png";
 
 export default function Footer() {
     return (
-        <footer className="not-prose flex flex-col sm:flex-row items-center justify-center pb-[2rem] max-w-[800px] mx-auto">
+        <footer className="not-prose flex flex-col sm:flex-row items-center justify-center pb-[2rem] max-w-[800px] mx-auto px-[1.6rem]">
             <div className="grid gap-6">
                 <div className="grid gap-6">
                     <Link href="/">
