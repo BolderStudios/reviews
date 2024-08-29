@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from "@/components/ui/Buttons/button"
 import { Calendar } from "lucide-react"
 import { useWindowSize } from "@uidotdev/usehooks";
@@ -19,27 +19,27 @@ export default function MainPage() {
     const screenWidth = size.width;
 
     const [isLoaded, setIsLoaded] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
     const customEasing = [0.215, 0.61, 0.355, 1];
+    const heroRef = useRef(null);
 
     useEffect(() => {
-        setIsLoaded(true);
-
-        const setHeight = () => {
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        const setInitialHeight = () => {
+            if (heroRef.current) {
+                const vh = window.innerHeight;
+                heroRef.current.style.height = `${vh}px`;
+            }
         };
 
-        setHeight();
+        setInitialHeight();
+        setIsLoaded(true);
 
-        const isMobile = window.matchMedia("(max-width: 1024px)").matches;
-        if (isMobile) {
-            window.addEventListener('resize', setHeight);
-        }
+        window.addEventListener('orientationchange', setInitialHeight);
+        window.addEventListener('resize', setInitialHeight);
 
         return () => {
-            if (isMobile) {
-                window.removeEventListener('resize', setHeight);
-            }
+            window.removeEventListener('orientationchange', setInitialHeight);
+            window.removeEventListener('resize', setInitialHeight);
         };
     }, []);
 
@@ -50,13 +50,13 @@ export default function MainPage() {
                     background-color: #5fafe5;
                     color: white;
                 }
-                :root {
-                    --vh: 1vh;
+                body {
+                    overflow-y: ${!imageLoaded ? 'hidden' : 'auto'};
                 }
             `}</style>
 
             {/* Hero section */}
-            <div className="w-full relative overflow-hidden" style={{ height: 'calc(var(--vh, 1vh) * 100)' }}>
+            <div ref={heroRef} className="w-full relative overflow-hidden bg-black">
                 <AnimatePresence>
                     {isLoaded && (
                         <>
@@ -64,6 +64,8 @@ export default function MainPage() {
                                 src="/hero/hero-image-43.png"
                                 alt="hero-image"
                                 className="absolute left-0 top-0 w-full h-full object-cover object-center"
+                                onLoad={() => setImageLoaded(true)}
+                                style={{ display: imageLoaded ? 'block' : 'none' }}
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-35" />
 
@@ -131,18 +133,22 @@ export default function MainPage() {
                 </AnimatePresence>
             </div>
 
-            <div className='bg-gradient-to-b from-[#fff6e2] via-[#eef3fe] to-[#eef3fe]'>
-                <TextScroll />
-                <Comparison />
-                <Statistics />
-            </div>
+            {imageLoaded && (
+                <>
+                    <div className='bg-gradient-to-b from-[#fff6e2] via-[#eef3fe] to-[#eef3fe]'>
+                        <TextScroll />
+                        <Comparison />
+                        <Statistics />
+                    </div>
 
-            <div className='bg-gradient-to-b from-[#eef3fe] to-[#E3FDF5]'>
-                <HowItWorks />
-                <Pricing />
-                <FAQ />
-                <Footer />
-            </div>
+                    <div className='bg-gradient-to-b from-[#eef3fe] to-[#E3FDF5]'>
+                        <HowItWorks />
+                        <Pricing />
+                        <FAQ />
+                        <Footer />
+                    </div>
+                </>
+            )}
         </div>
     )
 }
