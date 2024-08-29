@@ -56,6 +56,7 @@ export default function Comparison() {
           index={0}
           isInView={isInView}
         />
+        
         <ComparisonCard
           title="The new way"
           items={[
