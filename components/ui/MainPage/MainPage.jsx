@@ -35,25 +35,21 @@ export default function MainPage() {
             `}</style>
 
             {/* Hero section */}
-            <div className="w-full relative min-h-screen overflow-hidden">
+            <div className="w-full relative overflow-hidden md:h-screen">
                 <AnimatePresence>
                     {isLoaded && (
                         <>
                             <motion.img
-                                src="/hero/hero-image-44.png"
+                                src="/hero/hero-image-42.png"
                                 alt="hero-image"
-                                className="absolute left-0 top-0 w-full h-full object-cover object-[-200px] sm:object-cover sm:object-[0px]"
+                                className="absolute left-0 top-0 w-full h-full object-cover object-center"
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
                                 transition={{ duration: 2, ease: customEasing }}
                             />
-                            <div
-                                className="absolute inset-0 bg-black bg-opacity-35"
-                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-35" />
 
-                            <motion.div
-                                className="absolute inset-0 flex flex-col px-4 sm:px-6 lg:px-8 pt-4 pb-8"
-                            >
+                            <motion.div className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-4 pb-8 md:h-full">
                                 <motion.div
                                     className="flex items-center justify-between w-full z-10"
                                     initial={{ opacity: 0, y: -20 }}
@@ -66,7 +62,7 @@ export default function MainPage() {
                                     </Button>
                                 </motion.div>
 
-                                <div className="flex-grow flex flex-col justify-center items-center">
+                                <div className="flex-grow flex flex-col justify-center items-center py-16 md:py-24 lg:py-0">
                                     <motion.div
                                         className='flex flex-col justify-center items-center'
                                     // initial={{ opacity: 0, y: 20 }}
@@ -154,7 +150,6 @@ export default function MainPage() {
                                     transition={{ duration: 0.5, delay: 1, ease: customEasing }}
                                 >
                                     <p className='text-stone-300 font-medium text-xs text-center uppercase'>trusted by the most popular brands</p>
-                                    {/* <p className='text-stone-300 font-medium text-xs max-w-[200px] text-center uppercase'>Our approach is trusted by the most popular brands</p> */}
                                     <AnimatedLogoCloud />
                                 </motion.div>
                             </motion.div>

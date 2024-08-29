@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import Balancer from "react-wrap-balancer";
 
 import Logo from "@/public/logoBlack.png";
 
@@ -10,14 +9,13 @@ export default function Footer() {
             <div className="grid gap-6">
                 <div className="grid gap-6">
                     <Link href="/">
-                        <h3 className="sr-only">brijr/components</h3>
                         <Image
                             src={Logo}
                             alt="Logo"
-                            width={120}
-                            height={27.27}
+                            width={80}
+                            height={160}
                             className="transition-all hover:opacity-75 dark:invert"
-                        ></Image>
+                        />
                     </Link>
                     <p className="text-stone-900 text-base leading-normal tracking-tight">
                         BrandArmor is a platform that allows local businesses to offer prepaid credit to their customers. We help you get more customers, keep them longer, and make more money.
