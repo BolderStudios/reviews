@@ -11,6 +11,7 @@ import Statistics from "@/components/ui/MainPage/Statistics";
 import HowItWorks from "@/components/ui/MainPage/HowItWorks";
 import Comparison from "@/components/ui/MainPage/Comparison";
 import Pricing from "@/components/ui/MainPage/Pricing";
+import FAQ from "@/components/ui/MainPage/FAQ";
 
 export default function MainPage() {
     const size = useWindowSize();
@@ -166,6 +167,7 @@ export default function MainPage() {
             <Statistics />
             <HowItWorks />
             <Pricing />
+            <FAQ />
         </div>
     )
 }
