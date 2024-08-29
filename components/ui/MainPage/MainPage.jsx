@@ -65,16 +65,15 @@ export default function MainPage() {
                                 </Button>
                             </motion.div>
 
-                            <div className="flex-grow flex flex-col justify-center items-center py-24 lg:py-0">
+                            <div className="flex-grow flex flex-col justify-center items-center pb-24 pt-48 lg:pb-0 lg:pt-0">
                                 <div className='flex flex-col justify-center items-center'>
                                     <motion.div initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.5, delay: 1.75, ease: customEasing }}
                                         className="flex flex-col items-center text-center max-w-4xl"
                                     >
-                                        <h1 className={`text-stone-50 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-tight tracking-tighter max-w-[20ch] mx-auto mb-4`}>
+                                        <h1 className={`text-stone-50 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight tracking-tighter max-w-[20ch] mx-auto mb-4`}>
                                             Get up to $5,000 in extra revenue this month
-                                            {/* <span className='-skew-x-[15deg] font-medium inline-block'>$5,000</span> */}
                                         </h1>
                                     </motion.div>
 
