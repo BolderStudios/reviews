@@ -18,13 +18,12 @@ export default function MainPage() {
     const size = useWindowSize();
     const screenWidth = size.width;
 
-    const [isLoaded, setIsLoaded] = useState(true); // Change this to start as true
+    const [isHeroLoaded, setIsHeroLoaded] = useState(false);
     const customEasing = [0.215, 0.61, 0.355, 1];
 
-    // Remove this useEffect as it's no longer needed
-    // useEffect(() => {
-    //     setIsLoaded(true);
-    // }, []);
+    useEffect(() => {
+        setIsHeroLoaded(true);
+    }, []);
 
     return (
         <div className="flex flex-col" >
@@ -40,12 +39,12 @@ export default function MainPage() {
                 <img
                     src="https://res.cloudinary.com/drzscdhyn/image/upload/v1724964726/hero-image-43_r2codo.png"
                     alt="hero-image"
-                    className="absolute left-0 top-0 w-full h-full object-cover object-center"
+                    className="absolute left-0 top-0 w-full h-full object-cover object-[-200px] md:object-[-200px] lg:object-center"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-35" />
 
                 <AnimatePresence>
-                    {isLoaded && (
+                    {isHeroLoaded && (
                         <motion.div
                             className="relative flex flex-col px-4 sm:px-6 md:px-8 pt-4 pb-8 md:min-h-screen"
                             initial={{ opacity: 0 }}
@@ -110,7 +109,7 @@ export default function MainPage() {
                 </AnimatePresence>
             </div>
 
-            <div className='bg-gradient-to-b from-[#fff6e2] via-[#eef3fe] to-[#eef3fe]'>
+            <div className={`bg-gradient-to-b from-[#fff6e2] via-[#eef3fe] to-[#eef3fe] ${isHeroLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-1000`}>
                 <TextScroll />
                 <Comparison />
                 <Statistics />
@@ -126,7 +125,6 @@ export default function MainPage() {
         </div>
     )
 }
-
 {/* <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
