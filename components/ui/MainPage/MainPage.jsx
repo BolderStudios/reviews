@@ -40,7 +40,7 @@ export default function MainPage() {
                     {isLoaded && (
                         <>
                             <motion.img
-                                src="/hero/hero-image-40.png"
+                                src="/hero/hero-image-44.png"
                                 alt="hero-image"
                                 className="absolute left-0 top-0 w-full h-full object-cover object-[-200px] sm:object-cover sm:object-[0px]"
                                 initial={{ scale: 1.1 }}
