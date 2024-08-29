@@ -25,7 +25,7 @@ export default function MainPage() {
     }, []);
 
     return (
-        <div className="flex flex-col bg-gradient-to-b from-[#076585] via-[#eef3fe] to-slate-50">
+        <div className="flex flex-col bg-gradient-to-b from-[#076585] via-[#eef3fe] to-slate-50" >
             <style jsx global>{`
                 ::selection {
                     background-color: #5fafe5;
@@ -165,9 +165,13 @@ export default function MainPage() {
             <TextScroll />
             <Comparison />
             <Statistics />
-            <HowItWorks />
-            <Pricing />
-            <FAQ />
+
+
+            <div className='bg-gradient-to-b from-[#eef3fe] to-[#E3FDF5]'>
+                <HowItWorks />
+                <Pricing />
+                <FAQ />
+            </div>
         </div>
     )
 }
