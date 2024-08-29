@@ -35,7 +35,7 @@ export default function MainPage() {
             `}</style>
 
             {/* Hero section */}
-            <div className="w-full relative h-full sm:min-h-screen overflow-hidden">
+            <div className="w-full relative min-h-screen overflow-hidden">
                 <AnimatePresence>
                     {isLoaded && (
                         <>
