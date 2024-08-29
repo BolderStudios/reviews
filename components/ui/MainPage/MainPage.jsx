@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/Buttons/button"
-import { ArrowRight, Calendar } from "lucide-react"
-import { useWindowSize } from "@uidotdev/usehooks";
+import { Calendar } from "lucide-react"
 import AnimatedLogoCloud from "@/components/ui/MainPage/AnimatedLogoCloud"
 import { motion, AnimatePresence } from "framer-motion";
 import TextScroll from "@/components/ui/MainPage/TextScroll";
@@ -15,16 +14,15 @@ import FAQ from "@/components/ui/MainPage/FAQ";
 import Footer from "@/components/ui/MainPage/Footer";
 
 export default function MainPage() {
-    const size = useWindowSize();
-    const screenWidth = size.width;
-
     const [isHeroLoaded, setIsHeroLoaded] = useState(false);
     const customEasing = [0.215, 0.61, 0.355, 1];
 
     useEffect(() => {
-        setTimeout(() => {
+        // Delay the hero load state to allow the image to load
+        const timer = setTimeout(() => {
             setIsHeroLoaded(true);
         }, 100);
+        return () => clearTimeout(timer);
     }, []);
 
     return (
@@ -41,9 +39,9 @@ export default function MainPage() {
                 <img
                     src="https://res.cloudinary.com/drzscdhyn/image/upload/v1724964726/hero-image-43_r2codo.png"
                     alt="hero-image"
-                    className="absolute left-0 top-0 w-full h-full object-cover object-[-200px] md:object-[-200px] lg:object-center"
+                    className={`absolute left-0 top-0 w-full h-full object-cover object-[-200px] md:object-[-200px] lg:object-center transition-opacity duration-500 ${isHeroLoaded ? 'opacity-100' : 'opacity-0'}`}
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-35" />
+                <div className={`absolute inset-0 bg-black transition-opacity duration-500 ${isHeroLoaded ? 'bg-opacity-35' : 'bg-opacity-100'}`} />
 
                 <AnimatePresence>
                     {isHeroLoaded && (
@@ -61,7 +59,7 @@ export default function MainPage() {
                             >
                                 <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
                                 <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300">
-                                    Get started
+                                    Start today. It's free!
                                 </Button>
                             </motion.div>
 
@@ -87,10 +85,8 @@ export default function MainPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.5, delay: 2, ease: customEasing }} className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
                                         <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6">
-                                            {/* Start today. It's free! */}
                                             <Calendar className='mr-2' size={16} />
                                             <span>Talk to a human</span>
-                                            {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
                                         </Button>
                                     </motion.div>
                                 </div>

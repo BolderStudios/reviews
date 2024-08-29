@@ -59,7 +59,7 @@ export default function TextScroll() {
     );
 
     return (
-        <div ref={ref} className="flex flex-col gap-8 text-stone-900 max-w-[675px] ml-auto mr-auto mt-[4.8rem] mb-[4.8rem]">
+        <div ref={ref} className="flex flex-col gap-8 text-stone-900 max-w-[675px] ml-auto mr-auto mt-[2rem] mb-[4.8rem]">
             {renderParagraph(firstParagraphArray)}
             {renderParagraph(secondParagraphArray, firstParagraphArray.length)}
         </div>
