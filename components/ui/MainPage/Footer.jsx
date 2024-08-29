@@ -6,7 +6,7 @@ import Logo from "@/public/logoBlack.png";
 
 export default function Footer() {
     return (
-        <footer className="not-prose flex flex-col sm:flex-row items-center justify-center mb-[1rem] px-[1.6rem]">
+        <footer className="not-prose flex flex-col sm:flex-row items-center justify-center mb-[1rem] w-full">
             <div className="grid gap-6">
                 <div className="grid gap-6">
                     <Link href="/">
@@ -19,7 +19,7 @@ export default function Footer() {
                             className="transition-all hover:opacity-75 dark:invert"
                         ></Image>
                     </Link>
-                    <p className="text-stone-900 text-base leading-normal tracking-tight">
+                    <p className="text-stone-900 text-base leading-normal tracking-tight w-[800px]">
                         BrandArmor is a platform that allows local businesses to offer prepaid credit to their customers. We help you get more customers, keep them longer, and make more money.
                     </p>
                     <div className="flex mb-2 gap-4 text-sm text-muted-foreground underline underline-offset-4 md:mb-0 md:flex-row">
