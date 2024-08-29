@@ -31,7 +31,14 @@ export default function Statistics() {
 
     return (
         <div className="px-4 px-[1.6rem] mt-[1.5rem] mb-[4.8rem]">
-            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 md:gap-16 lg:gap-20 max-w-7xl mx-auto`}>
+            <h1 className={`text-center text-stone-900 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-none tracking-tighter max-w-[20ch] mx-auto`}>
+                More opportunities
+            </h1>
+            <p className="text-center text-stone-500 text-base sm:text-lg max-w-[60ch] mx-auto">
+                Gift cards to corporate events, family gatherings to referral programs - discounted credits make your services <span className="inline-block bg-[#fde7c5] font-medium">more attractive.</span>
+            </p>
+
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 md:gap-16 lg:gap-20 max-w-7xl mx-auto">
                 {stats.map((stat, index) => (
                     <div key={index} className="flex flex-col items-start gap-2">
                         <div className="text-[var(--button-primary)] mb-2">{stat.icon}</div>
