@@ -12,6 +12,7 @@ import HowItWorks from "@/components/ui/MainPage/HowItWorks";
 import Comparison from "@/components/ui/MainPage/Comparison";
 import Pricing from "@/components/ui/MainPage/Pricing";
 import FAQ from "@/components/ui/MainPage/FAQ";
+import Footer from "@/components/ui/MainPage/Footer";
 
 export default function MainPage() {
     const size = useWindowSize();
@@ -25,7 +26,7 @@ export default function MainPage() {
     }, []);
 
     return (
-        <div className="flex flex-col bg-gradient-to-b from-[#076585] via-[#eef3fe] to-slate-50" >
+        <div className="flex flex-col" >
             <style jsx global>{`
                 ::selection {
                     background-color: #5fafe5;
@@ -162,15 +163,18 @@ export default function MainPage() {
                 </AnimatePresence>
             </div>
 
-            <TextScroll />
-            <Comparison />
-            <Statistics />
+            <div className='bg-gradient-to-b from-[#fff6e2] via-[#eef3fe] to-[#eef3fe]'>
+                <TextScroll />
+                <Comparison />
+                <Statistics />
+            </div>
 
 
             <div className='bg-gradient-to-b from-[#eef3fe] to-[#E3FDF5]'>
                 <HowItWorks />
                 <Pricing />
                 <FAQ />
+                <Footer />
             </div>
         </div>
     )

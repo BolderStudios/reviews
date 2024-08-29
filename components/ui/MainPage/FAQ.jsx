@@ -14,12 +14,12 @@ export default function FAQ() {
     const screenWidth = size.width;
 
     return (
-        <div className="px-[1.6rem] mb-[4.8rem]">
+        <div className="px-[1.6rem] mb-[3.8rem]">
             <h1 className={`text-center text-stone-900 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-tight tracking-tighter mx-auto`}>
                 Frequently Asked Questions
             </h1>
 
-            <div className="max-w-[600px] mt-6 mx-auto">
+            <div className="max-w-[600px] sm:max-w-[700px] mt-6 mx-auto">
                 <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-1">
                         <AccordionTrigger>How does the prepaid credit system work?</AccordionTrigger>
