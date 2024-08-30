@@ -30,7 +30,7 @@ export default function FAQ() {
                     <AccordionItem value="item-8">
                         <AccordionTrigger>What makes you better than alternatives or competitors?</AccordionTrigger>
                         <AccordionContent>
-                            We focus on sustainable growth for your business. Unlike platforms that push steep discounts, we offer flexible credit systems with lower fees and customer retention tools that keep clients coming back. It's all about building long-term relationships, not just one-time deals.
+                            We focus on sustainable growth for your business. Unlike platforms that push steep discounts and avoid smaller businesses, we offer flexible credit systems with lower fees, customer retention tools that keep clients coming back, and work with businesses of all sizes. It's all about building long-term relationships, not just one-time deals.
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-10">
@@ -39,7 +39,6 @@ export default function FAQ() {
                             Customers can redeem their credits easily through our user-friendly website. The process is seamless, making it easy for them to come back and spend their credits, which means more revenue for you.
                         </AccordionContent>
                     </AccordionItem>
-
                     <AccordionItem value="item-3">
                         <AccordionTrigger>How do I set prices for prepaid credits?</AccordionTrigger>
                         <AccordionContent>
@@ -70,14 +69,6 @@ export default function FAQ() {
                             While we also attract customers with great offers, our approach is different. We emphasize long-term retention through prepaid credits, which maintain the value of your services and ensure repeat visits. It's about building loyalty rather than one-time discounts.
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-2">
-                        <AccordionTrigger>Is it suitable for all types of local businesses?</AccordionTrigger>
-                        <AccordionContent>
-                            While many local businesses can benefit from this model, it's particularly well-suited for services with repeat customers, such as beauty industries, cafes, restaurants, bars, coffee shops, and more.
-                        </AccordionContent>
-                    </AccordionItem>
-
-
                     <AccordionItem value="item-11">
                         <AccordionTrigger>What if I don't want to offer steep discounts?</AccordionTrigger>
                         <AccordionContent>
