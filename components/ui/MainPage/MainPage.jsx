@@ -73,7 +73,7 @@ export default function MainPage() {
                                 <div className='flex flex-col justify-center items-center'>
                                     <motion.div initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.5, delay: 1.75, ease: customEasing }}
+                                        transition={{ duration: 0.5, delay: 1.25, ease: customEasing }}
                                         className="flex flex-col items-center text-center max-w-4xl"
                                     >
                                         <h1 className={`text-stone-50 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight tracking-tighter max-w-[20ch] mx-auto mb-4`}>
@@ -86,13 +86,13 @@ export default function MainPage() {
 
                                     <motion.p initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.5, delay: 1.9, ease: customEasing }} className={`text-stone-300 font-medium text-sm sm:text-base md:text-lg px-4 md:px-24 lg:px-32 text-center leading-normal max-w-xs md:max-w-xl lg:max-w-2xl mx-auto`}>
+                                        transition={{ duration: 0.5, delay: 1.35, ease: customEasing }} className={`text-stone-300 font-medium text-sm sm:text-base md:text-lg px-4 md:px-24 lg:px-32 text-center leading-normal max-w-xs md:max-w-xl lg:max-w-2xl mx-auto`}>
                                         Secure loyal customers and increase revenue by offering prepaid credits
                                     </motion.p>
 
                                     <motion.div initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.5, delay: 2, ease: customEasing }} className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
+                                        transition={{ duration: 0.5, delay: 1.45, ease: customEasing }} className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
                                         <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6" asChild>
                                             <Link href="https://calendly.com/prepaidcredits/15min" target="_blank">
                                                 <Calendar className='mr-2' size={16} />
