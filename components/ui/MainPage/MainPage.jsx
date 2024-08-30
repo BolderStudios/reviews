@@ -71,7 +71,10 @@ export default function MainPage() {
                                         className="flex flex-col items-center text-center max-w-4xl"
                                     >
                                         <h1 className={`text-stone-50 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight tracking-tighter max-w-[20ch] mx-auto mb-4`}>
-                                            Get up to $5,000 in extra revenue this month
+                                            {/* Get up to $5,000 in extra revenue this month */}
+                                            {/* Add $5,000 in extra revenue this month */}
+                                            {/* We will add up to $5,000 in extra revenue for you this month */}
+                                            Boost Your Revenue by $5,000 This Month
                                         </h1>
                                     </motion.div>
 

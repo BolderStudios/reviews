@@ -21,7 +21,7 @@ export default function TextScroll() {
     const secondParagraphArray = secondParagraph.split(" ")
 
     const renderParagraph = (wordsArray, startOffset = 0) => (
-        <motion.div className={`${screenWidth > 400 ? "text-[2rem]" : "text-[1.6rem]"} md:text-[2.4rem] tracking-[-0.02em] leading-[1.15] flex flex-wrap gap-2 px-[1.6rem]`}>
+        <motion.div className={`${screenWidth > 450 ? "text-[2rem]" : "text-[1.6rem]"} md:text-[2.4rem] tracking-tighter leading-[1.15] flex flex-wrap gap-2 px-[1.6rem]`}>
             {wordsArray.map((word, index) => {
                 const progress = (startOffset + index) / (firstParagraphArray.length + secondParagraphArray.length);
                 const start = Math.max(0, progress - 0.05);
