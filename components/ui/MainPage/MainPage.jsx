@@ -13,6 +13,7 @@ import Pricing from "@/components/ui/MainPage/Pricing";
 import FAQ from "@/components/ui/MainPage/FAQ";
 import Footer from "@/components/ui/MainPage/Footer";
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function MainPage() {
     const [isHeroLoaded, setIsHeroLoaded] = useState(false);
@@ -37,12 +38,14 @@ export default function MainPage() {
 
             {/* Hero section */}
             <div className="w-full relative overflow-hidden md:min-h-screen">
-                <img
-                    src="https://res.cloudinary.com/drzscdhyn/image/upload/v1724964726/hero-image-43_r2codo.png"
+                <Image
+                    width={1000}
+                    height={1000}
+                    src="https://res.cloudinary.com/drzscdhyn/image/upload/v1725047161/u1485215868_httpss.mj.runSPDS50cLOyA_httpss.mj.runG9XveEmpJfM_898650f5-75fd-44f6-be52-fcd0865e8fca_3_tr88mo.png"
                     alt="hero-image"
-                    className={`absolute left-0 top-0 w-full h-full object-cover object-[-200px] md:object-[-200px] lg:object-center transition-opacity duration-500 ${isHeroLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    className={`absolute left-0 top-0 w-full h-full object-cover object-[-400px] md:object-[-200px] lg:object-center transition-opacity duration-500 ${isHeroLoaded ? 'opacity-100' : 'opacity-0'}`}
                 />
-                <div className={`absolute inset-0 bg-black transition-opacity duration-500 ${isHeroLoaded ? 'bg-opacity-35' : 'bg-opacity-100'}`} />
+                <div className={`absolute inset-0 bg-black transition-opacity duration-500 ${isHeroLoaded ? 'bg-opacity-40' : 'bg-opacity-100'}`} />
 
                 <AnimatePresence>
                     {isHeroLoaded && (

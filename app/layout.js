@@ -14,12 +14,12 @@ const fontSans = FontSans({
 export const metadata = {
   title: {
     default: 'Brand Armor',
-    template: '%s | BrandArmor',
+    template: '%s | Brand Armor',
   },
-  description: 'BrandArmor helps local businesses offer prepaid credits to boost customer loyalty and cash flow.',
+  description: 'Brand Armor helps local businesses offer prepaid credits to boost customer loyalty and cash flow.',
   openGraph: {
     title: 'Brand Armor',
-    description: 'Boost your local business with prepaid credits',
+    description: 'Brand Armor is a platform that allows local businesses to offer prepaid credit to their customers. We help you get more customers, keep them longer, and make more money.',
     url: 'https://www.getbrandarmor.com',
     siteName: 'BrandArmor',
     locale: 'en_US',

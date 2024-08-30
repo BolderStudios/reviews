@@ -38,17 +38,20 @@ export default function HowItWorks() {
         {
             step: 2,
             title: "Customize your program.",
-            description: "Together, we'll set up prepaid credits, discounts, referral rates, and gift cards that work best for your business."
+            description: "Together, we'll set up prepaid credits discounts, referral and corporate rates that work best for your business."
+            // description: "Together, we'll set up prepaid credits discounts, referral rates, and gift cards that work best for your business."
         },
         {
             step: 3,
             title: "Get equipped.",
-            description: "Receive free promotional materials and custom gift cards. We'll train you on how to use them effectively."
+            description: "Receive free promotional materials. We'll train you on how to use them effectively."
+            // description: "Receive free promotional materials and custom gift cards. We'll train you on how to use them effectively."
         },
         {
             step: 4,
             title: "Launch and grow.",
-            description: "Your team starts offering these services to customers, they save money, earn rewards, and you get more repeat customers. It's a win-win."
+            description: "Your team starts offering these services to customers, they save money, and you get more repeat business. It's a win-win."
+            // description: "Your team starts offering these services to customers, they save money, earn rewards, and you get more repeat customers. It's a win-win."
         }
     ];
 

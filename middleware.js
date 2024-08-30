@@ -36,6 +36,8 @@ export default clerkMiddleware(async (auth, req) => {
     const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ""
       }`;
 
+    console.log("Hostname:", hostname);
+
     // Check if it's an ngrok URL
     if (hostname.includes("ngrok-free.app")) {
       console.log("Ngrok URL detected");
@@ -45,6 +47,12 @@ export default clerkMiddleware(async (auth, req) => {
         return NextResponse.next();
       }
     } else if (hostname.includes("vercel.app")) {
+      console.log("Vercel URL detected");
+
+      return NextResponse.next();
+    }
+
+    if (hostname.includes("srv")) {
       console.log("Vercel URL detected");
 
       return NextResponse.next();
