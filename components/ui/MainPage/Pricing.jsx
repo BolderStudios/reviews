@@ -69,7 +69,7 @@ export default function Pricing() {
 
                 <div className="flex flex-col items-center justify-center">
                     <p className="text-blue-500 text-xs text-center max-w-[30ch] leading-normal">
-                        $0 today. 5% + 80¢ per transaction. Cap at $49 per month.
+                        $0 today. 7.9% + $1 per transaction. Cap at $49 per month.
                     </p>
                 </div>
             </motion.div>
