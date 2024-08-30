@@ -12,6 +12,7 @@ import Comparison from "@/components/ui/MainPage/Comparison";
 import Pricing from "@/components/ui/MainPage/Pricing";
 import FAQ from "@/components/ui/MainPage/FAQ";
 import Footer from "@/components/ui/MainPage/Footer";
+import Link from 'next/link';
 
 export default function MainPage() {
     const [isHeroLoaded, setIsHeroLoaded] = useState(false);
@@ -58,8 +59,10 @@ export default function MainPage() {
                                 transition={{ duration: 0.5, delay: 0.6, ease: customEasing }}
                             >
                                 <img src="/logoWhite.png" alt="logo" className="w-[90px] h-auto sm:w-20 md:w-24 lg:w-28 object-contain" />
-                                <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300">
-                                    Start today. It's free!
+                                <Button variant="customOutline" className="h-[30px] px-2 border border-stone-300" asChild>
+                                    <Link href="https://calendly.com/prepaidcredits/15min" target="_blank">
+                                        Start today. It's free!
+                                    </Link>
                                 </Button>
                             </motion.div>
 
@@ -87,9 +90,11 @@ export default function MainPage() {
                                     <motion.div initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.5, delay: 2, ease: customEasing }} className="flex flex-col md:flex-row gap-2 md:gap-4 mt-6 md:mt-8">
-                                        <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6">
-                                            <Calendar className='mr-2' size={16} />
-                                            <span>Talk to a human</span>
+                                        <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6" asChild>
+                                            <Link href="https://calendly.com/prepaidcredits/15min" target="_blank">
+                                                <Calendar className='mr-2' size={16} />
+                                                <span>Talk to a human</span>
+                                            </Link>
                                         </Button>
                                     </motion.div>
                                 </div>
@@ -126,45 +131,45 @@ export default function MainPage() {
     )
 }
 {/* <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.5, delay: 1.5, ease: customEasing }}
-                                        className="mb-6 sm:mb-8 flex items-center justify-center gap-4"
-                                    >
-                                        <div className="flex -space-x-2">
-                                            <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                                <AvatarImage src="/avatars/avatar1.jpg" className="object-cover" alt="Avatar 1" />
-                                                <AvatarFallback>A1</AvatarFallback>
-                                            </Avatar>
-                                            <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                                <AvatarImage src="/avatars/avatar2.jpg" className="object-cover" alt="Avatar 2" />
-                                                <AvatarFallback>A2</AvatarFallback>
-                                            </Avatar>
-                                            <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                                <AvatarImage src="/avatars/avatar3.jpg" className="object-cover" alt="Avatar 3" />
-                                                <AvatarFallback>A3</AvatarFallback>
-                                            </Avatar>
-                                            <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
-                                                <AvatarImage src="/avatars/avatar4.jpg" className="object-cover" alt="Avatar 4" />
-                                                <AvatarFallback>A4</AvatarFallback>
-                                            </Avatar>
-                                            <Avatar className={`w-8 h-8 sm:w-11 sm:h-11 ${screenWidth >= 400 ? "block" : "hidden"}`}>
-                                                <AvatarImage src="/avatars/avatar5.jpg" className="object-cover" alt="Avatar 5" />
-                                                <AvatarFallback>A5</AvatarFallback>
-                                            </Avatar>
-                                        </div>
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, delay: 1.5, ease: customEasing }}
+    className="mb-6 sm:mb-8 flex items-center justify-center gap-4"
+>
+    <div className="flex -space-x-2">
+        <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+            <AvatarImage src="/avatars/avatar1.jpg" className="object-cover" alt="Avatar 1" />
+            <AvatarFallback>A1</AvatarFallback>
+        </Avatar>
+        <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+            <AvatarImage src="/avatars/avatar2.jpg" className="object-cover" alt="Avatar 2" />
+            <AvatarFallback>A2</AvatarFallback>
+        </Avatar>
+        <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+            <AvatarImage src="/avatars/avatar3.jpg" className="object-cover" alt="Avatar 3" />
+            <AvatarFallback>A3</AvatarFallback>
+        </Avatar>
+        <Avatar className="w-8 h-8 sm:w-11 sm:h-11">
+            <AvatarImage src="/avatars/avatar4.jpg" className="object-cover" alt="Avatar 4" />
+            <AvatarFallback>A4</AvatarFallback>
+        </Avatar>
+        <Avatar className={`w-8 h-8 sm:w-11 sm:h-11 ${screenWidth >= 400 ? "block" : "hidden"}`}>
+            <AvatarImage src="/avatars/avatar5.jpg" className="object-cover" alt="Avatar 5" />
+            <AvatarFallback>A5</AvatarFallback>
+        </Avatar>
+    </div>
 
-                                        <div className="flex flex-col items-start justify-center gap-1">
-                                            <div className="flex items-center justify-center">
-                                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
-                                            </div>
+    <div className="flex flex-col items-start justify-center gap-1">
+        <div className="flex items-center justify-center">
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+            <Star className="w-4 h-4 text-yellow-500 fill-yellow-400" />
+        </div>
 
-                                            <p className={`text-stone-300 font-medium ${screenWidth <= 700 ? "text-xs" : "text-sm"} text-left`}>
-                                                loved by businesses nationwide
-                                            </p>
-                                        </div>
-                                    </motion.div> */}
+        <p className={`text-stone-300 font-medium ${screenWidth <= 700 ? "text-xs" : "text-sm"} text-left`}>
+            loved by businesses nationwide
+        </p>
+    </div>
+</motion.div>  */}

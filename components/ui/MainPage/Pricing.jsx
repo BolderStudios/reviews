@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Buttons/button"
 import { Calendar } from "lucide-react"
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import Link from "next/link";
 
 export default function Pricing() {
     const size = useWindowSize();
@@ -21,10 +22,10 @@ export default function Pricing() {
 
     const contentVariants = {
         hidden: { opacity: 0, y: 20 },
-        visible: { 
-            opacity: 1, 
-            y: 0, 
-            transition: { 
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
                 delay: 0.2,
                 duration: 0.5,
             }
@@ -38,13 +39,13 @@ export default function Pricing() {
                 initial="hidden"
                 animate={isTitleInView ? "visible" : "hidden"}
             >
-                <motion.h1 
+                <motion.h1
                     variants={titleVariants}
                     className={`text-center text-stone-900 mb-4 sm:mb-6 ${screenWidth <= 300 ? "text-3xl" : "text-4xl"} lg:text-5xl xl:text-6xl leading-tighter tracking-tighter max-w-[17ch] mx-auto`}
                 >
                     Pricing that scales with your business
                 </motion.h1>
-                <motion.p 
+                <motion.p
                     variants={titleVariants}
                     className="mt-6 text-center text-stone-500 text-base sm:text-lg max-w-[45ch] mx-auto"
                 >
@@ -59,9 +60,11 @@ export default function Pricing() {
                 variants={contentVariants}
                 className="mt-6 flex flex-col items-center justify-center gap-4"
             >
-                <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6">
-                    <Calendar className='mr-2' size={16} />
-                    <span>Talk to a human</span>
+                <Button variant="primary" className="flex items-center justify-center bg-[#07a15e] h-[40px] px-4 md:h-[48px] md:px-6" asChild>
+                    <Link href="https://calendly.com/prepaidcredits/15min" target="_blank">
+                        <Calendar className='mr-2' size={16} />
+                        <span>Talk to a human</span>
+                    </Link>
                 </Button>
 
                 <div className="flex flex-col items-center justify-center">
